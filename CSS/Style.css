@@ -22,7 +22,6 @@ body {
 }
 
 canvas {
-  z-index: -1;
   position: fixed;
   width: 100%;
   height: 100%;
@@ -62,4 +61,11 @@ canvas {
 
 .window.show {
   display: block;
+}
+
+/* Media query pour les écrans de moyenne taille */
+@media only screen and (max-width: 1000px) {
+  canvas {
+    z-index: -1;
+  }
 }

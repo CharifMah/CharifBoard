@@ -1,3 +1,7 @@
 .vs
 package-lock.json
 Web.config
+.idea/deployment.xml
+.idea/php.xml
+.idea/workspace.xml
+.idea/vcs.xml
