@@ -8,72 +8,74 @@
     <link href="./CSS/ButtonStyle.css" rel="stylesheet">
     <link href="./CSS/Style.css" rel="stylesheet">
     <link href="./CSS/TextStyle.css" rel="stylesheet">
+    <link href="./CSS/PodiumStyle.css" rel="stylesheet">
+
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <title>Charif Main Page</title>
 </head>
 
 <body>
-    <script src="Scripts/StarsScript.js" type="text/babel"></script>
-    <canvas></canvas>
-    <div class="main">
+    <canvas>
+
+    </canvas>
+    <div class="title">
         <h1>Mahmoud Charif
             <div class="roller">
                 <span id="rolltext">Technologie<br />
                     Codage<br />
                     Innovation<br />
                     Créativité<br />
-                <span id="spare-time">Bienvenue sur ma page web</span>
+                    <span id="spare-time">Bienvenue sur ma page web</span>
             </div>
         </h1>
     </div>
 
+
     <div class="grid-container">
-        <button class="btn-31 grid-item">
-            <span class="text-container">
-                <span class="textbtn">Button</span>
-            </span>
-        </button>
-        <button class="btn-31 grid-item">
-            <span class="text-container">
-                <span class="textbtn">Button</span>
-            </span>
-        </button>
-        <button class="btn-31 grid-item">
-            <span class="text-container">
-                <span class="textbtn">Button</span>
-            </span>
-        </button>
-        <button class="btn-31 grid-item">
-            <span class="text-container">
-                <span class="textbtn">Button</span>
-            </span>
-        </button>
-        <button class="btn-31 grid-item">
-            <span class="text-container">
-                <span class="textbtn">Button</span>
-            </span>
-        </button>
-        <button class="btn-31 grid-item">
-            <span class="text-container">
-                <span class="textbtn">Button</span>
-            </span>
-        </button>
-        <button class="btn-31 grid-item">
-            <span class="text-container">
-                <span class="textbtn">Button</span>
-            </span>
-        </button>
-        <button class="btn-31 grid-item">
-            <span class="text-container">
-                <span class="textbtn">Button</span>
-            </span>
-        </button>
-        <button class="btn-31 grid-item">
-            <span class="text-container">
-                <span class="textbtn">Button</span>
-            </span>
-        </button>
+        <div class="grid-item">
+            <button class="btn-31">
+                <span class="text-container">
+                    <span class="textbtn">Button</span>
+                </span>
+            </button>
+        </div>
+
+        <div class="grid-item">
+            <button class="btn-31">
+                <span class="text-container">
+                    <span class="textbtn">Button</span>
+                </span>
+            </button>
+        </div>
+
+        <div class="grid-item">
+            <button class="btn-31">
+                <span class="text-container">
+                    <span class="textbtn">Button</span>
+                </span>
+            </button>
+        </div>
     </div>
+
+    <div class="container podium">
+        <div class="podium__item">
+            <p class="podium__city">Annecy</p>
+            <div class="podium__rank second">2</div>
+        </div>
+
+        <div class="podium__item">
+            <p class="podium__city">Saint-Gervais</p>
+            <div class="podium__rank first">1</div>
+        </div>
+
+        <div class="podium__item">
+            <p class="podium__city">Clermont-Ferrand Essentielle</p>
+            <div class="podium__rank third">3</div>
+        </div>
+    </div>
+
+    <script src="Scripts/StarsScript.js" type="text/babel"></script>
+    <script src="Scripts/BtnImage.js" type="text/javascript"></script>
 </body>
 
 </html>

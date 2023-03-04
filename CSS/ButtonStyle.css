@@ -1,8 +1,10 @@
 .btn-31 {
     display: block;
+    height: 35rem;
+    width: 35rem;
     box-sizing: border-box;
     padding: 1.5rem 3.5rem;
-
+    
     position: relative;
 
     background: none;
@@ -11,7 +13,7 @@
     text-transform: uppercase;
     border: 1px solid currentColor;
 
-    --progress: 100%;
+    --progress: 0%;
 }
 
 .btn-31:before {
@@ -20,8 +22,7 @@
 
     position: absolute;
     inset: 0;
-
-    background: white;
+    background-color: white;
     clip-path: polygon(100% 0,
             var(--progress) var(--progress),
             0 100%,
@@ -30,7 +31,7 @@
 }
 
 .btn-31:hover {
-    --progress: 0%;
+    --progress: 100%;
 }
 
 .btn-31 .text-container {
@@ -42,7 +43,7 @@
 .btn-31 .textbtn {
     display: block;
     position: relative;
-    font-size: 1rem;
+    font-size: 2rem;
     font-weight: 900;
     mix-blend-mode: difference;
 }
@@ -75,6 +76,11 @@
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
     gap: 10px;
+}
+
+.grid-item
+{
+    margin: 0 auto;
 }
 
 /* Media query pour les écrans de taille moyenne */
