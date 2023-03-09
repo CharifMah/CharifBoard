@@ -1,0 +1,28 @@
+.CVIcon, .project1, .project2 {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.CVIcon {
+    background-image: url("/Images/CV.jpg");
+}
+
+#cv{
+    width: 50%;
+    justify-content: center;
+    position: relative;
+    margin: 0 auto;
+    display: flex;
+}
+
+
+.project1 {
+    background-image: url("/Images/Jurrasic.ico");
+}
+
+
+
+.project2 {
+    background-image: url("/Images/github.png");
+}

@@ -1,10 +1,7 @@
 function openWindow(elementId) {
-    console.log("click");
-    var myWindow = document.getElementById(elementId);
-    myWindow.classList.add("show");
-  }
-  
-  function closeWindow(elementId) {
-    var myWindow = document.getElementById(elementId);
-    myWindow.classList.remove("show");
-  }
+    document.getElementById(elementId).classList.add("show");
+}
+
+function closeWindow(elementId) {
+    document.getElementById(elementId).classList.remove("show");
+}

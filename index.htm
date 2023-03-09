@@ -5,16 +5,16 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="./CSS/ButtonStyle.css" rel="stylesheet">
+    <link href="CSS/CardStyle.css" rel="stylesheet">
     <link href="./CSS/Style.css" rel="stylesheet">
     <link href="./CSS/TextStyle.css" rel="stylesheet">
     <link href="./CSS/PodiumStyle.css" rel="stylesheet">
     <link href="./CSS/IconStyle.css" rel="stylesheet">
-    <link href="./CSS/ProjectStyles.css" rel="stylesheet">
-
+    <link href="CSS/LabelsStyles.css" rel="stylesheet">
+    <link href="CSS/ImagesStyles.css" rel="stylesheet">
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
     <title>Charif Main Page</title>
-    <script src="Scripts/Project1.js"></script>
 </head>
 
 <body>
@@ -35,6 +35,16 @@
                 <img src="Images/linkedin.png" alt="GitHub" />
             </i>
         </a>
+        <a href="https://leetcode.com/Charif25/" target="_blank">
+            <i>
+                <img src="Images/leetcodeIcon.png" alt="LeetCode" />
+            </i>
+        </a>
+        <a href="https://fr.fiverr.com/charif_21" target="_blank">
+            <i>
+                <img src="Images/FiverrIcon.png" alt="Fiverr" />
+            </i>
+        </a>
     </div>
 
 
@@ -42,50 +52,26 @@
     <div class="main">
         <h1>Mahmoud Charif
             <div class="roller">
-                <span id="rolltext">Technologie<br />
+                <span id="rolltext">
+                    Technologie<br />
                     Codage<br />
                     Innovation<br />
                     Créativité<br />
                     <span id="spare-time">Bienvenue sur ma page web</span>
+                </span>
             </div>
         </h1>
     </div>
 
     <div id="cvWindows" class="window" hidden="true">
         <button onclick="closeWindow('cvWindows')">Fermer</button>
-        <img src="Images/CV.jpg" id="cv" alt="CV" />
+        <img class="CVIcon" id="cv" src="Images/CV.jpg" alt="CV" />
     </div>
 
 
-    <form id="Projet1" class="window" hidden="true">
-        <button onclick="closeWindow('Projet1')">Fermer</button>
-        <input type="radio" name="fancy" autofocus value="clubs" id="clubs" />
-        <input type="radio" name="fancy" value="hearts" id="hearts" />
-        <input type="radio" name="fancy" value="spades" id="spades" />
-        <input type="radio" name="fancy" value="diamonds" id="diamonds" />
-        <input type="radio" name="fancy" value="clubs" id="club" />
-        <input type="radio" name="fancy" value="hearts" id="heart" />
-        <input type="radio" name="fancy" value="spades" id="spade" />
-        <input type="radio" name="fancy" value="diamonds" id="diamond" />
-
-
-        <label for="hearts">&#9829; Hearts</label>
-        <label for="spades">&#9824;Spades</label>
-        <label for="diamonds">&#9830; Diamonds</label>
-        <label for="club">&#9827; Clubs</label>
-        <label for="heart">&#9829; Hearts</label>
-        <label for="spade">&#9824;Spades</label>
-        <label for="diamond">&#9830; Diamonds</label>
-        <div class="keys">Utilisez les touches gauche et droite pour naviguer</div>
-
-        <div>
-            <p>
-                Dans cet exemple, la classe "container" a une largeur de 100% et une hauteur de 200 pixels. La propriété "overflow" est définie sur "auto", ce qui signifie que la barre de défilement apparaîtra uniquement si le contenu dépasse la hauteur de l'élément. La règle media query est utilisée pour définir la largeur de l'élément "container" à 50% sur les écrans plus grands (à partir de 768 pixels de largeur).
-
-Grâce à cette approche, l'élément "container" aura toujours une barre de défilement disponible, quelle que soit la taille de l'écran de l'appareil utilisé pour afficher la page web.
-            </p>
-        </div>
-    </form>
+    <div id="Project1" class="window" hidden="true">
+        <button onclick="closeWindow('Project1')">Fermer</button>
+    </div>
 
     <div class="container">
         <div class="cards">
@@ -94,29 +80,21 @@ Grâce à cette approche, l'élément "container" aura toujours une barre de dé
                 <div class="colour"></div>
                 <div class="card-text">
                     <h3>Mon CV</h3>
-                    <p>Breathing Technnique: <b>Water/Sun</b></p>
                 </div>
                 <div class="colour-bottom"></div>
             </div>
-            <div class="card project1" onclick="openWindow('Projet1')">
+            <div class="card project1" onclick="openWindow('Project1')">
                 <div class="colour"></div>
                 <div class="card-text">
-                    <h3>Projet 1</h3>
-                    <p>Demon : Can do <b>blood magic</b>.</p>
-                </div>
-                <div class="colour-bottom"></div>
-            </div>
-            <div class="card project2">
-                <div class="colour"></div>
-                <div class="card-text">
-                    <h3>Zenitsu</h3>
-                    <p>Breathing Technnique: <b>Thunder</b></p>
+                    <h3>Projet Jurrasic Risk</h3>
+                    <p>Projet scolaire: <b>Jurrasic Risk 11/2022 - 01/2023</b></p>
                 </div>
                 <div class="colour-bottom"></div>
             </div>
         </div>
 
     </div>
+
 
     <div class="container podium">
         <div class="podium__item">
