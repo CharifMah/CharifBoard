@@ -1,5 +1,4 @@
 .container{
-    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -112,16 +111,4 @@
     100% {
         transform: rotate(-45deg) translateY(0px);
     }
-}
-footer {
-    width: 80%;
-    height:100px;
-    color: white;
-    text-align: center;
-    position: relative;
-    bottom: 0;
-}
-a {
-    text-decoration: none;
-    color: rgba(224,153,45,1);
 }

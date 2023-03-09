@@ -16,13 +16,55 @@
     display: flex;
 }
 
-
 .project1 {
     background-image: url("/Images/Jurrasic.ico");
 }
 
+.Tools {
+    background-image: url("/Images/ListLogo.JPG");
+    width: 50%;
+}
 
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-gap: 2vw;
+}
 
-.project2 {
-    background-image: url("/Images/github.png");
+.grid-item {
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.grid-item img {
+    display: block;
+    max-height: 30vw;
+    width: 7vw;
+}
+
+.grid-item:hover img {
+    transform: scale(1.1);
+}
+
+@media only screen and (max-width: 768px) {
+    .grid-container {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-gap: 10px;
+    }
+
+    .grid-item img {
+        max-height: 40vw;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .grid-container {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        grid-gap: 5px;
+    }
+
+    .grid-item img {
+        max-height: 50vw;
+    }
 }
