@@ -5,7 +5,7 @@
 }
 
 .CVIcon {
-    background-image: url("/Images/CV.jpg");
+    background-image: url("../Images/CV.jpg");
 }
 
 #cv{
@@ -17,11 +17,11 @@
 }
 
 .project1 {
-    background-image: url("/Images/Jurrasic.ico");
+    background-image: url("../Images/Logo/Jurrasic.ico");
 }
 
 .Tools {
-    background-image: url("/Images/ListLogo.JPG");
+    background-image: url("../Images/ListLogo.JPG");
     width: 50%;
 }
 
@@ -38,9 +38,9 @@
 }
 
 .grid-item img {
-    display: block;
-    max-height: 30vw;
-    width: 7vw;
+    display: flex;
+    width: 50%;
+    margin: 0 auto;
 }
 
 .grid-item:hover img {
