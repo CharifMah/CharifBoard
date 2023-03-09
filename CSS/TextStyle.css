@@ -1,22 +1,8 @@
-/* .text {   
-    display: block;
-    position: relative;
-    margin:0 auto;
-    background-image: linear-gradient(rgb(98, 197, 255), rgb(0, 162, 255));
-    background-size: 100% 10px;
-    background-repeat: no-repeat;
-    background-position: 100% 0%;
-    border-radius: 5%;
-    transition: background-size .7s, background-position .5s ease-in-out;
-    width: fit-content;
+p{
+    text-overflow: clip;
+    width: 50%;
+    z-index: 1;
 }
-
-.text:hover {
-    background-size: 100% 100%;
-    
-    background-position: 0% 100%;
-    transition: background-position .7s, background-size .5s ease-in-out;
-} */
 
 .roller {
     height: 4.125rem;
