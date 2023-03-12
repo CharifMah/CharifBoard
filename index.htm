@@ -3,15 +3,15 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <link href="CSS/CardStyle.css" rel="stylesheet">
     <link href="./CSS/Style.css" rel="stylesheet">
-    <link href="./CSS/TextStyle.css" rel="stylesheet">
+    <link href="CSS/TitleStyle.css" rel="stylesheet">
     <link href="./CSS/PodiumStyle.css" rel="stylesheet">
-    <link href="./CSS/IconStyle.css" rel="stylesheet">
     <link href="CSS/CarouselStyles.css" rel="stylesheet">
     <link href="CSS/ImagesStyles.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css" media="" rel="stylesheet">
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
     <title>Charif Main Page</title>
@@ -27,22 +27,22 @@
 <div class="social-bar">
     <a href="https://github.com/CharifMah" target="_blank">
         <i>
-            <img src="Images/github.png" alt="GitHub"/>
+            <img  class="social-icon" alt="GitHub" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original-wordmark.svg"/>
         </i>
     </a>
     <a href="https://www.linkedin.com/in/charif-mahmoud-11b53b18a/" target="_blank">
         <i>
-            <img src="Images/linkedin.png" alt="GitHub"/>
+            <img class="social-icon" alt="Linkedin" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg"/>
         </i>
     </a>
     <a href="https://leetcode.com/Charif25/" target="_blank">
         <i>
-            <img src="Images/leetcodeIcon.png" alt="LeetCode"/>
+            <img class="social-icon" alt="LeetCode" src="Images/Logo/leetcodeIcon.png"/>
         </i>
     </a>
     <a href="https://fr.fiverr.com/charif_21" target="_blank">
         <i>
-            <img src="Images/FiverrIcon.png" alt="Fiverr"/>
+            <img class="social-icon" alt="Fiverr" src="Images/Logo/FiverrIcon.png"/>
         </i>
     </a>
 </div>
@@ -62,14 +62,14 @@
     </h1>
 </div>
 
-<div id="cvWindows" class="window" hidden="true">
-    <button onclick="closeWindow('cvWindows')">Fermer</button>
-    <img class="CVIcon" id="cv" src="Images/CV.jpg" alt="CV"/>
+<div class="window" hidden="true" id="cvWindows">
+    <button onclick="closeWindow('cvWindows')">Fermer ❌</button>
+    <img alt="CV" class="CVIcon" id="cv" src="Images/CV.jpg"/>
 </div>
 
 
-<div id="Project1" class="window" hidden="true">
-    <button onclick="closeWindow('Project1')">Fermer</button>
+<div class="window" hidden="true" id="Project1">
+    <button onclick="closeWindow('Project1')">Fermer ❌</button>
     <div class="grid-container">
         <div class="grid-item">
 
@@ -83,58 +83,55 @@
     </div>
 </div>
 
-<div id="Comp" class="window" hidden="true">
-    <button onclick="closeWindow('Comp')">Fermer</button>
-    <div class="grid-container">
-        <div class="grid-item">
-            <img src="Images/github.png" alt="" class="pic">
-        </div>
-        <div class="grid-item">
-            <img src="Images/git.png" alt="" class="pic">
-        </div>
-        <div class="grid-item">
-            <img src="Images/GiTlab-lOGO.png" alt="" class="pic">
-        </div>
-        <div class="grid-item">
-            <img src="Images/1200px-FileZilla_logo.svg.png" alt="" class="pic">
-        </div>
-        <div class="grid-item">
-            <img src="Images/Adobe_After_Effects_CS6_Icon.png" alt="" class="pic">
-        </div>
-        <div class="grid-item">
-            <img src="Images/Adobe_Photoshop_CS6_icon.png" alt="" class="pic">
-        </div>
-        <div class="grid-item">
-            <img src="Images/cinema4d.png" alt="" class="pic">
-        </div>
-        <div class="grid-item">
-            <img src="Images/pop-os-icon.png" alt="" class="pic">
-        </div>
-        <div class="grid-item">
-            <img src="Images/ubuntu.png" alt="" class="pic">
-        </div>
-        <div class="grid-item">
-            <img src="Images/Virtualbox_logo.png" alt="" class="pic">
-        </div>
-        <div class="grid-item">
-            <img src="Images/VsCode.png" alt="" class="pic">
-        </div>
-        <div class="grid-item">
-            <img src="Images/Vstudio.png" alt="" class="pic">
-        </div>
-        <div class="grid-item">
-            <img src="Images/Logo_Csharp.png" alt="" class="pic">
-        </div>
-        <div class="grid-item">
-            <img src="Images/PhpStorm_Icon.png" alt="" class="pic">
-        </div>
-        <div class="grid-item">
-            <img src="Images/wpf-logo.png" alt="" class="pic">
-        </div>
-        <div class="grid-item">
-            <img src="Images/No_Script_Logo.png" alt="" class="pic">
-        </div>
-    </div>
+<div class="window" hidden="true" id="Comp">
+    <button onclick="closeWindow('Comp')">Fermer ❌</button>
+    <ul class="grid-container">
+        <li><i class="devicon-git-plain-wordmark colored"></i></li>
+        <li><i class="devicon-github-original colored"></i></li>
+        <li><i class="devicon-gitlab-plain-wordmark colored"></i></li>
+        <li><i class="devicon-csharp-plain colored"></i></li>
+        <li><i class="devicon-visualstudio-plain colored"></i></li>
+        <li><i class="devicon-vscode-plain colored"></i></li>
+        <li><i class="devicon-selenium-original"></i></li>
+        <li><i class="devicon-dot-net-plain-wordmark colored"></i></li>
+        <li><i class="devicon-css3-plain-wordmark"></i></li>
+        <li><i class="devicon-html5-plain colored"></i></li>
+        <li><i class="devicon-javascript-plain colored"></i></li>
+        <li><i class="devicon-typescript-plain colored"></i></li>
+        <li><i class="devicon-mysql-plain colored"></i></li>
+        <li><i class="devicon-php-plain colored"></i></li>
+        <li><i class="devicon-wordpress-plain colored"></i></li>
+        <li><i class="devicon-bash-plain colored"></i></li>
+        <li><i class="devicon-photoshop-line"></i></li>
+        <li><i class="devicon-phpstorm-plain-wordmark colored"></i></li>
+        <li><i class="devicon-filezilla-plain colored"></i></li>
+        <li><i class="devicon-linux-plain colored"></i></li>
+        <li><i class="devicon-redis-plain-wordmark colored"></i></li>
+        <li><i class="devicon-androidstudio-plain-wordmark"></i></li>
+        <li>
+            <i><img alt="Fiverr" src="Images/Logo/FiverrIcon.png"></i>
+        </li>
+        <li>
+            <i><img alt="WPF" src="Images/Logo/wpf-logo.png"></i>
+        </li>
+        <li>
+            <i>
+                <img alt="Cinema4D" src="Images/Logo/cinema4d.png">
+            </i>
+        </li>
+        <li>
+            <i><img alt="Ubuntu" src="Images/Logo/ubuntu.png"> </i>
+        </li>
+        <li>
+            <i> <img alt="PopOs" src="Images/Logo/pop-os-icon.png"> </i>
+        </li>
+        <li>
+            <i> <img alt="NoScript" src="Images/Logo/No_Script_Logo.png"> </i>
+        </li>
+        <li>
+            <i><img alt="VirtualBox" src="Images/Logo/Virtualbox_logo.png"> </i>
+        </li>
+    </ul>
 </div>
 
 <div class="container">
