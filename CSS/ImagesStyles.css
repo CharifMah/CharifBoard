@@ -2,7 +2,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 2vw;
 }
 
 .social-bar a {
@@ -23,9 +23,8 @@
 }
 
 .social-icon {
-    position: absolute;
-    justify-content: center;
-    transform: translate(-50%, 60%);
+    position: relative;
+    margin-top: 12px;
     width: 20px;
     height: 20px;
 }
