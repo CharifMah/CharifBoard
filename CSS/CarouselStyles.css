@@ -1,47 +1,94 @@
-
-@keyframes display {
-    0% {
-        transform: translateX(200px);
-        opacity: 0;
-    }
-    10% {
-        transform: translateX(0);
-        opacity: 1;
-    }
-    20% {
-        transform: translateX(0);
-        opacity: 1;
-    }
-    30% {
-        transform: translateX(-200px);
-        opacity: 0;
-    }
-    100% {
-        transform: translateX(-200px);
-        opacity: 0;
-    }
+* {
+    box-sizing: border-box;
 }
 
-.pic-ctn {
+.slider {
+    width: 80vw;
+    margin-top: 30vh;
+    margin-bottom: 50px;
+    text-align: center;
+    overflow: hidden;
+}
+
+
+.slides > div {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    width: 80vw;
+    height: 35vw;
+    margin-right: 50px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.53);
+    transform-origin: center center;
+    transform: scale(1);
+    transition: transform 0.5s;
     position: relative;
-    margin-top: 15vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 100px;
 }
 
-.pic-ctn > img {
-    max-height: 30vw;
+.slides {
+    display: flex;
+    overflow-x: overlay;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+}
+
+.slides div img {
+    object-fit: scale-down;
     position: absolute;
     top: 0;
-    left: 50%;
-    opacity: 0;
-    animation: display 60s infinite;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
-img:nth-child(2) {
-    animation-delay: 20s;
+.slides div video {
+    object-fit: scale-down;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
-img:nth-child(3) {
-    animation-delay: 40s;
+
+
+
+.slider > a {
+    display: inline-flex;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: white;
+    text-decoration: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin: 0 0.25rem 0.5rem 0;
+    position: relative;
 }
-img:nth-child(4) {
-    animation-delay: 60s;
+
+.slider > a:active {
+    top: 1px;
 }
+
+.slider > a:focus {
+    background: #000;
+}
+
+.slides::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.slides::-webkit-scrollbar-thumb {
+    background: white;
+    border-radius: 10px;
+}
+
+.slides::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+}
+
