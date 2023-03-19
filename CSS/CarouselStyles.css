@@ -4,9 +4,12 @@
 
 .slider {
     width: 80vw;
+    margin-top: 30vh;
+    margin-bottom: 50px;
     text-align: center;
     overflow: hidden;
 }
+
 
 .slides > div {
     scroll-snap-align: start;
