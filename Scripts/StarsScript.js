@@ -109,7 +109,6 @@ function resize() {
     canvas.height = height;
 
     stars.forEach(placeStar);
-
 }
 
 function step() {

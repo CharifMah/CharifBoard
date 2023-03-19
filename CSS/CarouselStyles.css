@@ -3,19 +3,37 @@
 }
 
 .slider {
-    width: 70vw;
+    width: 80vw;
     text-align: center;
     overflow: hidden;
+}
+
+.animated-slider::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px;
+    animation: scroll 2s ease infinite;
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(-20px);
+    }
+    50% {
+        transform: translateX(20px);
+    }
+    100% {
+        transform: translateX(-20px);
+    }
 }
 
 .slides > div {
     scroll-snap-align: start;
     flex-shrink: 0;
-    width: 70vw;
-    height: 40vw;
+    width: 80vw;
+    height: 45vw;
     margin-right: 50px;
     border-radius: 10px;
-    background: #eee;
+    background: rgba(255, 255, 255, 0.53);
     transform-origin: center center;
     transform: scale(1);
     transition: transform 0.5s;
@@ -35,7 +53,7 @@
 }
 
 .slides div img {
-    object-fit: cover;
+    object-fit: scale-down;
     position: absolute;
     top: 0;
     left: 0;

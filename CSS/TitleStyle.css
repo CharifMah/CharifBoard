@@ -23,9 +23,8 @@ h2 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-evenly;
 }
-
 
 .roller {
     height: 4.125rem;
@@ -81,8 +80,6 @@ h2 {
 }
 
 #left-text {
-    position: absolute;
-    bottom: 10%;
     font-size: 1.1rem;
     display: flex;
     width: 100%;
@@ -93,13 +90,12 @@ h2 {
 
 @keyframes slide-in {
     0% {
-        left: -100%;
+        transform: translateX(-100%);
     }
     100% {
-        left: 0;
+        transform: translateX(0);
     }
 }
-
 
 @media screen and (max-width: 600px) {
     h1 {
