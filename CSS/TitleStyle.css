@@ -3,10 +3,24 @@ p{
     width: 50%;
     z-index: 1;
 }
+h1 {
+    text-align: center;
+    text-transform: uppercase;
+    color: #F1FAEE;
+    font-size: 4rem;
+}
+.main {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 
 .roller {
     height: 4.125rem;
-    line-height: 4rem;
+    line-height: 5rem;
     position: relative;
     overflow: hidden;
     width: 100%;
@@ -23,13 +37,12 @@ p{
     letter-spacing: 1rem;
     margin-top: 0;
     color: #A8DADC;
-
 }
 
 .roller #rolltext {
     position: absolute;
     top: 0;
-    animation: slide 9s infinite;
+    animation: slide 13s infinite;
 }
 
 @keyframes slide {
@@ -38,25 +51,46 @@ p{
     }
 
     15% {
-        top: -4rem;
+        top: -5.125rem;
     }
 
     30% {
-        top: -8rem;
+        top: -10.125rem;
     }
 
     45% {
-        top: -12.25rem;
+        top: -15.125rem;
     }
 
     60% {
-        top: -18.25rem;
+        top: -22.25rem;
     }
 
     75% {
-        top: -18.25rem;
+        top: -22.25rem;
     }
 }
+
+#left-text {
+    position: absolute;
+    bottom: 10%;
+    font-size: 1.1rem;
+    display: flex;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    animation: slide-in 4s forwards;
+}
+
+@keyframes slide-in {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 0;
+    }
+}
+
 
 @media screen and (max-width: 600px) {
     h1 {

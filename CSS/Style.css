@@ -1,20 +1,9 @@
-h1 {
-  text-align: center;
-  text-transform: uppercase;
-  color: #F1FAEE;
-  font-size: 4rem;
-}
+
 *{
   transition: all 700ms;
 }
 
-.main {
-  height: 100vh;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+
 
 .fillImage{
   display: block;
