@@ -3,13 +3,10 @@
   transition: all 700ms;
 }
 
-
-
 .fillImage{
   display: block;
   max-width: 100%;
   height: auto;
-
 }
 
 body {
