@@ -55,7 +55,7 @@
                 </span>
         </div>
     </h1>
-    <div id="left-text">En tant qu'étudiant passionné d'informatique, j'ai toujours été fasciné par la façon dont la
+    <div class="left-text">En tant qu'étudiant passionné d'informatique, j'ai toujours été fasciné par la façon dont la
         technologie peut résoudre des problèmes complexes et améliorer la vie quotidienne. Je suis motivé, curieux et
         prêt à relever de nouveaux défis.
     </div>
@@ -68,10 +68,31 @@
     <img alt="CV" class="CVIcon" id="cv" src="Images/CV.jpg"/>
 </div>
 
-<div class="window" hidden="true" id="Project1">
-    <button onclick="closeWindow('Project1')">Fermer ❌</button>
-    <div class="grid-container">
+<div class="window" hidden="true" id="Podium">
+    <button onclick="closeWindow('Podium')">Fermer ❌</button>
+    <div class="container left-text">
+        <h3>Ledger</h3>
+          <span>
+            Ledger est une entreprise de technologie française qui se spécialise dans la sécurité des actifs numériques tels que les cryptomonnaies.
+            Cette entreprise a connu une croissance exponentielle ces dernières années grâce à la popularité croissante des cryptomonnaies.
+            Avec la montée en puissance de la technologie de la blockchain et la demande croissante de solutions de sécurité pour les transactions numériques, Ledger est bien positionné pour réussir dans ce secteur.
+            En outre, Ledger est réputée pour sa fiabilité et son engagement envers la sécurité, ce qui a contribué à renforcer sa réputation auprès des clients.
+          </span>
+        <h3>Bertin Technologies</h3>
+        <span>
+            Bertin Technologies est une entreprise française de haute technologie qui se concentre sur le développement de solutions innovantes dans les domaines de la défense, de la sécurité et de l'environnement.
+            L'entreprise est connue pour son expertise en matière d'analyse de données et de traitement du signal, ainsi que pour ses capacités en matière de conception de systèmes de surveillance et de détection avancés.
+            Bertin Technologies est bien positionné pour répondre aux besoins croissants de sécurité et de surveillance dans ces domaines, en particulier dans le contexte de la sécurité nationale et de la lutte contre le terrorisme.
+          </span>
+        <h3>Ziwit</h3>
+        <span>
+            Ziwit est une entreprise française qui se spécialise dans la cybersécurité et la protection des données.
+            Elle offre une gamme de solutions de sécurité informatique pour les entreprises de toutes tailles, allant de la surveillance des réseaux à la protection des données et des systèmes contre les attaques de logiciels malveillants.
+            Avec la croissance continue de la numérisation et de la dématérialisation des entreprises, la cybersécurité est devenue un enjeu crucial pour les entreprises de tous les secteurs.
+            Ziwit est bien placée pour répondre à cette demande croissante, en offrant des solutions de pointe pour protéger les entreprises contre les menaces de sécurité informatique.
+          </span>
     </div>
+
 </div>
 
 <div class="window" hidden="true" id="Comp">
@@ -136,7 +157,7 @@
             </div>
             <div class="colour-bottom"></div>
         </div>
-        <div class="card">
+        <div class="card" onclick="openWindow('Podium')">
             <div class="podium">
                 <div class="podium__item">
                     <p class="podium_name">Bertin Technologies</p>
@@ -179,7 +200,6 @@
                 <h2>Projet Sin</h2>
             </div>
         </div>
-
 </div>
 
 <script src="Scripts/SlideGenerator.js" type="text/javascript"></script>
