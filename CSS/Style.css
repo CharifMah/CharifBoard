@@ -156,14 +156,17 @@ ul li i:hover
   display: flex;
 }
 
-.project1 {
-  background-image: url("../Images/Logo/Jurrasic.ico");
-}
-
 .Tools {
   background-image: url("../Images/ListLogo.JPG");
-  width: 50%;
+  background-size: cover;
+  width: 45%;
 }
+
+.Okonda {
+  background-image: url("../Images/Logo/LogoOkonda.png");
+  background-size: cover;
+}
+
 .space-between
 {
   display: flex;
