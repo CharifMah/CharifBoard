@@ -43,8 +43,8 @@ canvas {
 
 .window button {
   display: block;
-  margin: 2vw auto;
-  margin-bottom: 7vw;
+  margin: 0 auto;
+  margin-bottom: 10px;
 }
 
 .window.show {
