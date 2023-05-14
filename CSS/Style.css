@@ -143,9 +143,16 @@ ul li i:hover
   background-repeat: no-repeat;
   background-size: cover;
 }
-
+iframe{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  margin: 0 auto;
+  height: 90%;
+}
 .CVIcon {
-  background-image: url("../Images/CV.jpg");
+    background-image: url("../Images/CV.jpg");
 }
 
 #cv{
