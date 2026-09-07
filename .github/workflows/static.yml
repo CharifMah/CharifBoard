@@ -42,6 +42,9 @@ jobs:
         working-directory: app
         run: npm run build
 
+      - name: SPA fallback (404.html = index.html)
+        run: cp app/dist/charifboard-app/browser/index.html app/dist/charifboard-app/browser/404.html
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
