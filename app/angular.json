@@ -38,7 +38,8 @@
               "includePaths": [
                 "node_modules/@sellmatch/ui/src/shared/styles"
               ]
-            }
+            },
+            "baseHref": "/CharifBoard/"
           },
           "configurations": {
             "production": {
@@ -54,12 +55,14 @@
                   "maximumError": "100kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "baseHref": "/CharifBoard/"
             },
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "baseHref": "/CharifBoard/"
             }
           },
           "defaultConfiguration": "production"
