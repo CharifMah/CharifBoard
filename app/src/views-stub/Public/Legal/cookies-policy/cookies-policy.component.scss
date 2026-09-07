@@ -1,0 +1,170 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.cookies-legales {
+  min-height: 100vh;
+  background: $background-gradient;
+  padding: 4rem 2rem;
+
+  .cookies-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  //#region En-tête
+  // - cm - En-tête de la page
+  .cookies-header {
+    text-align: center;
+    margin-bottom: 3rem;
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: $primary-dark;
+      margin-bottom: 1rem;
+      letter-spacing: 2px;
+    }
+
+    .header-divider {
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(135deg, $primary-color, $accent-color);
+      margin: 0 auto;
+      border-radius: $border-radius-xl;
+    }
+  }
+  //#endregion
+  //#region Cartes
+  // - cm - Cartes de contenu
+  .cookies-card {
+    background: $card-background;
+    backdrop-filter: blur(10px);
+    border: 1px solid $border-color;
+    border-radius: $border-radius-lg;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: $shadow-light;
+    transition: box-shadow $transition-normal, transform $transition-normal;
+
+    &:hover {
+      box-shadow: $shadow-medium;
+      transform: translateY(-2px);
+    }
+
+    &.accent-card {
+      border-left: 5px solid $accent-color;
+    }
+  }
+  //#endregion
+  //#region Titres & contenu
+  // - cm - Titres et contenu
+  .section-title {
+    display: flex;
+    align-items: center;
+    font-size: 1.4rem;
+    color: $primary-color;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid $border-color;
+
+    .title-icon {
+      margin-right: 0.75rem;
+      font-size: 1.2rem;
+    }
+  }
+
+  .section-content {
+    color: $text-primary;
+    font-size: 0.95rem;
+    line-height: 1.7;
+
+    p {
+      margin-bottom: 1rem;
+    }
+  }
+  //#endregion
+  //#region Types de cookies
+  // - cm - Types de cookies (cartes imbriquées)
+  .cookie-type-item {
+    background-color: $card-background;
+    border-radius: $border-radius-sm;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid $text-secondary;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: $transition-fast;
+
+    &:hover {
+      transform: translateX(5px);
+    }
+
+    &.essential {
+      border-left-color: $primary-color;
+
+      h4 {
+        color: $primary-color;
+      }
+    }
+
+    &.analytical {
+      border-left-color: $info-color;
+
+      h4 {
+        color: $info-color;
+      }
+    }
+
+    &.advertising {
+      border-left-color: $accent-color;
+
+      h4 {
+        color: $accent-color;
+      }
+    }
+
+    h4 {
+      margin: 0 0 0.5rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: $text-secondary;
+    }
+  }
+  //#endregion
+  //#region Footer
+  // - cm - Pied de page
+  .cookies-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid $border-color;
+
+    p {
+      font-size: 0.9rem;
+      color: $text-secondary;
+      font-style: italic;
+    }
+  }
+  //#endregion
+}
+
+//#region Responsive
+// - cm - Adaptations responsive
+@include mobile {
+  .cookies-legales {
+    padding: 2rem 1rem;
+
+    .cookies-header h1 {
+      font-size: 1.8rem;
+    }
+
+    .cookies-card {
+      padding: 1.5rem;
+    }
+  }
+}
+//#endregion

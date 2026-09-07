@@ -1,0 +1,211 @@
+<app-popup [(isOpen)]="isOpen"
+  (isOpenChange)="onPopupChange($event)"
+  [title]="candidatNom"
+  [subtitle]="candidatCompany"
+  [size]="'large'"
+  [showConfirmButton]="false"
+  [showCancelButton]="false"
+  [showFooter]="true">
+
+  @if (candidat) {
+    <div class="candidat-profil">
+      <div class="profil-content">
+        <!-- Coordonnées -->
+        <div class="profil-section">
+          <h3>
+            <span class="material-icons">contact_mail</span>
+            Coordonnées
+          </h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Email</span>
+              <span class="info-value">{{ candidat.professional?.email }}</span>
+            </div>
+            @if (candidat.professional?.phone) {
+              <div class="info-item">
+                <span class="info-label">Téléphone</span>
+                <span class="info-value">{{ candidat.professional?.phone }}</span>
+              </div>
+            }
+            @if (candidat.professional?.address) {
+              <div class="info-item full-width">
+                <span class="info-label">Adresse</span>
+                <span class="info-value">
+                  {{ candidat.professional?.address }}
+                  @if (candidat.professional?.address?.city || candidat.professional?.address?.postcode) {
+                    <span>
+                      , {{ candidat.professional?.address?.postcode }} {{ candidat.professional?.address?.city }}
+                    </span>
+                  }
+                  @if (candidat.professional?.address?.country) {
+                    <span>
+                      , {{ candidat.professional?.address?.country }}
+                    </span>
+                  }
+                </span>
+              </div>
+            }
+            @if (candidat.professional?.siret) {
+              <div class="info-item">
+                <span class="info-label">SIRET</span>
+                <span class="info-value">{{ candidat.professional?.siret }}</span>
+              </div>
+            }
+            @if (candidat.professional?.profilUrl) {
+              <a target="_blank" [routerLink]="this.RouteUtils.GetRoute(this.Routes.PROFILPRO,{ profilUrl: candidat.professional?.profilUrl ?? '' })" class="info-item">
+                <label>Profil</label>
+                <span class="url">{{ candidat.professional?.profilUrl}}</span>
+              </a>
+            }
+          </div>
+        </div>
+        <!-- Widget Immodvisor -->
+        @if (hasImmodvisor) {
+          <div class="profil-section">
+            <h3>
+              <span class="material-icons">star</span>
+              Avis clients
+            </h3>
+            <div class="immodvisor-widget-container">
+              <div class="imdw-widget"
+                data-type="horizontal"
+                [attr.data-cid]="candidat.professional?.immodvisorCid"
+                [attr.data-hash]="candidat.professional?.immodvisorApiKey"
+                data-ctype="company"
+                data-title="false"
+                data-max="5">
+              </div>
+            </div>
+          </div>
+        }
+        <!-- Informations professionnelles -->
+        @if (candidat.professional?.bio) {
+          <div class="profil-section">
+            <h3>
+              <span class="material-icons">person</span>
+              Informations professionnelles
+            </h3>
+            <div class="bio-content">
+              {{ candidat.professional?.bio }}
+            </div>
+          </div>
+        }
+        <!-- Services proposés -->
+        @if (hasServices) {
+          <div class="profil-section">
+            <h3>
+              <span class="material-icons">build</span>
+              Services proposés
+              <span class="services-count">{{ servicesCount }}</span>
+            </h3>
+            <div class="services-by-category">
+              @for (group of servicesByCategory; track group) {
+                <div class="category-group">
+                  <div class="category-header">
+                    <span class="category-label">{{ group.categoryLabel }}</span>
+                    <span class="category-count">{{ group.services.length }}</span>
+                  </div>
+                  <div class="category-services">
+                    @for (service of group.services; track service) {
+                      <span class="service-badge">
+                        {{ service }}
+                      </span>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+        <!-- Informations sur la candidature -->
+        <div class="profil-section">
+          <h3>
+            <span class="material-icons">description</span>
+            Informations sur la candidature
+          </h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Date de candidature</span>
+              <span class="info-value">{{ candidat.createdAt | date:'dd/MM/yyyy' }}</span>
+            </div>
+            @if (candidat.estimatedTimeline) {
+              <div class="info-item">
+                <span class="info-label">Délai estimé</span>
+                <span class="info-value">{{ candidat.estimatedTimeline }}</span>
+              </div>
+            }
+            @if (candidat.feeType) {
+              <div class="info-item">
+                <span class="info-label">Honoraires</span>
+                <span class="info-value highlight">
+                  @if (candidat.feePercentage) {
+                    <span>{{ candidat.feePercentage }}%</span>
+                  }
+                  @if (candidat.feeFixedAmount) {
+                    <span>{{ candidat.feeFixedAmount }} €</span>
+                  }
+                  <span class="fee-type">({{ candidat.feeType }})</span>
+                </span>
+              </div>
+            }
+            @if (candidat.selectedAt) {
+              <div class="info-item">
+                <span class="info-label">Date de sélection</span>
+                <span class="info-value success">{{ candidat.selectedAt | date:'dd/MM/yyyy' }}</span>
+              </div>
+            }
+            @if (candidat.rejectedAt) {
+              <div class="info-item">
+                <span class="info-label">Date de refus</span>
+                <span class="info-value danger">{{ candidat.rejectedAt | date:'dd/MM/yyyy' }}</span>
+              </div>
+            }
+          </div>
+          <!-- Message -->
+          @if (candidat.message) {
+            <div class="text-block">
+              <span class="text-label">Message</span>
+              <div class="text-content">{{ candidat.message }}</div>
+            </div>
+          }
+          <!-- Présentation -->
+          @if (candidat.presentation) {
+            <div class="text-block">
+              <span class="text-label">Présentation</span>
+              <div class="text-content">{{ candidat.presentation }}</div>
+            </div>
+          }
+          <!-- Méthodologie -->
+          @if (candidat.methodology) {
+            <div class="text-block">
+              <span class="text-label">Méthodologie</span>
+              <div class="text-content">{{ candidat.methodology }}</div>
+            </div>
+          }
+          <!-- Motif du refus -->
+          @if (candidat.rejectionReason) {
+            <div class="text-block rejection">
+              <span class="text-label">Motif du refus</span>
+              <div class="text-content">{{ candidat.rejectionReason }}</div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <div popup-footer-left>
+    @if (candidat) {
+      <div class="candidat-actions">
+        @if ((candidat.shortlistedAt || !candidat.rejectedAt) && !candidat.selectedAt) {
+          <app-button
+            class="btn btn-selection" variant="success" size="md"
+            icon="check_circle" iconPosition="left" animTrigger="none"
+            (ButtonClick)="onSelectionner()">
+            Sélectionner
+          </app-button>
+        }
+      </div>
+    }
+  </div>
+</app-popup>

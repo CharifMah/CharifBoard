@@ -1,0 +1,167 @@
+<!-- - cm - Tabs -->
+<app-playground-section
+  id="tabs"
+  title="app-tabs"
+  category="Navigation"
+  description="Onglets avec icônes, badges, trois variantes visuelles (default, pills, underline), trois tailles (sm, md, lg), trois positions d'icône (left, right, top), support du mode désactivé, du mode pleine largeur, et comportement responsive (wrap desktop, colonne mobile)."
+  [code]="TabsCode">
+
+  <!-- - cm - Vitrine navbar : vraie <app-navbar> reimportee telle quelle, dans un cadre
+       redimensionne selon le viewport selectionne. La navbar est incluse SANS AUCUN
+       override de style : on reproduit fidelement son comportement natif (menu
+       hamburger en position: fixed, backdrop, fermeture au clic sur un lien, etc.). -->
+  <div class="tabs-demo tabs-demo--navbar">
+    <h3 class="tabs-demo__title">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Vraie <code>app-navbar</code> intégree
+    </h3>
+    <p class="tabs-demo__desc">
+      La navbar est instanciée directement dans la section, sans aucun override de style. Switcher
+      de viewport pour simuler desktop/tablette/mobile. Sur les viewports etroits, la navbar
+      bascule en menu hamburger (backdrop noir + panneau lateral) avec exactement le meme
+      comportement que dans l'app. Le bouton thème et la sélection de langue sont pleinement
+      fonctionnels.
+    </p>
+
+    <!-- - cm - Switcher de viewport : desktop / tablette / mobile. -->
+    <div class="navbar-viewport-switcher" role="group" aria-label="Taille du cadre responsive">
+      @for (preset of ViewportPresets; track preset.id) {
+        <button
+          type="button"
+          class="navbar-viewport-switcher__btn"
+          [class.navbar-viewport-switcher__btn--active]="SelectedViewport() === preset.id"
+          (click)="SetViewport(preset.id)"
+          [attr.aria-pressed]="SelectedViewport() === preset.id">
+          <span class="material-icons" aria-hidden="true">{{ preset.icon }}</span>
+          <span>{{ preset.label }}</span>
+          <span class="navbar-viewport-switcher__size">{{ preset.width }}×{{ preset.height }}</span>
+        </button>
+      }
+    </div>
+
+    <!-- - cm - Controles : forcer hamburger (override media query pour montrer
+         le bouton hamburger meme en desktop) + ouvrir/fermer le menu manuellement. -->
+    <div class="navbar-controls" role="group" aria-label="Contrôles du cadre navbar">
+      <button
+        type="button"
+        class="navbar-controls__btn"
+        [class.navbar-controls__btn--active]="ForceHamburger()"
+        (click)="ToggleForceHamburger()"
+        [attr.aria-pressed]="ForceHamburger()">
+        <span class="material-icons" aria-hidden="true">{{ ForceHamburger() ? 'visibility_off' : 'visibility' }}</span>
+        <span>{{ ForceHamburger() ? 'Hamburger forcé ON' : 'Forcer le hamburger' }}</span>
+      </button>
+      <button
+        type="button"
+        class="navbar-controls__btn"
+        [class.navbar-controls__btn--active]="MenuOpen()"
+        (click)="ToggleMenu()"
+        [attr.aria-pressed]="MenuOpen()">
+        <span class="material-icons" aria-hidden="true">{{ MenuOpen() ? 'menu_open' : 'menu' }}</span>
+        <span>{{ MenuOpen() ? 'Fermer le menu' : 'Ouvrir le menu' }}</span>
+      </button>
+    </div>
+
+    <!-- - cm - Conteneur scrollable horizontalement : si le cadre simule un
+         viewport plus large que le playground (ex: 1100px dans une fenetre 780px),
+         on scrolle dans ce wrapper sans impacter le body de la page. -->
+    <div class="navbar-viewport-frame-scroller">
+      <!-- - cm - Cadre responsive : on laisse la navbar vivre normalement (meme
+           position: sticky, meme position: fixed pour le menu mobile). On
+           dimensionne juste le cadre a la taille du viewport simule.
+           data-show-menu permet au SCSS de confiner le menu ouvert dans le cadre.
+           data-force-hamburger permet de forcer l'affichage du hamburger. -->
+      <div class="navbar-viewport-frame"
+           #ViewportFrame
+           [style.width.px]="CurrentViewport().width"
+           [style.height.px]="CurrentViewport().height"
+           [attr.data-show-menu]="MenuOpen() ? 'true' : null"
+           [attr.data-force-hamburger]="ForceHamburger() ? 'true' : null">
+        <div class="navbar-viewport-frame__inner">
+          <app-navbar #DemoNavbar class="navbar-playground-host" data-navbar-playground></app-navbar>
+          <div class="navbar-viewport-frame__content">
+            <p class="navbar-viewport-frame__caption">
+              <span class="material-icons" aria-hidden="true">info</span>
+              Cadre simule {{ CurrentViewport().width }}×{{ CurrentViewport().height }} —
+              la navbar reelle est injectee ici, sans clone ni mock.
+              @if (ForceHamburger()) {
+                <br><strong>Hamburger force</strong> (le bouton hamburger est visible sur ce viewport).
+              }
+              @if (MenuOpen()) {
+                <br><strong>Menu ouvert</strong> — le panneau lateral natif est deploye.
+              }
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- - cm - Variante default (par defaut) -->
+  <div class="tabs-demo">
+    <h3 class="tabs-demo__title">Variante <code>default</code> + pleine largeur</h3>
+    <p class="tabs-demo__desc">Look "carte" avec fond translucide, blur et ombre. Chaque onglet occupe l'espace disponible.</p>
+    <app-tabs [tabs]="TabsList" [activeTab]="ActiveTab()" (tabChange)="OnTabChange($event)" [showIcons]="true" [showBadges]="true" [fullWidth]="true" />
+  </div>
+
+  <!-- - cm - Variante pills -->
+  <div class="tabs-demo">
+    <h3 class="tabs-demo__title">Variante <code>pills</code></h3>
+    <p class="tabs-demo__desc">Boutons en forme de pilule (border-radius 50px), pas de fond de carte. Idéal pour une navigation principale.</p>
+    <app-tabs [tabs]="TabsList" [activeTab]="ActiveTab()" (tabChange)="OnTabChange($event)" [showIcons]="true" [showBadges]="true" [fullWidth]="true" variant="pills" />
+  </div>
+
+  <!-- - cm - Variante underline -->
+  <div class="tabs-demo">
+    <h3 class="tabs-demo__title">Variante <code>underline</code></h3>
+    <p class="tabs-demo__desc">Sélecteur underline 2px, fond transparent. Style minimaliste, courant pour les sous-sections.</p>
+    <app-tabs [tabs]="TabsList" [activeTab]="ActiveTab()" (tabChange)="OnTabChange($event)" [showIcons]="true" [showBadges]="true" [fullWidth]="true" variant="underline" />
+  </div>
+
+  <!-- - cm - Sans pleine largeur (auto-fit) -->
+  <div class="tabs-demo">
+    <h3 class="tabs-demo__title">Mode <code>fullWidth=false</code> (auto-fit)</h3>
+    <p class="tabs-demo__desc">Les boutons prennent la place de leur contenu. Utile pour des barres d'onglets courtes.</p>
+    <app-tabs [tabs]="TabsCompact" [activeTab]="ActiveTab()" (tabChange)="OnTabChange($event)" [showIcons]="true" [showBadges]="true" [fullWidth]="false" />
+  </div>
+
+  <!-- - cm - Tailles -->
+  <div class="tabs-demo">
+    <h3 class="tabs-demo__title">Tailles <code>sm</code> / <code>md</code> / <code>lg</code></h3>
+    <p class="tabs-demo__desc">Trois tailles disponibles, la taille <code>md</code> est la valeur par défaut.</p>
+    <app-tabs [tabs]="TabsWithoutIcons" [activeTab]="ActiveTab()" (tabChange)="OnTabChange($event)" [showIcons]="false" [showBadges]="true" [fullWidth]="true" size="sm" />
+    <app-tabs [tabs]="TabsWithoutIcons" [activeTab]="ActiveTab()" (tabChange)="OnTabChange($event)" [showIcons]="false" [showBadges]="true" [fullWidth]="true" size="md" />
+    <app-tabs [tabs]="TabsWithoutIcons" [activeTab]="ActiveTab()" (tabChange)="OnTabChange($event)" [showIcons]="false" [showBadges]="true" [fullWidth]="true" size="lg" />
+  </div>
+
+  <!-- - cm - Positions d'icone -->
+  <div class="tabs-demo">
+    <h3 class="tabs-demo__title">Position de l'icône <code>left</code> / <code>right</code> / <code>top</code></h3>
+    <p class="tabs-demo__desc">L'icône peut être placée à gauche (défaut), à droite ou au-dessus du label.</p>
+    <app-tabs [tabs]="TabsList" [activeTab]="ActiveTab()" (tabChange)="OnTabChange($event)" [showIcons]="true" [showBadges]="true" [fullWidth]="true" iconPosition="left" />
+    <app-tabs [tabs]="TabsList" [activeTab]="ActiveTab()" (tabChange)="OnTabChange($event)" [showIcons]="true" [showBadges]="true" [fullWidth]="true" iconPosition="right" />
+    <app-tabs [tabs]="TabsList" [activeTab]="ActiveTab()" (tabChange)="OnTabChange($event)" [showIcons]="true" [showBadges]="true" [fullWidth]="true" iconPosition="top" />
+  </div>
+
+  <!-- - cm - Avec onglet desactive -->
+  <div class="tabs-demo">
+    <h3 class="tabs-demo__title">État <code>disabled</code></h3>
+    <p class="tabs-demo__desc">Un onglet peut être désactivé (non cliquable) via la propriété <code>disabled: true</code>.</p>
+    <app-tabs [tabs]="TabsWithDisabled" [activeTab]="ActiveTab()" (tabChange)="OnTabChange($event)" [showIcons]="true" [showBadges]="false" [fullWidth]="true" variant="pills" />
+  </div>
+
+  <!-- - cm - Sans icones -->
+  <div class="tabs-demo">
+    <h3 class="tabs-demo__title">Sans icônes</h3>
+    <p class="tabs-demo__desc">Mode texte uniquement, <code>showIcons=false</code>. Les labels sont affichés seuls.</p>
+    <app-tabs [tabs]="TabsWithoutIcons" [activeTab]="ActiveTab()" (tabChange)="OnTabChange($event)" [showIcons]="false" [showBadges]="true" [fullWidth]="true" />
+  </div>
+
+  <!-- - cm - Badges colores -->
+  <div class="tabs-demo">
+    <h3 class="tabs-demo__title">Badges colorés</h3>
+    <p class="tabs-demo__desc">Les badges changent automatiquement de couleur selon l'identifiant de l'onglet (<code>urgent</code>, <code>new</code>, <code>hot</code>, <code>premium</code>, <code>selected</code>, ou <code>info</code> par défaut).</p>
+    <app-tabs [tabs]="BadgeColors" [activeTab]="ActiveTab()" (tabChange)="OnTabChange($event)" [showIcons]="true" [showBadges]="true" [fullWidth]="true" variant="pills" />
+  </div>
+
+</app-playground-section>

@@ -1,0 +1,175 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region Mentions Legales
+.mentions-legales {
+  min-height: 100vh;
+  background: $background-gradient;
+  padding: 4rem 2rem;
+
+  .mentions-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .mentions-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid $border-color;
+
+    p {
+      font-size: 0.9rem;
+      color: $text-secondary;
+      font-style: italic;
+    }
+  }
+
+  // - cm - En-tête
+  .mentions-header {
+    text-align: center;
+    margin-bottom: 3rem;
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: $primary-dark;
+      margin-bottom: 1rem;
+      letter-spacing: 2px;
+    }
+
+    .header-divider {
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(135deg, $primary-color, $accent-color);
+      margin: 0 auto 1.5rem auto;
+      border-radius: $border-radius-xl;
+    }
+
+    .header-intro {
+      font-size: 1rem;
+      color: $text-secondary;
+      line-height: 1.6;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+  }
+  // - cm - Cartes de section
+  .mentions-card {
+    background: $card-background;
+    backdrop-filter: blur(10px);
+    border: 1px solid $border-color;
+    border-radius: $border-radius-lg;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: $shadow-light;
+    transition: box-shadow $transition-normal, transform $transition-normal;
+
+    &:hover {
+      box-shadow: $shadow-medium;
+      transform: translateY(-2px);
+    }
+    // - cm - Carte spéciale pour la responsabilité (plus marquante)
+    &.accent-card {
+      border-left: 5px solid $accent-color;
+    }
+  }
+  // - cm - Titres de section
+  .section-title {
+    display: flex;
+    align-items: center;
+    font-size: 1.4rem;
+    color: $primary-color;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid $border-color;
+
+    .title-icon {
+      margin-right: 0.75rem;
+      font-size: 1.2rem;
+    }
+  }
+  // - cm - Contenu
+  .section-content {
+    color: $text-primary;
+    font-size: 0.95rem;
+    line-height: 1.7;
+
+    p {
+      margin-bottom: 1rem;
+    }
+
+    a {
+      color: $primary-color;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color $transition-fast;
+
+      &:hover {
+        color: $accent-color;
+      }
+    }
+
+    strong {
+      color: $text-primary;
+    }
+
+    .highlight-text {
+      background-color: $pink-50;
+      border-left: 3px solid $accent-color;
+      padding: 1rem;
+      border-radius: $border-radius-sm;
+      color: $purple-800;
+      font-weight: 500;
+    }
+  }
+  // - cm - Listes
+  .info-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 1rem;
+    background: $surface-muted;
+    padding: 1rem 1rem 1rem 2rem;
+    border-radius: $border-radius-sm;
+
+    li {
+      position: relative;
+      padding-left: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: $text-secondary;
+
+      &::before {
+        content: '•';
+        color: $primary-color;
+        font-weight: bold;
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+//#endregion
+
+//#region Responsive
+// - cm - Responsive
+@include mobile {
+  .mentions-legales {
+    padding: 2rem 1rem;
+
+    .mentions-header h1 {
+      font-size: 1.8rem;
+    }
+
+    .mentions-card {
+      padding: 1.5rem;
+    }
+  }
+}
+//#endregion

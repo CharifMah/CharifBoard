@@ -1,0 +1,43 @@
+<!-- - cm - Popup -->
+<app-playground-section
+  id="popup"
+  title="app-popup"
+  category="Overlay"
+  description="Popup modale redimensionnable, draggable, autoSize, variants (default/error/success/warning/info), header/footer configurables."
+  [code]="PopupCode">
+  <div class="playground__demo-inline">
+    <app-button variant="primary" icon="info" (ButtonClick)="ShowPopup.set(true)">Popup défaut</app-button>
+    <app-button variant="danger" icon="delete" (ButtonClick)="ShowPopupError.set(true)">Popup erreur</app-button>
+    <app-button variant="secondary" icon="open_in_full" (ButtonClick)="ShowPopupLarge.set(true)">Popup large</app-button>
+  </div>
+</app-playground-section>
+
+<app-popup [(isOpen)]="ShowPopup" title="Exemple de popup" subtitle="Démonstration du composant popup"
+  icon="info" type="default" size="medium" [showFooter]="true" confirmText="Valider" cancelText="Annuler"
+  (confirmed)="OnPopupConfirmed()">
+  <p>Ceci est le contenu de la popup. Elle s'adapte automatiquement à son contenu (autoSize par défaut).</p>
+  <p>Vous pouvez la redimensionner via les poignées, et la fermer via la croix, Échap ou le bouton Annuler.</p>
+</app-popup>
+
+<app-popup [(isOpen)]="ShowPopupError" title="Confirmer la suppression" icon="delete"
+  type="error" size="medium" [showFooter]="true" confirmText="Supprimer" cancelText="Annuler"
+  (confirmed)="OnPopupErrorConfirmed()">
+  <p>Cette action est irréversible. Voulez-vous vraiment supprimer cet élément ?</p>
+</app-popup>
+
+<app-popup [(isOpen)]="ShowPopupLarge" title="Popup large redimensionnable" icon="open_in_full"
+  type="info" size="large" [showFooter]="true" confirmText="OK" [showCancelButton]="false"
+  (confirmed)="OnPopupLargeConfirmed()">
+  <p>Popup large avec redimensionnement et déplacement activés par défaut.</p>
+</app-popup>
+
+<!-- - cm - Cookie consent -->
+<app-playground-section
+  id="cookie-consent"
+  title="app-cookie-consent"
+  category="Overlay"
+  description="Bandeau de consentement cookies pour le tracking PostHog. Auto-géré via localStorage (aucun input requis)."
+  [code]="CookieConsentCode">
+  <p>Le bandeau s'affiche automatiquement si aucun consentement n'est enregistré. Effacez le localStorage pour le revoir.</p>
+  <app-cookie-consent />
+</app-playground-section>

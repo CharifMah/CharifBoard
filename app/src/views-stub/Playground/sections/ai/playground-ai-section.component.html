@@ -1,0 +1,283 @@
+<app-playground-section
+  id="ai-crm-agent"
+  title="CRM Agent AI"
+  category="AI"
+  description="Composants IA du CRM : upload de fichier avec 4 themes, preview du chat agent (FAB et embedded), badges des etapes, carte d'approbation avec selection granulaire + grille preview, bloc tour diffs, barre de live progress et 3 modes d'affichage du diff-view."
+  [code]="DiffViewCode"
+  codeLabel="app-diff-view">
+
+  <!-- - cm - 1. Upload : switcher de themes -->
+  <div class="playground-ai__block">
+    <h3 class="playground-ai__subtitle">Upload de fichier : 4 themes</h3>
+    <p class="playground-ai__hint">Comparez les rendus de la zone d'upload selon le theme choisi.</p>
+    <div class="playground-ai__theme-switcher">
+      @for (lTheme of UploadThemes; track lTheme.Value) {
+        <app-button [variant]="SelectedUploadTheme() === lTheme.Value ? 'primary' : 'ghost'" size="sm"
+          (ButtonClick)="SelectTheme(lTheme.Value)">
+          {{ lTheme.Label }}
+        </app-button>
+      }
+    </div>
+    <div class="playground-ai__upload-demo">
+      <app-upload-file label="Joindre un fichier (optionnel)" [theme]="SelectedUploadTheme()"
+        [fileTypes]="UploadFileTypes" selectedType="document" [showPreview]="false" [autoUpload]="false"
+        accept=".pdf,.txt,.docx,.md,.jpg,.jpeg,.png,.webp"
+        (fileSelected)="OnFileSelected($event)" (uploadError)="OnUploadError($event)">
+      </app-upload-file>
+    </div>
+    @if (SelectedFile(); as lFile) {
+      <div class="playground-ai__file-info">
+        <span class="playground-ai__file-name" [title]="lFile.name">{{ lFile.name }}</span>
+        <app-button variant="ghost" icon="close" size="sm" ariaLabel="Retirer" (ButtonClick)="ClearSelectedFile()"></app-button>
+      </div>
+    }
+  </div>
+
+  <!-- - cm - 2. Badges des etapes agent -->
+  <div class="playground-ai__block">
+    <h3 class="playground-ai__subtitle">Badges des etapes agent</h3>
+    <p class="playground-ai__hint">Les 6 badges affiches dans le chat (5 etats d'etape + alerte d'approbation).</p>
+    <div class="playground-ai__badges">
+      <app-badge type="info" label="Reflexion" icon="psychology" variant="soft" size="xs" [showIcon]="true"></app-badge>
+      <app-badge type="default" label="Outil MCP" icon="build" variant="soft" size="xs" [showIcon]="true"></app-badge>
+      <app-badge type="success" label="Resultat" variant="soft" size="xs" [showIcon]="true"></app-badge>
+      <app-badge type="premium" label="Agent" icon="smart_toy" variant="soft" size="xs" [showIcon]="true"></app-badge>
+      <app-badge type="info" [count]="1242" icon="token" variant="soft" size="xs"></app-badge>
+      <app-badge type="warning" [count]="4" label="Approbation requise" icon="gavel" variant="soft" size="xs" [showIcon]="true"></app-badge>
+    </div>
+  </div>
+
+  <!-- - cm - 3. Preview chat : switcher FAB vs embedded (mocks CSS utilisant les memes classes que le composant reel) -->
+  <div class="playground-ai__block">
+    <h3 class="playground-ai__subtitle">Preview du chat agent</h3>
+    <p class="playground-ai__hint">Mock representant fidelement le composant <code>crm-agent-chat</code>. Mode FAB (bulle flottante) ou mode embedded (full-page dans le flux).</p>
+
+    <div class="playground-ai__view-switcher">
+      <app-button [variant]="ChatViewMode() === 'fab' ? 'primary' : 'ghost'" size="sm" icon="smart_button"
+        (ButtonClick)="SelectChatViewMode('fab')">Mode FAB</app-button>
+      <app-button [variant]="ChatViewMode() === 'embedded' ? 'primary' : 'ghost'" size="sm" icon="open_in_full"
+        (ButtonClick)="SelectChatViewMode('embedded')">Mode embedded</app-button>
+    </div>
+
+    <div class="playground-ai__chat-stage" [class.is-embedded]="ChatViewMode() === 'embedded'">
+      @if (ChatViewMode() === 'fab') {
+      <div class="playground-ai__fab-mock" title="Ouvrir l'agent IA CRM">
+        <span class="material-icons">auto_awesome</span>
+      </div>
+      }
+      <div class="playground-ai__chat-mock">
+        <header class="playground-ai__chat-header">
+          <div class="playground-ai__chat-title">
+            <span class="material-icons playground-ai__chat-avatar">auto_awesome</span>
+            <div class="playground-ai__chat-titletext">
+              <strong>Agent IA CRM</strong>
+              <small class="playground-ai__chat-status is-online">En ligne</small>
+            </div>
+          </div>
+          <div class="playground-ai__chat-actions">
+            <app-button variant="ghost" icon="add_comment" [circle]="true" size="sm" ariaLabel="Nouvelle conversation"></app-button>
+            <app-button variant="ghost" icon="history" [circle]="true" size="sm" ariaLabel="Historique"></app-button>
+            <app-button variant="ghost" icon="fullscreen" [circle]="true" size="sm" ariaLabel="Plein ecran"></app-button>
+            <app-button variant="ghost" icon="close" [circle]="true" size="sm" ariaLabel="Fermer"></app-button>
+          </div>
+        </header>
+
+        <main class="playground-ai__chat-body">
+          <p class="playground-ai__chat-empty">
+            Bonjour ! Decrivez ce que vous voulez remplir (contacts, biens, affaires...) et joignez un fichier si besoin.
+          </p>
+          <div class="playground-ai__bubble playground-ai__bubble--user">
+            <p>Ajoute un contact Jean Dupont avec email jd@example.com</p>
+          </div>
+          <div class="playground-ai__step">
+            <app-badge type="info" label="Reflexion" icon="psychology" variant="soft" size="xs" [showIcon]="true"></app-badge>
+            <span class="playground-ai__step-label">iteration 1</span>
+          </div>
+          <div class="playground-ai__step playground-ai__step--call">
+            <app-badge type="default" label="Outil MCP" icon="build" variant="soft" size="xs" [showIcon]="true"></app-badge>
+            <span class="playground-ai__step-label">crm_create_contact</span>
+          </div>
+          <div class="playground-ai__step playground-ai__step--result">
+            <app-badge type="success" label="Resultat" variant="soft" size="xs" [showIcon]="true"></app-badge>
+            <span class="playground-ai__step-label">crm_create_contact</span>
+          </div>
+          <div class="playground-ai__bubble playground-ai__bubble--assistant">
+            <p>Contact Jean Dupont cree avec succes.</p>
+          </div>
+          <div class="playground-ai__usage">
+            <span><strong>3</strong> iterations</span>
+            <span><strong>1</strong> appels MCP</span>
+            <span><strong>1242</strong> tokens</span>
+            <span><strong>2.1s</strong></span>
+          </div>
+        </main>
+
+        <footer class="playground-ai__chat-footer">
+          <div class="playground-ai__chat-model">
+            <span class="material-icons">memory</span>
+            <span>ollama-local / qwen2.5:7b</span>
+          </div>
+          <div class="playground-ai__chat-input-row">
+            <input type="text" class="playground-ai__chat-input" value="Decrivez ce que vous voulez remplir..." readonly>
+            <app-button variant="primary" icon="send" iconPosition="right" [circle]="true"></app-button>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <!-- - cm - 4. Live progress : barre pendant un tour agent -->
+  <div class="playground-ai__block">
+    <h3 class="playground-ai__subtitle">Live progress (pendant un tour)</h3>
+    <p class="playground-ai__hint">Barre affichee entre les messages et l'upload tant que l'agent travaille.</p>
+    <div class="playground-ai__live-progress">
+      <div class="playground-ai__live-progress-header">
+        <span class="playground-ai__live-progress-thinking">
+          <span class="playground-ai__live-progress-pulse"></span>
+          Reflexion en cours...
+        </span>
+        <span class="playground-ai__live-progress-iter">Iteration {{ LiveIteration() + 1 }}</span>
+      </div>
+      <div class="playground-ai__live-progress-stats">
+        <span><strong>{{ LiveSteps() }}</strong> etapes</span>
+        <span><strong>{{ LiveTools().length }}</strong> outils MCP</span>
+        <span><strong>{{ LiveTokens() }}</strong> tokens</span>
+        <span><strong>{{ LiveDuration() }}</strong></span>
+      </div>
+      <div class="playground-ai__live-progress-tools">
+        @for (lTool of LiveTools(); track lTool) { <code>{{ lTool }}</code> }
+      </div>
+    </div>
+  </div>
+
+  <!-- - cm - 5. Carte d'approbation : interactive avec vrais composants -->
+  <div class="playground-ai__block">
+    <h3 class="playground-ai__subtitle">Carte d'approbation : selection granulaire</h3>
+    <p class="playground-ai__hint">
+      Generee par le chat quand l'agent veut executer des outils mutants (Create / Update / Attach / Link).
+      Selectionnez les actions a autoriser, puis "Approuver" ou "Refuser".
+      Le bandeau d'alerte dans le header du chat (badge pulsant) signale qu'une approbation est en attente.
+      Le bouton "Apercu global" affiche toutes les lignes agregees dans une vraie grille triable.
+    </p>
+
+    <div class="playground-ai__approval-stage">
+      <div class="playground-ai__chat-header playground-ai__chat-header--approval">
+        <div class="playground-ai__chat-title">
+          <span class="material-icons playground-ai__chat-avatar">auto_awesome</span>
+          <div class="playground-ai__chat-titletext">
+            <strong>Agent IA CRM</strong>
+            <span class="playground-ai__approval-alert">
+              <app-badge type="warning" [count]="ApprovalActions().length" icon="gavel" variant="soft" size="xs" [showIcon]="true"></app-badge>
+            </span>
+            <small class="playground-ai__chat-status is-online">Approbation en attente</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="crm-agent-approval"
+        [class.crm-agent-approval--decided]="ApprovalDecision() !== null"
+        [class.crm-agent-approval--approved]="ApprovalDecision() === 'approved'"
+        [class.crm-agent-approval--rejected]="ApprovalDecision() === 'rejected'">
+        <div class="crm-agent-approval__header">
+          <app-badge type="warning" label="Approbation requise" icon="gavel" variant="soft" size="xs" [showIcon]="true"></app-badge>
+          <span class="crm-agent-approval__hint">Selectionnez les actions a autoriser ({{ ApprovalActions().length }})</span>
+        </div>
+
+        <ul class="crm-agent-approval__actions">
+          @for (lAction of ApprovalActions(); track lAction.Id) {
+          <li class="crm-agent-approval__action"
+            [class.is-approved]="ApprovalSelected()[lAction.Id]"
+            (click)="ToggleApprovalAction(lAction.Id)">
+            @if (ApprovalDecision() === null) {
+            <span class="crm-agent-approval__check material-icons">
+              {{ ApprovalSelected()[lAction.Id] ? 'check_box' : 'check_box_outline_blank' }}
+            </span>
+            }
+            <div class="crm-agent-approval__action-text">
+              <span class="crm-agent-approval__tool">{{ lAction.DisplayName }}</span>
+              <span class="crm-agent-approval__summary">{{ lAction.Summary }}</span>
+            </div>
+          </li>
+          }
+        </ul>
+
+        @if (ApprovalDecision() === null) {
+        <div class="crm-agent-approval__select-all">
+          <app-button variant="ghost" size="sm" icon="done_all" (ButtonClick)="ApprovalSelectAll()">Tout selectionner</app-button>
+          <app-button variant="ghost" size="sm" icon="remove_done" (ButtonClick)="ApprovalSelectNone()">Tout deselectionner</app-button>
+        </div>
+        <div class="crm-agent-approval__buttons">
+          <app-button variant="success" size="sm" icon="check" (ButtonClick)="ApprovalConfirmApproval()">
+            Approuver ({{ ApprovalSelectedCount() }}/{{ ApprovalActions().length }})
+          </app-button>
+          <app-button variant="danger" size="sm" icon="close" (ButtonClick)="ApprovalReject()">Refuser</app-button>
+        </div>
+        } @else {
+        <div class="crm-agent-approval__status">
+          @if (ApprovalDecision() === 'approved') {
+          <app-badge type="success" label="Approuve" icon="check_circle" variant="soft" size="xs" [showIcon]="true"></app-badge>
+          } @else {
+          <app-badge type="error" label="Refuse" icon="cancel" variant="soft" size="xs" [showIcon]="true"></app-badge>
+          }
+          <app-button variant="ghost" size="sm" icon="refresh" (ButtonClick)="ApprovalReset()">Reinitialiser</app-button>
+        </div>
+        }
+      </div>
+
+      <div class="playground-ai__approval-preview">
+        <strong class="playground-ai__approval-preview-title">Apercu des lignes qui seront creees / modifiees</strong>
+        <app-grid [Data]="ApprovalPreviewRows()" [Columns]="ApprovalPreviewColumns"
+          [Loading]="false" [Editable]="false" StorageKey="playground-ai-approval-preview" />
+      </div>
+    </div>
+  </div>
+
+  <!-- - cm - 6. Tour diffs : bloc "lignes ajoutees" en fin de tour -->
+  <div class="playground-ai__block">
+    <h3 class="playground-ai__subtitle">Tour diffs : "lignes ajoutees" du tour</h3>
+    <p class="playground-ai__hint">Section automatiquement affichee apres un tour ayant effectue des insertions / modifications / suppressions.</p>
+    <div class="crm-agent-tour-diffs">
+      <div class="crm-agent-tour-diffs__header">
+        <app-badge type="success" label="Lignes ajoutees" icon="add_circle" variant="soft" size="xs" [showIcon]="true"></app-badge>
+        <span class="crm-agent-tour-diffs__count">{{ TourDiffs.length }}</span>
+      </div>
+      @for (lDiff of TourDiffs; track $index) {
+      <app-diff-view [Record]="lDiff" Mode="cards"></app-diff-view>
+      }
+    </div>
+  </div>
+
+  <!-- - cm - 7. Diff view : 3 modes d'affichage -->
+  <div class="playground-ai__block">
+    <h3 class="playground-ai__subtitle">Diff view : 3 modes d'affichage</h3>
+    <p class="playground-ai__hint">Mode par defaut dans le chat : cartes simples. Modes : cards, table, inline (style git).</p>
+    <div class="playground-ai__diff-modes">
+      <div class="playground-ai__diff-mode">
+        <strong class="playground-ai__diff-mode-title">Cards</strong>
+        @for (lDiff of DiffRecords; track lDiff.Action + lDiff.Table) {
+        <app-diff-view [Record]="lDiff" Mode="cards"></app-diff-view>
+        }
+      </div>
+      <div class="playground-ai__diff-mode">
+        <strong class="playground-ai__diff-mode-title">Table</strong>
+        @for (lDiff of DiffRecords; track lDiff.Action + lDiff.Table) {
+        <app-diff-view [Record]="lDiff" Mode="table"></app-diff-view>
+        }
+      </div>
+      <div class="playground-ai__diff-mode">
+        <strong class="playground-ai__diff-mode-title">Inline</strong>
+        @for (lDiff of DiffRecords; track lDiff.Action + lDiff.Table) {
+        <app-diff-view [Record]="lDiff" Mode="inline" [MaxHeight]="180"></app-diff-view>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- - cm - 8. Snippets code -->
+  <div class="playground-ai__block playground-ai__block--code">
+    <details class="playground-ai__code-details">
+      <summary>Code : upload avec theme dynamique</summary>
+      <pre class="playground-ai__code"><code>{{ UploadThemeCode }}</code></pre>
+    </details>
+  </div>
+</app-playground-section>

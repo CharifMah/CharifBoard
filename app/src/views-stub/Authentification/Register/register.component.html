@@ -1,0 +1,212 @@
+<div class="register-container">
+  <div class="register-card" [class.pro-mode]="IsProfessionnel">
+    <!-- Header -->
+    <div class="register-header">
+      <div class="logo" [class.pro]="IsProfessionnel">
+        <span class="material-icons">{{ PageIcon }}</span>
+      </div>
+      <h1>{{ PageTitle }}</h1>
+      <p>{{ PageSubtitle }}</p>
+    </div>
+
+    <!-- Onglets -->
+    <app-tabs [tabs]="TabItems"
+              [IsVisible]="TabVisible"
+              [activeTab]="ActiveTab"
+              [showIcons]="true"
+              [showBadges]="false"
+              [size]="'md'"
+              [variant]="'default'"
+              [fullWidth]="true"
+              [iconPosition]="'left'"
+              [DisableUrlPersistence]="true"
+              (tabChange)="ChangerOnglet($event)">
+    </app-tabs>
+
+    <form [formGroup]="RegisterForm" (ngSubmit)="OnSubmit()">
+      @if (SuccessMessage) {
+        <div class="success-message">
+          <span class="material-icons">check_circle</span>
+          <span>{{ SuccessMessage }}</span>
+        </div>
+      }
+
+      <app-message-display [message]="ErrorMessage" icon="error_outline" type="error"></app-message-display>
+
+      <!-- Identité -->
+      <div class="form-row">
+        <div class="form-group">
+          <app-input formControlName="firstName"
+                     [label]="'register.form.firstName.label' | translate"
+                     [placeholder]="'register.form.firstName.placeholder' | translate"
+                     [iconLeft]="'badge'"
+                     [maxLength]="50"
+                     [showCharCount]="false">
+          </app-input>
+        </div>
+        <div class="form-group">
+          <app-input formControlName="lastName"
+                     [label]="'register.form.lastName.label' | translate"
+                     [placeholder]="'register.form.lastName.placeholder' | translate"
+                     [iconLeft]="'badge'"
+                     [maxLength]="50"
+                     [showCharCount]="false">
+          </app-input>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <app-input formControlName="email"
+                     [label]="'register.form.email.label' | translate"
+                     [type]="'email'"
+                     [placeholder]="'register.form.email.placeholder' | translate"
+                     [required]="true"
+                     [iconLeft]="'mail_outline'"
+                     [maxLength]="100"
+                     [errorMessages]="{ required: ('register.form.email.errors.required' | translate), email: ('register.form.email.errors.email' | translate) }">
+          </app-input>
+        </div>
+        <div class="form-group">
+          <app-input formControlName="username"
+                     [label]="'register.form.username.label' | translate"
+                     [placeholder]="'register.form.username.placeholder' | translate"
+                     [required]="true"
+                     [iconLeft]="'alternate_email'"
+                     [minLength]="3"
+                     [maxLength]="30"
+                     [errorMessages]="{ required: ('register.form.username.errors.required' | translate), minlength: ('register.form.username.errors.minLength' | translate) }">
+          </app-input>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <app-input formControlName="phone"
+                   [label]="'register.form.phone.label' | translate"
+                   [type]="'tel'"
+                   [placeholder]="'register.form.phone.placeholder' | translate"
+                   [required]="IsProfessionnel"
+                   [iconLeft]="'phone'"
+                   [maxLength]="14"
+                   [errorMessages]="{ required: ('register.form.phone.errors.required' | translate), pattern: ('register.form.phone.errors.pattern' | translate) }">
+        </app-input>
+      </div>
+
+      <!-- Champs professionnels -->
+      @if (IsProfessionnel) {
+        <div class="form-group pro-field">
+          <app-input formControlName="siret"
+                     [label]="'register.form.siret.label' | translate"
+                     [type]="'text'"
+                     [placeholder]="'register.form.siret.placeholder' | translate"
+                     [required]="true"
+                     [maxLength]="14"
+                     [showCharCount]="false"
+                     [iconLeft]="'pin'"
+                     [errorMessages]="{ required: ('register.form.siret.errors.required' | translate), pattern: ('register.form.siret.errors.pattern' | translate) }">
+          </app-input>
+        </div>
+        <div class="form-group pro-field">
+          <app-input formControlName="agency"
+                     [label]="'register.form.agency.label' | translate"
+                     [placeholder]="'register.form.agency.placeholder' | translate"
+                     [required]="true"
+                     [iconLeft]="'business'"
+                     [maxLength]="100"
+                     [errorMessages]="{ required: ('register.form.agency.errors.required' | translate) }">
+          </app-input>
+        </div>
+        <div class="form-group pro-field">
+          <app-input formControlName="address"
+                     [label]="'register.form.city.label' | translate"
+                     [placeholder]="'register.form.city.placeholder' | translate"
+                     [required]="true"
+                     [isAddressAutocomplete]="true"
+                     [maxLength]="100"
+                     [errorMessages]="{ required: ('register.form.city.errors.required' | translate) }"
+                     (valueChange)="OnCitySelected($event)">
+          </app-input>
+        </div>
+      }
+
+      <!-- Mots de passe -->
+      <div class="form-row">
+        <div class="form-group">
+          <app-input formControlName="password"
+                     [label]="'register.form.password.label' | translate"
+                     [type]="ShowPassword ? 'text' : 'password'"
+                     [placeholder]="'register.placeholders.password' | translate"
+                     [required]="true"
+                     [iconLeft]="'lock_outline'"
+                     [minLength]="8"
+                     [maxLength]="64"
+                     [errorMessages]="{ required: ('register.form.password.errors.required' | translate), minlength: ('register.form.password.errors.minLength' | translate) }">
+          </app-input>
+
+          @if (RegisterForm.get('password')?.value) {
+            <div class="password-strength">
+              <div class="strength-bar">
+                <div class="strength-fill"
+                     [class.weak]="RegisterForm.get('password')?.value?.length < 8"
+                     [class.medium]="RegisterForm.get('password')?.value?.length >= 8 && RegisterForm.get('password')?.value?.length < 12"
+                     [class.strong]="RegisterForm.get('password')?.value?.length >= 12">
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="form-group">
+          <app-input formControlName="confirmPassword"
+                     [label]="'register.form.confirm.label' | translate"
+                     [type]="ShowConfirmPassword ? 'text' : 'password'"
+                     [placeholder]="'register.placeholders.password' | translate"
+                     [required]="true"
+                     [iconLeft]="'lock_outline'"
+                     [maxLength]="64"
+                     [errorMessages]="{ required: ('register.form.confirm.errors.required' | translate), passwordMismatch: ('register.form.confirm.errors.passwordMismatch' | translate) }">
+          </app-input>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <app-button type="submit"
+                  class="btn-submit-wrapper"
+                  [disabled]="!CanSubmit"
+                  [loading]="IsLoading"
+                  [fullWidth]="true"
+                  [variant]="'primary'"
+                  [class.pro]="IsProfessionnel">
+        <span class="btn-content">
+          <span>{{ (IsProfessionnel ? 'register.submit.professionnel' : 'register.submit.vendeur') | translate }}</span>
+          <span class="material-icons">arrow_forward</span>
+        </span>
+      </app-button>
+    </form>
+
+    <div class="register-footer">
+      <p>{{ 'register.footer.alreadyAccount' | translate }} <a [routerLink]="this.RouteUtils.GetRoute(this.Routes.CONNEXION)">{{ 'register.footer.signIn' | translate }}</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- Popup confirmation email -->
+<app-popup [(isOpen)]="ShowEmailPopup"
+           [title]="PopupTitle"
+           [subtitle]="PopupSubtitle"
+           [size]="'medium'"
+           [showConfirmButton]="true"
+           [confirmText]="'register.popup.continue' | translate"
+           [showCancelButton]="false"
+           (confirmed)="OnConfirmPopup()"
+           [showFooter]="true"
+           [type]="'success'"
+           [icon]="'email'">
+  <div class="email-confirmation-content">
+    <p>{{ 'register.popup.bodyText' | translate }}</p>
+    <div class="email-icon">
+      <span class="material-icons">mail</span>
+    </div>
+    <p class="email-note">{{ 'register.popup.spamNote' | translate }}</p>
+  </div>
+</app-popup>

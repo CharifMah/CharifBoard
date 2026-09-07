@@ -1,0 +1,80 @@
+@use 'variables' as *;
+
+//#region Host
+:host {
+  display: block;
+  width: 100%;
+}
+//#endregion
+
+//#region Page layout
+.crm-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+//#endregion
+
+//#region Header
+.crm-page__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.crm-page__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+}
+
+.crm-page__icon {
+  color: $primary-color;
+}
+
+.crm-page__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.crm-page__search {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  min-width: 240px;
+  background: $card-background;
+  color: $text-primary;
+}
+//#endregion
+
+//#region Error
+.crm-page__error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: $border-radius-md;
+  background: $danger-color;
+  color: #fff;
+}
+//#endregion
+
+//#region Footer
+.crm-page__footer {
+  display: flex;
+  justify-content: flex-end;
+  color: $text-secondary;
+  font-size: 0.85rem;
+}
+//#endregion

@@ -1,0 +1,120 @@
+<!-- - cm - Démonstration complète du LanguageSelectorComponent : select + chips, plusieurs variantes, démo de traduction -->
+
+<!-- - cm - Mode select : dropdown avec drapeau SVG + label -->
+<app-playground-section
+  id="language-selector-select"
+  title="app-language-selector (mode select)"
+  category="Base"
+  description="Sélecteur avec dropdown custom. Drapeau SVG de la langue courante visible dans le bouton ET dans chaque option. Idéal header / navbar."
+  [code]="SelectCode">
+  <div class="playground__demo-stack">
+    <div class="playground__demo-inline">
+      <app-language-selector mode="select" label="Langue" />
+    </div>
+    <div class="playground__demo-inline">
+      <app-language-selector mode="select" />
+    </div>
+  </div>
+</app-playground-section>
+
+<!-- - cm - Mode chips : 3 tailles (sm, md, lg) pour comparer -->
+<app-playground-section
+  id="language-selector-chips"
+  title="app-language-selector (mode chips)"
+  category="Base"
+  description="Sélecteur en chips (boutons ronds avec drapeaux). Variante active en primary. Idéal pied de page / page paramètres."
+  [code]="ChipsCode">
+  <div class="playground__demo-stack">
+    <div class="playground__demo-row">
+      <span class="playground__demo-label">SM</span>
+      <app-language-selector mode="chips" size="sm" />
+    </div>
+    <div class="playground__demo-row">
+      <span class="playground__demo-label">MD</span>
+      <app-language-selector mode="chips" size="md" />
+    </div>
+    <div class="playground__demo-row">
+      <span class="playground__demo-label">LG</span>
+      <app-language-selector mode="chips" size="lg" />
+    </div>
+  </div>
+</app-playground-section>
+
+<!-- - cm - Démo traduction : un encart avec du texte qui change selon la langue active -->
+<app-playground-section
+  id="language-selector-translation"
+  title="Démo traduction i18n"
+  category="Base"
+  description="Changez la langue ci-dessus : le titre, la description et le label du bouton sont traduits dynamiquement via TranslationService (hérité de BaseComponent). Persistance localStorage."
+  [code]="TranslationCode">
+  <div class="language-selector-demo__i18n">
+    <h3 class="language-selector-demo__i18n-title">{{ HeroTitle() }}</h3>
+    <p class="language-selector-demo__i18n-highlight">{{ HeroHighlight() }}</p>
+    <p class="language-selector-demo__i18n-current">
+      Langue active : <strong>{{ CurrentLangLabel() }}</strong>
+    </p>
+    <div class="language-selector-demo__i18n-actions">
+      <app-button variant="primary" size="md" (ButtonClick)="OnDemoClick()">
+        {{ HeroCta() }}
+      </app-button>
+    </div>
+  </div>
+</app-playground-section>
+
+<!-- - cm - Intégration : navbar complète (logo + menu + sélecteur) -->
+<app-playground-section
+  id="language-selector-header"
+  title="Intégration : barre de navigation"
+  category="Base"
+  description="Exemple d'intégration : navbar complète avec logo, liens de navigation, recherche, sélecteur de langue et bouton d'action. Le mode select s'intègre dans la barre d'actions à droite."
+  [code]="HeaderCode">
+  <div class="language-selector-demo__navbar">
+    <div class="language-selector-demo__navbar-inner">
+      <!-- Logo + nom -->
+      <div class="language-selector-demo__brand">
+        <div class="language-selector-demo__brand-mark">S</div>
+        <span class="language-selector-demo__brand-name">SellMatch</span>
+      </div>
+
+      <!-- Liens de navigation -->
+      <nav class="language-selector-demo__nav" aria-label="Navigation principale">
+        <a class="language-selector-demo__nav-link is-active" href="javascript:void(0)">
+          {{ NavDashboard() }}
+        </a>
+        <a class="language-selector-demo__nav-link" href="javascript:void(0)">
+          {{ NavListings() }}
+        </a>
+        <a class="language-selector-demo__nav-link" href="javascript:void(0)">
+          {{ NavCandidates() }}
+        </a>
+        <a class="language-selector-demo__nav-link" href="javascript:void(0)">
+          {{ NavMessages() }}
+        </a>
+      </nav>
+
+      <!-- Actions : recherche + langue + CTA -->
+      <div class="language-selector-demo__actions">
+        <button class="language-selector-demo__icon-btn" aria-label="Rechercher" type="button">
+          <span class="material-icons">search</span>
+        </button>
+        <app-language-selector mode="select" />
+        <app-button variant="primary" size="sm" (ButtonClick)="OnDemoClick()">
+          {{ NavSignin() }}
+        </app-button>
+      </div>
+    </div>
+  </div>
+</app-playground-section>
+
+<!-- - cm - Intégration pied de page simulé : chips alignés à droite -->
+<app-playground-section
+  id="language-selector-footer"
+  title="Intégration : pied de page"
+  category="Base"
+  description="Exemple d'intégration : le sélecteur (mode chips) dans un pied de page simulé. Le variant primary suit l'état actif (persisté en localStorage)."
+  [code]="FooterCode">
+  <div class="language-selector-demo__footer">
+    <span class="language-selector-demo__footer-text">© 2026 SellMatch — {{ FooterCopyright() }}</span>
+    <app-language-selector mode="chips" size="sm" />
+  </div>
+</app-playground-section>

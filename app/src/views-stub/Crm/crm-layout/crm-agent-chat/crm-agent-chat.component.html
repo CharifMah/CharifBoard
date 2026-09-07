@@ -1,0 +1,711 @@
+<!-- Bulle flottante (FAB) — masquée en mode embedded -->
+@if (!IsEmbedded()) {
+<!-- - cm - Bulle FAB agent IA enveloppee par app-tooltip : libelle visible au survol sans encombrer l'UI -->
+<app-tooltip [Text]="IsOpen() ? 'Fermer l\u0027agent IA' : 'Ouvrir l\u0027agent IA CRM'" [Position]="'left'" [Variant]="'light'" [MaxWidth]="220">
+<app-button
+  variant="primary"
+  [circle]="true"
+  [icon]="IsOpen() ? 'close' : 'auto_awesome'"
+  ariaLabel="Agent IA CRM"
+  [class.is-open]="IsOpen()"
+  (ButtonClick)="TogglePanel()"
+>
+</app-button>
+</app-tooltip>
+}
+
+<!-- Panneau chat -->
+@if (IsOpen() || IsEmbedded()) {
+<section
+  class="crm-agent-panel"
+  [class.is-fullscreen]="IsFullscreen()"
+  [class.is-embedded]="IsEmbedded()"
+  [style.width.px]="IsFullscreen() || IsEmbedded() ? null : PanelWidth()"
+  [style.height.px]="IsFullscreen() || IsEmbedded() ? null : PanelHeight()"
+  role="dialog"
+  aria-label="Agent IA CRM"
+>
+  <!-- Poignée de redimensionnement (coin supérieur gauche, masquée en plein écran et embedded) -->
+  @if (!IsFullscreen() && !IsEmbedded()) {
+  <div class="crm-agent-panel__resize-handle" (mousedown)="OnResizeStart($event)" title="Glisser pour redimensionner">
+    <span class="material-icons">resize_handle</span>
+  </div>
+  }
+
+  <header class="crm-agent-panel__header" [class.is-pending-approval]="PendingApproval() !== null">
+    <div class="crm-agent-panel__title">
+      <span class="crm-agent-panel__avatar material-icons">auto_awesome</span>
+      <div class="crm-agent-panel__titletext">
+        <strong>Agent IA CRM</strong>
+        @if (PendingApproval() !== null) {
+        <span class="crm-agent-panel__approval-alert">
+          <app-badge type="warning" icon="gavel" variant="soft" size="xs" [showIcon]="true" [count]="PendingActionsCount()"></app-badge>
+        </span>
+        }
+        @if (IsConnected()) {
+        <small class="crm-agent-panel__status is-online">En ligne</small>
+        } @else {
+        <span class="crm-agent-panel__status crm-agent-panel__status--reconnect">
+          <app-button variant="ghost" size="sm" icon="wifi_off" ariaLabel="Reconnecter" title="Reconnecter" (ButtonClick)="Reconnect()">Hors ligne</app-button>
+        </span>
+        }
+      </div>
+    </div>
+    <div class="crm-agent-panel__actions">
+      <!-- Nouvelle conversation (action principale, style distinct) -->
+      <app-button variant="secondary" icon="add_comment" [circle]="true" size="sm" ariaLabel="Nouvelle conversation"
+        title="Nouvelle conversation"
+        [disabled]="IsBusy()" (ButtonClick)="NewConversation()">
+      </app-button>
+      <!-- Configuration du modèle LLM (provider/model/endpoint/apikey) -->
+      <app-button variant="ghost" icon="tune" [circle]="true" size="sm" ariaLabel="Configurer le modèle LLM"
+        title="Configurer le modèle LLM"
+        [class.is-active]="ShowSettings()" (ButtonClick)="ToggleSettings()">
+      </app-button>
+      <!-- Historique des conversations -->
+      <app-button variant="ghost" icon="history" [circle]="true" size="sm" ariaLabel="Historique"
+        title="Historique des conversations"
+        [class.is-active]="ShowHistory()" (ButtonClick)="ToggleHistory()">
+      </app-button>
+      <!-- Plein écran / Réduire (masqué en mode embedded : déjà plein écran) -->
+      @if (!IsEmbedded()) {
+      <app-button variant="ghost" [icon]="IsFullscreen() ? 'fullscreen_exit' : 'fullscreen'" [circle]="true" size="sm"
+        ariaLabel="Plein écran" title="Plein écran" (ButtonClick)="ToggleFullscreen()">
+      </app-button>
+      }
+      <!-- Fermer (masqué en mode embedded : pas de fermeture possible) -->
+      @if (!IsEmbedded()) {
+      <app-button variant="ghost" icon="close" [circle]="true" size="sm" ariaLabel="Fermer" title="Fermer"
+        (ButtonClick)="TogglePanel()">
+      </app-button>
+      }
+    </div>
+  </header>
+
+  <!-- Panneau de configuration du modèle LLM (provider/model/endpoint/apikey) -->
+  @if (ShowSettings()) {
+  <div class="crm-agent-settings">
+    <div class="crm-agent-settings__fields">
+      <app-input type="select" label="Fournisseur" [value]="Provider()" (valueChange)="OnProviderChange($event)"
+        [options]="ProviderOptions">
+      </app-input>
+
+      @if (Provider() === 'sellmatch') {
+      <div class="crm-agent-settings__ollama">
+        <div class="crm-agent-settings__ollama-row">
+          <app-button variant="secondary" icon="cast_connected" [loading]="IsOllamaCloudConnecting()"
+            (ButtonClick)="OnConnectSellMatch()">
+            Charger les modèles
+          </app-button>
+        </div>
+
+        @if (OllamaCloudConnectionError()) {
+        <div class="crm-agent-settings__error">
+          <span class="material-icons">error_outline</span>
+          {{ OllamaCloudConnectionError() }}
+        </div>
+        }
+
+        @if (OllamaCloudModels().length > 0) {
+        <app-input type="select" label="Modèle" [value]="Model()" (valueChange)="Model.set($event); SavePreferences()"
+          [options]="OllamaCloudModelOptions()">
+        </app-input>
+        }
+      </div>
+      } @else if (Provider() === 'ollama-local') {
+      <div class="crm-agent-settings__ollama">
+        <div class="crm-agent-settings__ollama-row">
+          <app-input type="text" label="Endpoint URL (optionnel)" placeholder="http://127.0.0.1:11434"
+            [value]="EndpointUrl()" (valueChange)="EndpointUrl.set($event); SavePreferences()">
+          </app-input>
+          <app-button variant="secondary" icon="cast_connected" [loading]="IsOllamaConnecting()"
+            (ButtonClick)="OnConnectOllamaLocal()">
+            Connecter
+          </app-button>
+        </div>
+
+        @if (OllamaConnectionError()) {
+        <div class="crm-agent-settings__error">
+          <span class="material-icons">error_outline</span>
+          {{ OllamaConnectionError() }}
+        </div>
+        }
+
+        @if (OllamaModels().length > 0) {
+        <app-input type="select" label="Modèle" [value]="Model()" (valueChange)="Model.set($event); SavePreferences()"
+          [options]="OllamaModelOptions()">
+        </app-input>
+        } @else {
+        <app-input type="text" label="Modèle" placeholder="Modèle LLM" [value]="Model()"
+          (valueChange)="Model.set($event); SavePreferences()">
+        </app-input>
+        }
+      </div>
+      } @else {
+      <app-input type="text" label="Modèle" placeholder="Modèle LLM" [value]="Model()"
+        (valueChange)="Model.set($event); SavePreferences()">
+      </app-input>
+
+      <app-input type="text" label="Endpoint URL (optionnel)" placeholder="https://ollama.sellmatch.local/v1"
+        [value]="EndpointUrl()" (valueChange)="EndpointUrl.set($event); SavePreferences()">
+      </app-input>
+
+      @if (IsApiKeyVisible()) {
+      <app-input type="password" label="Clé API (optionnel)" placeholder="sk-..." [value]="ApiKey()"
+        (valueChange)="ApiKey.set($event)">
+      </app-input>
+      }
+      }
+    </div>
+  </div>
+  }
+
+  <div class="crm-agent-panel__body">
+    <!-- Panneau latéral d'historique -->
+    @if (ShowHistory()) {
+    <aside class="crm-agent-history">
+      <div class="crm-agent-history__header">
+        <strong>Historique</strong>
+        <app-badge type="info" [count]="Conversations().length" variant="soft" size="xs" [showIcon]="false"></app-badge>
+      </div>
+      @if (Conversations().length === 0) {
+      <p class="crm-agent-history__empty">Aucune conversation enregistrée.</p>
+      } @else {
+      <div class="crm-agent-history__list">
+        @for (lConv of Conversations(); track lConv.SessionId) {
+        <div class="crm-agent-history__item"
+             [class.is-active]="SelectedSessionId() === lConv.SessionId"
+             role="button"
+             tabindex="0"
+             (click)="SelectConversation(lConv)"
+             (keydown.enter)="SelectConversation(lConv)"
+             (keydown.space)="SelectConversation(lConv)"
+             title="Reprendre cette conversation">
+          <div class="crm-agent-history__item-content">
+            <span class="crm-agent-history__item-title">{{ lConv.Title }}</span>
+            <span class="crm-agent-history__item-date">{{ FormatDateTime(lConv.CreatedAt) }}</span>
+            <div class="crm-agent-history__item-meta">
+              @if (lConv.ToolCallCount > 0) {
+              <app-badge type="default" [count]="lConv.ToolCallCount" icon="build" variant="soft" size="xs"></app-badge>
+              }
+              @if (lConv.TotalTokens > 0) {
+              <app-badge type="info" [count]="lConv.TotalTokens" icon="token" variant="soft" size="xs"></app-badge>
+              }
+            </div>
+          </div>
+          <app-button variant="ghost" icon="delete" [circle]="true" size="sm" ariaLabel="Supprimer"
+            (click)="$event.stopPropagation()"
+            (ButtonClick)="DeleteConversation(lConv.SessionId)">
+          </app-button>
+        </div>
+        }
+      </div>
+      }
+    </aside>
+    }
+
+    <!-- Zone messages -->
+    <main class="crm-agent-panel__messages" #MessagesContainer>
+      @if (Bubbles().length === 0) {
+      <p class="crm-agent-empty">
+        Bonjour ! Je suis l'agent IA du CRM. Décrivez ce que vous voulez remplir
+        (contacts, biens, affaires, recherches...) et joignez un fichier si besoin.
+        J'utiliserai les outils du CRM pour compléter les tableaux.
+      </p>
+      }
+
+      @for (lBubble of Bubbles(); track lBubble.Id) {
+        <!-- Bulle utilisateur -->
+        @if (lBubble.Role === 'user') {
+        <div class="crm-agent-bubble crm-agent-bubble--user">
+          <p>{{ lBubble.Content }}</p>
+        </div>
+        }
+
+        <!-- Bulle assistant (message final ou en cours) -->
+        @if (lBubble.Role === 'assistant') {
+        <div class="crm-agent-bubble crm-agent-bubble--assistant">
+          @if (lBubble.Pending) {
+          <p class="crm-agent-typing">
+            <span class="crm-agent-dot"></span>
+            <span class="crm-agent-dot"></span>
+            <span class="crm-agent-dot"></span>
+          </p>
+          } @else {
+          @if (ParsePlanFromMessage(lBubble.Content ?? null); as lPlanSections) {
+            @if (lPlanSections.length > 0) {
+              <div class="crm-agent-plan-preview">
+                @for (lSection of lPlanSections; track lSection.Title) {
+                  <div class="crm-agent-plan-preview__section">
+                    <div class="crm-agent-plan-preview__header">
+                      <app-badge type="info" [label]="lSection.Title + ' (' + lSection.Data.length + ')'" icon="visibility" variant="soft" size="xs" [showIcon]="true"></app-badge>
+                      <span class="crm-agent-plan-preview__hint">Aperçu avant import</span>
+                    </div>
+                    <app-grid
+                      [Data]="$any(lSection.Data)"
+                      [Columns]="lSection.Kind === 'plan' ? PlanFallbackColumns : ImportColumnsFor(lSection.Kind)"
+                      [Loading]="false"
+                      [Editable]="false"
+                      [StorageKey]="'crm-agent-chat-preview-' + lSection.Kind + '-' + lBubble.Id" />
+                  </div>
+                }
+              </div>
+            }
+          }
+          <div class="crm-agent-bubble__content" [innerHTML]="FormatMessage(lBubble.Content)"></div>
+          <span class="crm-agent-bubble__copy" [class.is-copied]="CopiedBubbleId() === lBubble.Id">
+            <app-button variant="ghost" size="sm" [circle]="true"
+              [icon]="CopiedBubbleId() === lBubble.Id ? 'check' : 'content_copy'"
+              ariaLabel="Copier le message" title="Copier le message"
+              (ButtonClick)="CopyMessage(lBubble.Content ?? '', lBubble.Id)">
+            </app-button>
+          </span>
+          }
+          @if (lBubble.Suggestions && lBubble.Suggestions.length > 0 && !IsBusy()) {
+          <div class="crm-agent-suggestions">
+            @for (lSuggestion of lBubble.Suggestions; track lSuggestion.Label) {
+            <app-button variant="secondary" size="sm"
+              [icon]="'arrow_forward'"
+              iconPosition="right"
+              [disabled]="IsBusy()"
+              (ButtonClick)="SendSuggestion(lSuggestion.Label)">
+              {{ lSuggestion.Label }}
+            </app-button>
+            }
+          </div>
+          }
+        </div>
+        }
+
+        <!-- Carte étape agent (think / tool call / résultat / LLM) -->
+        @if (lBubble.Role === 'step' && lBubble.Step) {
+        <div class="crm-agent-step">
+          @switch (lBubble.Step.Type) {
+            <!-- Mode think : raisonnement du LLM (collapsible) -->
+            @case ('Think') {
+            <details class="crm-agent-step__think">
+              <summary class="crm-agent-step__think-summary">
+                <app-badge type="info" label="Réflexion" icon="psychology" variant="soft" size="xs" [showIcon]="true"></app-badge>
+                <span class="crm-agent-step__iter">itération {{ lBubble.Step.Iteration + 1 }}</span>
+                @if (lBubble.Step.DurationMs) {
+                <span class="crm-agent-step__meta">{{ lBubble.Step.DurationMs }}ms</span>
+                }
+              </summary>
+              @if (lBubble.Step.Thinking) {
+              <div class="crm-agent-step__think-body">
+                <pre>{{ lBubble.Step.Thinking }}</pre>
+              </div>
+              } @else if (lBubble.Step.Message) {
+              <div class="crm-agent-step__think-body">
+                <pre>{{ lBubble.Step.Message }}</pre>
+              </div>
+              }
+            </details>
+            }
+
+            <!-- Appel d'outil MCP -->
+            @case ('ToolCall') {
+            <div class="crm-agent-step__call">
+              <app-badge type="default" label="Outil MCP" icon="build" variant="soft" size="xs" [showIcon]="true"></app-badge>
+              <span class="crm-agent-step__iter">itération {{ lBubble.Step.Iteration + 1 }}</span>
+              <code>{{ lBubble.Step.ToolName }}</code>
+              <pre class="crm-agent-step__args">{{ lBubble.Step.ToolArgsJson }}</pre>
+            </div>
+            }
+
+            <!-- Résultat d'outil MCP -->
+            @case ('ToolResult') {
+            <div class="crm-agent-step__result">
+              <app-badge type="success" label="Résultat" variant="soft" size="xs" [showIcon]="true"></app-badge>
+              <code>{{ lBubble.Step.ToolName }}</code>
+              @if (lBubble.Step.DurationMs) {
+              <span class="crm-agent-step__meta">{{ lBubble.Step.DurationMs }}ms</span>
+              }
+
+              <!-- - cm - Parsing unifie via ImportParserService (1 seule passe au lieu de 3 parseurs en cascade) -->
+              @if (Parser.parse(lBubble.Step.ResultJson, lBubble.Step.ToolName); as lImport) {
+                <!-- Outil mutant (Create*/Update*/Delete*/Import*/Batch*) : affichage diff structure -->
+                @if (lImport.IsMutating && lImport.Diffs.length > 0) {
+                <div class="crm-agent-diff-wrapper">
+                  @for (lDiff of lImport.Diffs; track $index) {
+                  <app-diff-view [Record]="$any(lDiff)" Mode="cards"></app-diff-view>
+                  }
+                </div>
+                }
+                <!-- Outil de lecture (List*) : grille specifique si l'entite est reconnue -->
+                @if (!lImport.IsMutating && lImport.Rows.length > 0) {
+                @switch (lImport.Kind) {
+                  @case ('transactions') {
+                  <div class="crm-agent-step__grid">
+                    <app-transaction-grid [Data]="$any(lImport.Rows)" [Loading]="false" [ReadOnly]="true" [Filterable]="false"
+                      [StorageKey]="'crm-agent-chat-transactions-' + lBubble.Id" />
+                  </div>
+                  }
+                  @case ('locations') {
+                  <div class="crm-agent-step__grid">
+                    <app-location-grid [Data]="$any(lImport.Rows)" [Loading]="false" [ReadOnly]="true" [Filterable]="false"
+                      [StorageKey]="'crm-agent-chat-locations-' + lBubble.Id" />
+                  </div>
+                  }
+                  @case ('properties') {
+                  <div class="crm-agent-step__grid">
+                    <app-property-grid [Data]="$any(lImport.Rows)" [Loading]="false" [ReadOnly]="true" [Filterable]="false"
+                      [StorageKey]="'crm-agent-chat-properties-' + lBubble.Id" />
+                  </div>
+                  }
+                  @case ('contacts') {
+                  <div class="crm-agent-step__grid">
+                    <app-contact-grid [Data]="$any(lImport.Rows)" [Loading]="false" [ReadOnly]="true" [Filterable]="false"
+                      [StorageKey]="'crm-agent-chat-contacts-' + lBubble.Id" />
+                  </div>
+                  }
+                  @case ('historique') {
+                  <div class="crm-agent-step__grid">
+                    <app-historique-grid [Data]="$any(lImport.Rows)" [Loading]="false" [ReadOnly]="true" [Filterable]="false"
+                      [StorageKey]="'crm-agent-chat-historique-' + lBubble.Id" />
+                  </div>
+                  }
+                  @case ('taches') {
+                  <div class="crm-agent-step__grid">
+                    <app-tache-grid [Data]="$any(lImport.Rows)" [Loading]="false" [ReadOnly]="true" [Filterable]="false"
+                      [StorageKey]="'crm-agent-chat-taches-' + lBubble.Id" />
+                  </div>
+                  }
+                  @case ('objectifs') {
+                  <div class="crm-agent-step__grid">
+                    <app-objectif-grid [Data]="$any(lImport.Rows)" [Loading]="false" [ReadOnly]="true" [Filterable]="false"
+                      [StorageKey]="'crm-agent-chat-objectifs-' + lBubble.Id" />
+                  </div>
+                  }
+                  @case ('projets') {
+                  <div class="crm-agent-step__grid">
+                    <app-projet-grid [Data]="$any(lImport.Rows)" [Loading]="false" [ReadOnly]="true" [Filterable]="false"
+                      [StorageKey]="'crm-agent-chat-projets-' + lBubble.Id" />
+                  </div>
+                  }
+                  @case ('prospections') {
+                  <div class="crm-agent-step__grid">
+                    <app-prospection-grid [Data]="$any(lImport.Rows)" [Loading]="false" [ReadOnly]="true" [Filterable]="false"
+                      [StorageKey]="'crm-agent-chat-prospections-' + lBubble.Id" />
+                  </div>
+                  }
+                  @case ('recrutements') {
+                  <div class="crm-agent-step__grid">
+                    <app-recrutement-grid [Data]="$any(lImport.Rows)" [Loading]="false" [ReadOnly]="true" [Filterable]="false"
+                      [StorageKey]="'crm-agent-chat-recrutements-' + lBubble.Id" />
+                  </div>
+                  }
+                  @default {
+                  <!-- - cm - Entite inconnue ou generic : grille generique avec colonnes auto-detectees -->
+                  <div class="crm-agent-step__grid">
+                    <app-grid
+                      [Data]="$any(lImport.Rows)"
+                      [Columns]="$any(Parser.buildColumns(lImport.Rows, lImport.Kind))"
+                      [Loading]="false"
+                      [Editable]="false"
+                      [Filterable]="false"
+                      [StorageKey]="'crm-agent-chat-generic-' + lBubble.Id" />
+                  </div>
+                  }
+                }
+                }
+                <!-- Outil mutant avec rows (Import*/Batch*) : grille preview pour visualiser les lignes creees -->
+                @if (lImport.IsMutating && lImport.Rows.length > 0) {
+                <div class="crm-agent-step__grid">
+                  <app-grid
+                    [Data]="$any(lImport.Rows)"
+                    [Columns]="$any(Parser.buildColumns(lImport.Rows, lImport.Kind))"
+                    [Loading]="false"
+                    [Editable]="false"
+                    [Filterable]="false"
+                    [StorageKey]="'crm-agent-chat-import-' + lImport.Kind + '-' + lBubble.Id" />
+                </div>
+                }
+              } @else {
+              <pre class="crm-agent-step__result-body">{{ lBubble.Step.ResultJson }}</pre>
+              }
+            </div>
+            }
+
+            <!-- Message final de l'agent -->
+            @case ('Llm') {
+            <div class="crm-agent-step__llm">
+              <app-badge type="premium" label="Agent" icon="smart_toy" variant="soft" size="xs" [showIcon]="true"></app-badge>
+              <p>{{ lBubble.Step.Message }}</p>
+            </div>
+            }
+          }
+        </div>
+        }
+
+        <!-- Bulle erreur -->
+        @if (lBubble.Role === 'error') {
+        <div class="crm-agent-bubble crm-agent-bubble--error">
+          <p>{{ lBubble.Content }}</p>
+        </div>
+        }
+
+        <!-- - cm - Carte d'approbation des actions mutantes (sélection granulaire ligne par ligne) -->
+        @if (lBubble.Role === 'approval' && lBubble.Approval) {
+        <div class="crm-agent-approval" [class.crm-agent-approval--decided]="!!lBubble.ApprovalDecision"
+          [class.crm-agent-approval--approved]="lBubble.ApprovalDecision === 'approved'"
+          [class.crm-agent-approval--rejected]="lBubble.ApprovalDecision === 'rejected'">
+          <div class="crm-agent-approval__header">
+            <app-badge type="warning" label="Approbation requise" icon="gavel" variant="soft" size="xs" [showIcon]="true"></app-badge>
+            <span class="crm-agent-approval__hint">Sélectionnez les actions à autoriser ({{ lBubble.Approval.Actions.length }})</span>
+          </div>
+
+          <!-- - cm - Recap agrege : nombre total d'actions et de lignes qui seront creees -->
+          <div class="crm-agent-approval__summary">
+            <span class="crm-agent-approval__summary-item">
+              <span class="material-icons" aria-hidden="true">rule</span>
+              <strong>{{ lBubble.Approval.Actions.length }}</strong> action(s)
+            </span>
+            <span class="crm-agent-approval__summary-item">
+              <span class="material-icons" aria-hidden="true">data_table</span>
+              <strong>{{ ApprovalRowsPreview(lBubble.Approval).length }}</strong> ligne(s) a creer
+            </span>
+            <app-button variant="ghost" size="sm" icon="visibility"
+              (click)="ShowAggregatePreview.set(!ShowAggregatePreview())"
+              [title]="ShowAggregatePreview() ? 'Masquer l apercu global' : 'Voir toutes les lignes dans une grille'">
+              {{ ShowAggregatePreview() ? 'Masquer l apercu' : 'Apercu global' }}
+            </app-button>
+          </div>
+
+          @if (ShowAggregatePreview()) {
+          <!-- - cm - Mini grille preview globale : toutes les actions agregees avec le service unifie -->
+          <div class="crm-agent-approval__aggregate" (click)="$event.stopPropagation()">
+            <app-grid
+              [Data]="$any(ApprovalRowsPreview(lBubble.Approval))"
+              [Columns]="$any(AggregatePreviewColumns(lBubble.Approval))"
+              [Loading]="false"
+              [Editable]="false"
+              [StorageKey]="'crm-agent-approval-aggregate-' + lBubble.Id" />
+          </div>
+          }
+          <ul class="crm-agent-approval__actions">
+            @for (lAction of lBubble.Approval.Actions; track $index; let lIdx = $index) {
+            <li class="crm-agent-approval__action" [class.is-approved]="ApprovedActionIndices().has(lIdx)"
+              [class.is-expanded]="ExpandedActionIndices().has(lIdx)"
+              (click)="!lBubble.ApprovalDecision ? ToggleActionApproval(lIdx) : null">
+              <div class="crm-agent-approval__action-main">
+                @if (!lBubble.ApprovalDecision) {
+                <span class="crm-agent-approval__check material-icons">
+                  {{ ApprovedActionIndices().has(lIdx) ? 'check_box' : 'check_box_outline_blank' }}
+                </span>
+                }
+                <div class="crm-agent-approval__action-text">
+                  <span class="crm-agent-approval__tool">{{ TranslateToolName(lAction.ToolName) }}</span>
+                  <span class="crm-agent-approval__summary">{{ lAction.Summary }}</span>
+                </div>
+                <!-- - cm - Bouton "Voir les détails" : affiche la grille cle/valeur des arguments de l'outil -->
+                @if (!lBubble.ApprovalDecision && ParseActionArgs(lAction.ArgsJson).length > 0) {
+                <button
+                  type="button"
+                  class="crm-agent-approval__details-toggle"
+                  [attr.aria-expanded]="ExpandedActionIndices().has(lIdx)"
+                  [attr.aria-label]="ExpandedActionIndices().has(lIdx) ? 'Masquer les details' : 'Voir les details'"
+                  title="{{ ExpandedActionIndices().has(lIdx) ? 'Masquer les details' : 'Voir les details (arguments envoyes a l\\'outil MCP)' }}"
+                  (click)="$event.stopPropagation(); ToggleActionDetails(lIdx)">
+                  <span class="material-icons">
+                    {{ ExpandedActionIndices().has(lIdx) ? 'expand_less' : 'expand_more' }}
+                  </span>
+                  <span class="crm-agent-approval__details-toggle-label">
+                    {{ ExpandedActionIndices().has(lIdx) ? 'Masquer' : 'Détails' }}
+                  </span>
+                </button>
+                }
+              </div>
+              <!-- - cm - Grille cle/valeur des arguments de l'outil (visible seulement si l'action est depliee) -->
+              @if (ExpandedActionIndices().has(lIdx) && ParseActionArgs(lAction.ArgsJson); as lArgs) {
+              @if (lArgs.length > 0) {
+              <div class="crm-agent-approval__args" (click)="$event.stopPropagation()">
+                <div class="crm-agent-approval__args-header">
+                  <span class="material-icons" aria-hidden="true">data_object</span>
+                  <span>Arguments envoyes a l'outil</span>
+                  <app-badge type="info" [count]="lArgs.length" variant="soft" size="xs"></app-badge>
+                </div>
+                <dl class="crm-agent-approval__args-list">
+                  @for (lArg of lArgs; track lArg.Key) {
+                  <div class="crm-agent-approval__args-row">
+                    <dt>{{ lArg.Key }}</dt>
+                    <dd>{{ lArg.Value }}</dd>
+                  </div>
+                  }
+                </dl>
+              </div>
+              }
+              }
+            </li>
+            }
+          </ul>
+          @if (!lBubble.ApprovalDecision) {
+          <div class="crm-agent-approval__select-all">
+            <app-button variant="ghost" size="sm" icon="done_all" (ButtonClick)="ApproveAllActions()">Tout sélectionner</app-button>
+            <app-button variant="ghost" size="sm" icon="remove_done" (ButtonClick)="RejectAllActions()">Tout désélectionner</app-button>
+            <app-button variant="ghost" size="sm" icon="unfold_more" (ButtonClick)="ExpandAllActions()">Tout déplier</app-button>
+            <app-button variant="ghost" size="sm" icon="unfold_less" (ButtonClick)="CollapseAllActions()">Tout replier</app-button>
+          </div>
+          <div class="crm-agent-approval__buttons">
+            <app-button variant="success" size="sm" icon="check"
+              (ButtonClick)="ConfirmApprovalSelection()">
+              Approuver ({{ SelectedActionsCount() }}/{{ lBubble.Approval.Actions.length }})
+            </app-button>
+            <app-button variant="danger" size="sm" icon="close"
+              (ButtonClick)="ConfirmRejection()">
+              Refuser
+            </app-button>
+          </div>
+          @if (ShowRejectionInput()) {
+          <div class="crm-agent-approval__feedback">
+            <app-input type="text" label="Motif du refus (optionnel)" placeholder="Expliquez pourquoi..."
+              [value]="RejectionFeedback()" (valueChange)="RejectionFeedback.set($event)">
+            </app-input>
+            <div class="crm-agent-approval__feedback-buttons">
+              <app-button variant="danger" size="sm" icon="send"
+                (ButtonClick)="ConfirmRejection()">
+                Envoyer le refus
+              </app-button>
+              <app-button variant="ghost" size="sm" icon="close"
+                (ButtonClick)="CancelReject()">
+                Annuler
+              </app-button>
+            </div>
+          </div>
+          }
+          } @else {
+          <div class="crm-agent-approval__status">
+            @if (lBubble.ApprovalDecision === 'approved') {
+            <app-badge type="success" label="Approuvé" icon="check_circle" variant="soft" size="xs" [showIcon]="true"></app-badge>
+            } @else {
+            <app-badge type="error" label="Refusé" icon="cancel" variant="soft" size="xs" [showIcon]="true"></app-badge>
+            }
+          </div>
+          }
+        </div>
+        }
+      }
+
+      <!-- - cm - Section diffs du tour (affichage automatique, mise en avant verte) -->
+      @if (TourDiffs().length > 0 && !IsBusy()) {
+      <div class="crm-agent-tour-diffs">
+        <div class="crm-agent-tour-diffs__header">
+          <app-badge type="success" label="Lignes ajoutées" icon="add_circle" variant="soft" size="xs" [showIcon]="true"></app-badge>
+          <span class="crm-agent-tour-diffs__count">{{ TourDiffs().length }}</span>
+        </div>
+        @for (lDiff of TourDiffs(); track $index) {
+        <div class="crm-agent-diff-item" [class.crm-agent-diff-item--accepted]="DiffState(lDiff.Summary) === 'accepted'"
+          [class.crm-agent-diff-item--rejected]="DiffState(lDiff.Summary) === 'rejected'">
+          <app-diff-view [Record]="lDiff" Mode="cards"></app-diff-view>
+        </div>
+        }
+      </div>
+      }
+
+      <!-- Détails d'usage du dernier tour agent (tokens, MCP, itérations, durée) -->
+      @if (LastResult(); as lResult) {
+      <div class="crm-agent-usage">
+        <div class="crm-agent-usage__row">
+          <span class="crm-agent-usage__item">
+            <strong>{{ lResult.Iterations }}</strong> itération(s)
+          </span>
+          <span class="crm-agent-usage__item">
+            <strong>{{ lResult.ToolCallCount }}</strong> appel(s) MCP
+          </span>
+          @if (TotalTokens() > 0) {
+          <span class="crm-agent-usage__item">
+            <strong>{{ TotalTokens() }}</strong> tokens
+          </span>
+          }
+          <span class="crm-agent-usage__item">
+            <strong>{{ DurationLabel() }}</strong>
+          </span>
+        </div>
+        <div class="crm-agent-usage__row crm-agent-usage__row--tools">
+          <span class="crm-agent-usage__label">Outils MCP :</span>
+          <code>{{ ToolsUsedLabel() }}</code>
+        </div>
+        @if (lResult.Provider || lResult.Model) {
+        <div class="crm-agent-usage__row">
+          <span class="crm-agent-usage__label">Modèle :</span>
+          <code>{{ lResult.Provider }} / {{ lResult.Model }}</code>
+        </div>
+        }
+        @if (!IsBusy() && !lResult.HasError) {
+        <div class="crm-agent-usage__actions">
+          <app-button variant="secondary" size="sm" icon="refresh" (ButtonClick)="RegenerateLastPrompt()">Régénérer</app-button>
+        </div>
+        }
+      </div>
+      }
+    </main>
+  </div>
+
+  <!-- Zone upload de fichier (thème configurable, par défaut compact-inline) -->
+  @if (!SelectedFile()) {
+  <div class="crm-agent-panel__upload" [class.theme-minimal-chip]="UploadTheme() === 'minimal-chip'">
+    <app-upload-file
+      label="Joindre un fichier (optionnel)"
+      [theme]="UploadTheme()"
+      [fileTypes]="FileTypes"
+      selectedType="document"
+      [showPreview]="false"
+      [autoUpload]="false"
+      accept=".pdf,.txt,.docx,.md,.jpg,.jpeg,.png,.webp"
+      (fileSelected)="OnFileSelected($event)"
+      (uploadError)="OnUploadError($event)">
+    </app-upload-file>
+  </div>
+  }
+
+  <!-- Zone fichier sélectionné -->
+  @if (SelectedFile()) {
+  <div class="crm-agent-panel__file">
+    <span class="crm-agent-file__name" [title]="FileNameLabel()">{{ FileNameLabel() }}</span>
+    <app-button variant="ghost" icon="close" size="sm" ariaLabel="Retirer le fichier" (ButtonClick)="ClearFile()">
+    </app-button>
+  </div>
+  }
+
+  <footer class="crm-agent-panel__footer">
+    <div class="crm-agent-panel__footer-inner">
+      <!-- Indicateur du modèle LLM courant (synchro avec l'onglet IA) — chip subtil -->
+      <div class="crm-agent-panel__model-info">
+        <span class="material-icons crm-agent-panel__model-icon">memory</span>
+        <span class="crm-agent-panel__model-text">{{ Provider() }} / {{ Model() }}</span>
+      </div>
+      <div class="crm-agent-panel__input-row">
+        <app-input
+          type="text"
+          placeholder="Décrivez ce que vous voulez remplir..."
+          [value]="Prompt()"
+          (valueChange)="Prompt.set($event)"
+          [disabled]="IsBusy()"
+          (keydown.enter)="SendPrompt()">
+        </app-input>
+        <app-button
+          variant="primary"
+          icon="send"
+          iconPosition="right"
+          [circle]="true"
+          [disabled]="IsBusy() || !Prompt().trim()"
+          [loading]="IsBusy()"
+          ariaLabel="Envoyer"
+          title="Envoyer le message"
+          (ButtonClick)="SendPrompt()">
+        </app-button>
+        @if (IsBusy()) {
+        <app-button
+          variant="danger"
+          icon="stop"
+          [circle]="true"
+          ariaLabel="Arrêter"
+          title="Arrêter le tour en cours"
+          (ButtonClick)="StopAgent()">
+        </app-button>
+        }
+      </div>
+    </div>
+  </footer>
+</section>
+}

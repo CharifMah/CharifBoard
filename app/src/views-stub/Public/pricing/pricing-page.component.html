@@ -1,0 +1,164 @@
+<!-- - cm - Page publique de tarification : 4 plans (Pro, CRM, Premium, ÉcoMandat) + checkout Stripe Embedded -->
+<section class="pricing-page">
+
+  <header class="pricing-page__header" appScrollReveal>
+    <span class="pricing-page__eyebrow">Tarifs transparents</span>
+    <h1 class="pricing-page__title">{{ 'pricing.title' | translate }}</h1>
+    <p class="pricing-page__subtitle">{{ 'pricing.subtitle' | translate }}</p>
+  </header>
+
+  <!-- - cm - Toggle période (mensuel / annuel) — caché pour ÉcoMandat qui est un paiement unique -->
+  <div class="pricing-page__period-toggle" appScrollReveal>
+    <button
+      type="button"
+      class="pricing-page__period-btn"
+      [class.pricing-page__period-btn--active]="BillingPeriod() === 'monthly'"
+      (click)="OnBillingPeriodChange('monthly')">
+      Mensuel
+    </button>
+    <button
+      type="button"
+      class="pricing-page__period-btn"
+      [class.pricing-page__period-btn--active]="BillingPeriod() === 'yearly'"
+      (click)="OnBillingPeriodChange('yearly')">
+      Annuel
+    </button>
+  </div>
+
+  @if (PaymentSucceeded()) {
+    <!-- - cm - État succès -->
+    <div class="pricing-page__success">
+      <span class="material-icons pricing-page__success-icon">check_circle</span>
+      <h2 class="pricing-page__success-title">{{ 'pricing.success.title' | translate }}</h2>
+      <p class="pricing-page__success-text">
+        {{ 'pricing.success.text' | translate: { plan: SelectedPlan()?.label } }}
+      </p>
+      <app-button variant="secondary" size="md" icon="refresh"
+        (ButtonClick)="ResetSelection()">
+        {{ 'pricing.success.cta' | translate }}
+      </app-button>
+    </div>
+  } @else {
+    <!-- - cm - Grille des 4 plans -->
+    <div class="pricing-page__plans">
+      @for (lPlan of Plans(); track lPlan.key) {
+        <article
+          class="pricing-page__plan"
+          [class.pricing-page__plan--selected]="SelectedPlan()?.key === lPlan.key"
+          [class.pricing-page__plan--ecomandat]="IsEcoMandat(lPlan)"
+          (click)="SelectPlan(lPlan)">
+
+          @if (IsEcoMandat(lPlan)) {
+            <span class="pricing-page__plan-ribbon">{{ 'pricing.ecomandat.badge' | translate }}</span>
+          }
+
+          @if (GetPlanLogo(lPlan.key)) {
+            <img
+              [src]="GetPlanLogo(lPlan.key)"
+              [alt]="lPlan.label + ' logo'"
+              class="pricing-page__plan-logo" />
+          }
+
+          <h3 class="pricing-page__plan-name">{{ lPlan.label }}</h3>
+          <p class="pricing-page__plan-desc">{{ lPlan.description }}</p>
+
+          <!-- - cm - Prix mensuel / annuel (abonnements) -->
+          @if (!lPlan.isOneShot) {
+            <div class="pricing-page__plan-prices">
+              <div
+                class="pricing-page__plan-price"
+                [class.pricing-page__plan-price--active]="BillingPeriod() === 'monthly' && SelectedPlan()?.key === lPlan.key">
+                <span class="pricing-page__plan-price-value">
+                  {{ GetPlanPrice(lPlan, 'monthly') }}
+                </span>
+                <span class="pricing-page__plan-price-label">/mois</span>
+              </div>
+              <div
+                class="pricing-page__plan-price"
+                [class.pricing-page__plan-price--active]="BillingPeriod() === 'yearly' && SelectedPlan()?.key === lPlan.key">
+                <span class="pricing-page__plan-price-value">
+                  {{ GetPlanPrice(lPlan, 'yearly') }}
+                </span>
+                <span class="pricing-page__plan-price-label">/an</span>
+              </div>
+            </div>
+          } @else {
+            <!-- - cm - Prix unique ÉcoMandat -->
+            <div class="pricing-page__plan-price pricing-page__plan-price--active pricing-page__plan-price--oneshot">
+              <span class="pricing-page__plan-price-value">
+                {{ GetPlanPrice(lPlan, 'one_shot') }}
+              </span>
+              <span class="pricing-page__plan-price-label">Paiement unique</span>
+            </div>
+          }
+
+          <app-button
+            class="pricing-page__plan-cta"
+            [variant]="IsEcoMandat(lPlan) ? 'warning' : 'primary'"
+            size="md"
+            [fullWidth]="true"
+            [icon]="IsEcoMandat(lPlan) ? 'flash_on' : 'shopping_cart'"
+            animTrigger="none"
+            (ButtonClick)="SelectPlan(lPlan); $event.stopPropagation()">
+            {{ IsEcoMandat(lPlan) ? ('pricing.ecomandat.cta' | translate) : ('pricing.cta' | translate) }}
+          </app-button>
+
+          @if (SelectedPlan()?.key === lPlan.key) {
+            <span class="material-icons pricing-page__plan-check">check_circle</span>
+          }
+        </article>
+      }
+    </div>
+  }
+
+  <!-- - cm - Zone checkout Stripe embedded (affichée dès qu'un plan est sélectionné) -->
+  @if (SelectedPlan() && !PaymentSucceeded()) {
+    <div class="pricing-page__checkout">
+      <div class="pricing-page__checkout-header">
+        @if (GetPlanLogo(SelectedPlan()!.key)) {
+          <img
+            [src]="GetPlanLogo(SelectedPlan()!.key)"
+            [alt]="SelectedPlan()!.label"
+            class="pricing-page__checkout-logo" />
+        }
+        <div class="pricing-page__checkout-title">
+          <h3>{{ 'pricing.checkout.title' | translate: { plan: SelectedPlan()!.label } }}</h3>
+          @if (SelectedPlan()!.isOneShot) {
+            <p>{{ 'pricing.checkout.oneShot' | translate }}</p>
+          } @else {
+            <p>
+              {{ GetPlanPrice(SelectedPlan()!, BillingPeriod()) }}
+              {{ BillingPeriodLabels[BillingPeriod()] }}
+            </p>
+          }
+        </div>
+        <app-button variant="ghost" size="sm" icon="close"
+          ariaLabel="Fermer" (ButtonClick)="ResetSelection()" />
+      </div>
+
+      @if (LoadingCheckout()) {
+        <div class="pricing-page__loading">
+          <div class="pricing-page__spinner"></div>
+          <span>{{ 'pricing.checkout.loading' | translate }}</span>
+        </div>
+      }
+
+      @if (CheckoutError()) {
+        <div class="pricing-page__error">
+          <span class="material-icons">error</span>
+          <span>{{ CheckoutError() }}</span>
+        </div>
+      }
+
+      @if (!LoadingCheckout() && !CheckoutError()) {
+        <div id="stripe-checkout-element" #stripeCheckoutElement class="pricing-page__checkout-element"></div>
+      }
+    </div>
+  }
+
+  <!-- - cm - Indice mode test -->
+  <p class="pricing-page__hint">
+    <span class="material-icons">info</span>
+    {{ 'pricing.testHint' | translate }}
+  </p>
+</section>

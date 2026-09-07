@@ -1,0 +1,148 @@
+<div class="email-broadcast">
+    <!-- - cm - En-tête -->
+    <header class="email-broadcast__header">
+        <div class="email-broadcast__header-info">
+            <h1 class="email-broadcast__title">Diffusion email</h1>
+            <span class="email-broadcast__count">{{ SelectedCount }} destinataire{{ SelectedCount > 1 ? 's' : '' }} sélectionné{{ SelectedCount > 1 ? 's' : '' }}</span>
+        </div>
+    </header>
+
+    <div class="email-broadcast__body">
+        <!-- - cm - Colonne gauche : sélecteur de destinataires -->
+        <section class="email-broadcast__recipients">
+            <div class="email-broadcast__recipients-header">
+                <h2 class="email-broadcast__subtitle">Destinataires</h2>
+                <div class="email-broadcast__recipients-actions">
+                    <app-button variant="ghost" size="sm" (ButtonClick)="SelectAllFiltered()">Tout sélectionner</app-button>
+                    <app-button variant="ghost" size="sm" (ButtonClick)="DeselectAllFiltered()">Tout désélectionner</app-button>
+                </div>
+            </div>
+
+            <div class="email-broadcast__search">
+                <app-input type="text" [(ngModel)]="SearchTerm" name="search"
+                    placeholder="Rechercher par nom ou email..." (valueChange)="ApplyFilter()"></app-input>
+            </div>
+
+            <div class="email-broadcast__list">
+                @for (lUser of FilteredUsers; track lUser.id) {
+                    <label class="email-broadcast__user" [class.email-broadcast__user--selected]="lUser.email && SelectedEmails.has(lUser.email!)">
+                        <input type="checkbox"
+                            [checked]="lUser.email ? SelectedEmails.has(lUser.email!) : false"
+                            [disabled]="!lUser.email"
+                            (change)="lUser.email && ToggleSelection(lUser.email!)" />
+                        <span class="email-broadcast__user-name">{{ GetFullName(lUser) }}</span>
+                        <span class="email-broadcast__user-email">{{ lUser.email }}</span>
+                    </label>
+                }
+                @if (FilteredUsers.length === 0) {
+                    <div class="email-broadcast__empty">
+                        <p>Aucun utilisateur trouvé.</p>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <!-- - cm - Colonne droite : formulaire -->
+        <section class="email-broadcast__form">
+            <div class="email-broadcast__field">
+                <label for="subject">Sujet <span class="required">*</span></label>
+                <app-input id="subject" type="text" [(ngModel)]="FormSubject" name="subject"
+                    placeholder="Sujet de l'email" [required]="true"></app-input>
+            </div>
+
+            <div class="email-broadcast__field">
+                <label for="body">Contenu <span class="required">*</span></label>
+                <app-jodit-editor [(ngModel)]="FormBody" name="body"></app-jodit-editor>
+            </div>
+
+            <div class="email-broadcast__hint">
+                La signature SellMatch est ajoutée automatiquement à chaque email.
+            </div>
+
+            <!-- - cm - Signature en lecture seule (rendu fidèle), affichée sous l'éditeur -->
+            <div class="email-broadcast__signature">
+                <div class="email-broadcast__signature-label">Signature (ajoutée automatiquement à l'envoi)</div>
+                <div class="email-broadcast__signature-preview" [innerHTML]="SafeSignature"></div>
+            </div>
+
+            <div class="email-broadcast__actions">
+                <app-button variant="light" icon="visibility" iconPosition="left" (ButtonClick)="OpenPreview()">Aperçu</app-button>
+                <app-button variant="primary" [disabled]="IsSending"
+                    (ButtonClick)="SendBroadcast()">
+                    {{ IsSending ? 'Envoi...' : 'Envoyer à ' + SelectedCount + ' destinataire(s)' }}
+                </app-button>
+            </div>
+        </section>
+    </div>
+
+    <!-- - cm - Popup Aperçu -->
+    <app-popup
+        [isOpen]="ShowPreview"
+        (isOpenChange)="ShowPreview = $event"
+        title="Aperçu de l'email"
+        size="large"
+        [resizable]="true"
+        [draggable]="true"
+        [showFooter]="false"
+        [closeOnOverlay]="true">
+        <div class="email-broadcast__preview">
+            <strong class="email-broadcast__preview-subject">{{ FormSubject || '(sans sujet)' }}</strong>
+            <article class="email-broadcast__preview-body" [innerHTML]="SafePreview"></article>
+        </div>
+        <div class="email-broadcast__actions">
+            <app-button variant="light" (ButtonClick)="ClosePreview()">Fermer l'aperçu</app-button>
+        </div>
+    </app-popup>
+
+    <!-- - cm - Popup Alerte -->
+    <app-popup
+        [isOpen]="ShowAlert"
+        (isOpenChange)="ShowAlert = $event"
+        [title]="AlertTitle"
+        size="small"
+        [showFooter]="false"
+        [closeOnOverlay]="true">
+        <p class="email-broadcast__alert" [attr.data-type]="AlertType">{{ AlertMessage }}</p>
+        <div class="email-broadcast__actions">
+            <app-button variant="primary" (ButtonClick)="CloseAlert()">OK</app-button>
+        </div>
+    </app-popup>
+
+    <!-- - cm - Popup Confirmation d'envoi avec récapitulatif des destinataires -->
+    <app-popup
+        [isOpen]="ShowSendConfirm"
+        (isOpenChange)="ShowSendConfirm = $event"
+        title="Confirmer l'envoi"
+        size="large"
+        [resizable]="true"
+        [draggable]="true"
+        [showFooter]="false"
+        [closeOnOverlay]="true">
+        <div class="email-broadcast__send-confirm">
+            <p class="email-broadcast__send-confirm-intro">
+                Vous êtes sur le point d'envoyer l'email
+                <strong>« {{ FormSubject || '(sans sujet)' }} »</strong>
+                à <strong>{{ SelectedCount }} destinataire{{ SelectedCount > 1 ? 's' : '' }}</strong> :
+            </p>
+            <div class="email-broadcast__send-confirm-list">
+                @for (lRecipient of SelectedRecipients; track lRecipient.email) {
+                    <div class="email-broadcast__send-confirm-recipient">
+                        <span class="material-icons" aria-hidden="true">person</span>
+                        <div class="email-broadcast__send-confirm-recipient-info">
+                            <strong>{{ lRecipient.name }}</strong>
+                            <span>{{ lRecipient.email }}</span>
+                        </div>
+                    </div>
+                }
+            </div>
+            <p class="email-broadcast__send-confirm-warning">
+                Les destinataires seront placés en copie cachée (BCC) : ils ne se verront pas entre eux.
+            </p>
+        </div>
+        <div class="email-broadcast__actions">
+            <app-button variant="light" (ButtonClick)="CloseSendConfirm()">Annuler</app-button>
+            <app-button variant="primary" icon="send" iconPosition="left"
+                (ButtonClick)="ConfirmSend()">Confirmer l'envoi</app-button>
+        </div>
+    </app-popup>
+</div>

@@ -1,0 +1,418 @@
+<div class="faq-page">
+
+  <!-- 🟢 HERO -->
+  <div class="hero">
+    <div class="hero-badge">
+      <span class="material-icons">live_help</span>
+      <span>Centre d'aide</span>
+    </div>
+    <h1 appScrollReveal [Animation]="'word'">Questions fréquemment posées</h1>
+    <p class="subtitle">Trouvez rapidement des réponses à vos questions concernant SellMatch.</p>
+
+    <!-- Barre de recherche -->
+    <div class="search-container">
+      <app-input type="search" placeholder="Rechercher une question..." iconLeft="search" [iconRight]="searchQuery ? 'close' : ''" (iconRightClick)="clearSearch()" [(ngModel)]="searchQuery"></app-input>
+    </div>
+  </div>
+
+  <!-- 🧭 Catégories -->
+  <div class="categories-section">
+    <div class="categories-container">
+      <app-button variant="light" size="sm" [class.active]="activeCategory === 'all'"
+        (ButtonClick)="setActiveCategory('all')">
+        <span class="material-icons">grid_view</span> Toutes les questions
+      </app-button>
+      <app-button variant="light" size="sm" [class.active]="activeCategory === 'general'"
+        (ButtonClick)="setActiveCategory('general')">
+        <span class="material-icons">help</span> Générales
+      </app-button>
+      <app-button variant="light" size="sm" [class.active]="activeCategory === 'sellers'"
+        (ButtonClick)="setActiveCategory('sellers')">
+        <span class="material-icons">sell</span> Vendeurs
+      </app-button>
+      <app-button variant="light" size="sm" [class.active]="activeCategory === 'agents'"
+        (ButtonClick)="setActiveCategory('agents')">
+        <span class="material-icons">business</span> Agents
+      </app-button>
+      <app-button variant="light" size="sm" [class.active]="activeCategory === 'technical'"
+        (ButtonClick)="setActiveCategory('technical')">
+        <span class="material-icons">devices</span> Techniques
+      </app-button>
+      <app-button variant="light" size="sm" [class.active]="activeCategory === 'estimation'"
+        (ButtonClick)="setActiveCategory('estimation')">
+        <span class="material-icons">calculate</span> Estimation
+      </app-button>
+    </div>
+  </div>
+
+  <!-- 💬 Section FAQ -->
+  <div class="faq-content-section">
+    <div class="faq-container">
+
+      <!-- GÉNÉRALES -->
+      @if (activeCategory === 'all' || activeCategory === 'general') {
+        <div class="faq-category">
+          <div class="category-header">
+            <span class="material-icons">help</span>
+            <h2>Questions générales</h2>
+          </div>
+          <div class="faq-list">
+            @if (isQuestionMatchingSearch('Comment fonctionne Sellmatch ?')) {
+              <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" (click)="toggleQuestion('general-1')" (keydown.enter)="toggleQuestion('general-1')"
+                  [class.open]="isQuestionExpanded('general-1')">
+                  <h3>Comment fonctionne Sellmatch ?</h3>
+                  <span class="material-icons toggle-icon">{{ isQuestionExpanded('general-1') ? 'remove' : 'add' }}</span>
+                </div>
+                <div class="faq-answer" [class.open]="isQuestionExpanded('general-1')">
+                  <p>Vous renseignez les informations essentielles concernant votre bien et votre projet de vente, en toute
+                    simplicité et en restant anonyme.</p>
+                  <br>
+                  <p>Votre demande est ensuite proposée à des conseillers immobiliers qualifiés de votre secteur.</p>
+                  <br>
+                  <p>Les professionnels intéressés candidatent directement sur votre bien en détaillant :</p>
+                  <ul>
+                    <li>Leurs honoraires</li>
+                    <li>Les services inclus</li>
+                    <li>Leur stratégie de commercialisation</li>
+                    <li>Leur expérience et leurs résultats</li>
+                  </ul>
+                  <p>Vous recevez leurs candidatures et pouvez les comparer librement, sans être démarché.</p>
+                  <br>
+                  <p>Vous sélectionnez ensuite le ou les professionnels qui vous intéressent.</p>
+                  <br>
+                  <p>👉 Ce n'est qu'après votre validation que les conseillers retenus reçoivent vos coordonnées afin de
+                    vous contacter.</p>
+                  <br>
+                  <p>Sellmatch vous permet ainsi de choisir votre agent immobilier en toute transparence, en gardant le
+                    contrôle à chaque étape.</p>
+                </div>
+              </div>
+            }
+
+            @if (isQuestionMatchingSearch('Comment fonctionne le service ?')) {
+              <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" (click)="toggleQuestion('general-2')" (keydown.enter)="toggleQuestion('general-2')"
+                  [class.open]="isQuestionExpanded('general-2')">
+                  <h3>Comment fonctionne le service ?</h3>
+                  <span class="material-icons toggle-icon">{{ isQuestionExpanded('general-2') ? 'remove' : 'add' }}</span>
+                </div>
+                <div class="faq-answer" [class.open]="isQuestionExpanded('general-2')">
+                  <p>Vous décrivez votre bien et vos besoins. SellMatch identifie automatiquement les agents les plus
+                    performants dans votre zone et vous permet de comparer leurs services, honoraires et stratégies avant de
+                    faire votre choix.</p>
+                </div>
+              </div>
+            }
+
+            @if (isQuestionMatchingSearch('Le service est-il gratuit ?')) {
+              <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" (click)="toggleQuestion('general-3')" (keydown.enter)="toggleQuestion('general-3')"
+                  [class.open]="isQuestionExpanded('general-3')">
+                  <h3>Le service est-il gratuit ?</h3>
+                  <span class="material-icons toggle-icon">{{ isQuestionExpanded('general-3') ? 'remove' : 'add' }}</span>
+                </div>
+                <div class="faq-answer" [class.open]="isQuestionExpanded('general-3')">
+                  <p>Oui, le service Sellmatch est entièrement gratuit pour les vendeurs.</p>
+                  <br />
+                  <p>Vous pouvez déposer votre bien, recevoir des candidatures et comparer les professionnels sans aucun
+                    frais.</p>
+                  <br />
+                  <p>Vous avez également la possibilité d'activer une option premium à 19 €.</p>
+                  <br />
+                  <p>Sur un dossier standard, les agents peuvent proposer les honoraires qu'ils souhaitent. Par exemple,
+                    pour une maison à 300 000 €, vous pourriez recevoir des candidatures avec des honoraires allant de 14
+                    000 € à 30 000 €.</p>
+                  <br />
+                  <p>Avec l'option premium, notre système bloque automatiquement les candidatures dépassant un certain
+                    pourcentage d'honoraires.</p>
+                  <br />
+                  <p>Sur le même exemple, les professionnels pourront uniquement proposer des honoraires situés dans une
+                    fourchette plus attractive, par exemple entre 10 000 € et 12 000 €.</p>
+                  <br />
+                  <p>Cette option présente deux avantages majeurs :</p>
+                  <ul>
+                    <li>✔️ Elle garantit des propositions plus compétitives</li>
+                    <li>✔️ Elle démontre votre engagement sérieux, ce qui incite les professionnels à faire un effort
+                      tarifaire pour travailler avec vous</li>
+                  </ul>
+                  <br />
+                  <p>Vous restez libre de choisir, mais avec un cadre plus avantageux.</p>
+                </div>
+              </div>
+            }
+
+            @if (isQuestionMatchingSearch('Quelles sont les zones géographiques couvertes ?')) {
+              <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" (click)="toggleQuestion('general-4')" (keydown.enter)="toggleQuestion('general-4')"
+                  [class.open]="isQuestionExpanded('general-4')">
+                  <h3>Quelles sont les zones géographiques couvertes ?</h3>
+                  <span class="material-icons toggle-icon">{{ isQuestionExpanded('general-4') ? 'remove' : 'add' }}</span>
+                </div>
+                <div class="faq-answer" [class.open]="isQuestionExpanded('general-4')">
+                  <p>SellMatch est disponible sur l'ensemble du territoire français. Nos bases de données couvrent les zones
+                    rurales, les grandes métropoles et les DOM-TOM.</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- VENDEURS -->
+      @if (activeCategory === 'all' || activeCategory === 'sellers') {
+        <div class="faq-category">
+          <div class="category-header">
+            <span class="material-icons">sell</span>
+            <h2>Pour les vendeurs</h2>
+          </div>
+          <div class="faq-list">
+            @if (isQuestionMatchingSearch('Comment sont sélectionnés les agents immobiliers ?')) {
+              <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" (click)="toggleQuestion('sellers-1')" (keydown.enter)="toggleQuestion('sellers-1')"
+                  [class.open]="isQuestionExpanded('sellers-1')">
+                  <h3>Comment sont sélectionnés les agents immobiliers ?</h3>
+                  <span class="material-icons toggle-icon">{{ isQuestionExpanded('sellers-1') ? 'remove' : 'add' }}</span>
+                </div>
+                <div class="faq-answer" [class.open]="isQuestionExpanded('sellers-1')">
+                  <p>Sur Sellmatch, nous faisons le choix de laisser la possibilité à tous les agents immobiliers de se
+                    présenter et de candidater sur les dossiers.</p>
+                  <br />
+                  <p>Notre objectif est simple : garantir un véritable choix côté vendeur, afin que vous puissiez comparer
+                    librement les approches, les honoraires et les stratégies proposées.</p>
+                  <br />
+                  <p>Chaque professionnel présente son expérience, ses services, sa méthode de commercialisation et ses
+                    conditions d'honoraires. Vous restez entièrement décisionnaire.</p>
+                  <br />
+                  <p>Cependant, la qualité du service reste une priorité.</p>
+                  <br />
+                  <p>Si nous constatons des retours clients négatifs répétés, des pratiques inadaptées ou contraires à nos
+                    standards de transparence et d'éthique, nous nous réservons le droit de suspendre ou radier le compte du
+                    professionnel concerné.</p>
+                  <br />
+                  <p>Sellmatch combine ainsi :</p>
+                  <ul>
+                    <li>✔️ Liberté de candidature</li>
+                    <li>✔️ Transparence totale pour le vendeur</li>
+                    <li>✔️ Contrôle qualité pour protéger votre projet</li>
+                  </ul>
+                </div>
+              </div>
+            }
+
+            @if (isQuestionMatchingSearch("Combien d'agents me seront proposés ?")) {
+              <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" (click)="toggleQuestion('sellers-2')" (keydown.enter)="toggleQuestion('sellers-2')"
+                  [class.open]="isQuestionExpanded('sellers-2')">
+                  <h3>Combien d'agents me seront proposés ?</h3>
+                  <span class="material-icons toggle-icon">{{ isQuestionExpanded('sellers-2') ? 'remove' : 'add' }}</span>
+                </div>
+                <div class="faq-answer" [class.open]="isQuestionExpanded('sellers-2')">
+                  <p>Sur Sellmatch, nous ne fixons aucune limite au nombre de candidatures afin de vous offrir un maximum
+                    d'opportunités.</p>
+                  <br />
+                  <p>Notre objectif est de vous laisser un véritable choix.</p>
+                  <br />
+                  <p>Tous les agents intéressés par votre bien peuvent se présenter et soumettre leur proposition, en
+                    détaillant leurs honoraires, leurs services et leur stratégie de vente.</p>
+                  <br />
+                  <p>Le nombre de candidatures dépendra donc :</p>
+                  <ul>
+                    <li>De votre localisation</li>
+                    <li>Du type de bien</li>
+                    <li>De l'attractivité de votre dossier</li>
+                    <li>De l'option choisie (standard ou premium)</li>
+                  </ul>
+                  <p>Vous pouvez ainsi comparer plusieurs approches et sélectionner librement le ou les professionnels qui
+                    correspondent le mieux à votre projet.</p>
+                  <br />
+                  <p>Plus de concurrence signifie plus d'opportunités pour vous.</p>
+                </div>
+              </div>
+            }
+
+            @if (isQuestionMatchingSearch('Mes informations personnelles sont-elles protégées ?')) {
+              <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" (click)="toggleQuestion('sellers-3')" (keydown.enter)="toggleQuestion('sellers-3')"
+                  [class.open]="isQuestionExpanded('sellers-3')">
+                  <h3>Mes informations personnelles sont-elles protégées ?</h3>
+                  <span class="material-icons toggle-icon">{{ isQuestionExpanded('sellers-3') ? 'remove' : 'add' }}</span>
+                </div>
+                <div class="faq-answer" [class.open]="isQuestionExpanded('sellers-3')">
+                  <p>Absolument. Nous respectons le RGPD. Vos données ne sont communiquées qu'aux agents sélectionnés
+                    lorsque vous acceptez leur candidature.</p>
+                </div>
+              </div>
+            }
+
+            @if (isQuestionMatchingSearch('Que se passe-t-il après avoir choisi un agent ?')) {
+              <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" (click)="toggleQuestion('sellers-4')" (keydown.enter)="toggleQuestion('sellers-4')"
+                  [class.open]="isQuestionExpanded('sellers-4')">
+                  <h3>Que se passe-t-il après avoir choisi un agent ?</h3>
+                  <span class="material-icons toggle-icon">{{ isQuestionExpanded('sellers-4') ? 'remove' : 'add' }}</span>
+                </div>
+                <div class="faq-answer" [class.open]="isQuestionExpanded('sellers-4')">
+                  <p>Une fois votre choix validé, l'agent prend directement contact avec vous pour organiser la première
+                    visite et formaliser le mandat de vente. Vous débutez la collaboration selon vos modalités.</p>
+                </div>
+              </div>
+            }
+
+            @if (isQuestionMatchingSearch("Puis-je changer d'agent si je ne suis pas satisfait ?")) {
+              <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" (click)="toggleQuestion('sellers-5')" (keydown.enter)="toggleQuestion('sellers-5')"
+                  [class.open]="isQuestionExpanded('sellers-5')">
+                  <h3>Puis-je changer d'agent si je ne suis pas satisfait ?</h3>
+                  <span class="material-icons toggle-icon">{{ isQuestionExpanded('sellers-5') ? 'remove' : 'add' }}</span>
+                </div>
+                <div class="faq-answer" [class.open]="isQuestionExpanded('sellers-5')">
+                  <p>Oui, vous pouvez relancer une recherche à tout moment via votre espace vendeur et sélectionner un
+                    nouveau professionnel.</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- AGENTS -->
+      @if (activeCategory === 'all' || activeCategory === 'agents') {
+        <div class="faq-category">
+          <div class="category-header">
+            <span class="material-icons">business</span>
+            <h2>Pour les agents immobiliers</h2>
+          </div>
+          <div class="faq-list">
+            @if (isQuestionMatchingSearch("Comment rejoindre votre réseau d'agents partenaires ?")) {
+              <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" (click)="toggleQuestion('agents-1')" (keydown.enter)="toggleQuestion('agents-1')"
+                  [class.open]="isQuestionExpanded('agents-1')">
+                  <h3>Comment rejoindre votre réseau d'agents partenaires ?</h3>
+                  <span class="material-icons toggle-icon">{{ isQuestionExpanded('agents-1') ? 'remove' : 'add' }}</span>
+                </div>
+                <div class="faq-answer" [class.open]="isQuestionExpanded('agents-1')">
+                  <p>
+                    Pour rejoindre notre réseau, vous pouvez vous inscrire via la section "Espace Professionnels" de notre
+                    site.
+                  </p>
+                  <p>
+                    Une fois votre compte créé, vous aurez accès aux dossiers disponibles sur toute la France et pourrez
+                    candidater librement sur les biens correspondant à votre stratégie et à votre zone d'intervention.
+                  </p>
+                  <p>
+                    Sellmatch vous permet ainsi de développer votre activité en accédant à des vendeurs qualifiés, tout en
+                    choisissant les dossiers sur lesquels vous souhaitez vous positionner.
+                  </p>
+                  <p>
+                    Nous nous réservons toutefois le droit de suspendre ou clôturer un compte en cas de pratiques contraires
+                    à nos standards de qualité et de transparence.
+                  </p>
+                </div>
+              </div>
+            }
+
+            @if (isQuestionMatchingSearch('Comment améliorer mon positionnement sur la plateforme ?')) {
+              <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" (click)="toggleQuestion('agents-2')" (keydown.enter)="toggleQuestion('agents-2')"
+                  [class.open]="isQuestionExpanded('agents-2')">
+                  <h3>Comment améliorer mon positionnement sur la plateforme ?</h3>
+                  <span class="material-icons toggle-icon">{{ isQuestionExpanded('agents-2') ? 'remove' : 'add' }}</span>
+                </div>
+                <div class="faq-answer" [class.open]="isQuestionExpanded('agents-2')">
+                  <p>Pour améliorer votre positionnement, concentrez-vous avant tout sur la qualité de vos prestations et
+                    vos performances de vente.</p>
+                  <p>Encouragez vos clients satisfaits à laisser des avis, car la transparence et la satisfaction client
+                    renforcent naturellement votre attractivité.</p>
+                  <p>Vous pouvez également compléter votre profil avec des informations détaillées sur vos spécialités,
+                    votre expérience, votre secteur d'intervention et votre stratégie de commercialisation.</p>
+                  <p>Pour maximiser votre visibilité, vous avez la possibilité de souscrire à l'option Premium à 179 €.</p>
+                  <p>Cette option vous permet d'être mieux mis en avant sur la plateforme et d'optimiser votre exposition
+                    auprès des vendeurs.</p>
+                  <p>Une meilleure visibilité augmente mécaniquement vos opportunités de candidature et vos chances d'être
+                    sélectionné.</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- TECHNIQUE -->
+      @if (activeCategory === 'all' || activeCategory === 'technical') {
+        <div class="faq-category">
+          <div class="category-header">
+            <span class="material-icons">devices</span>
+            <h2>Questions techniques</h2>
+          </div>
+          <div class="faq-list">
+            @if (isQuestionMatchingSearch('Comment réinitialiser mon mot de passe ?')) {
+              <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" (click)="toggleQuestion('tech-1')" (keydown.enter)="toggleQuestion('tech-1')" [class.open]="isQuestionExpanded('tech-1')">
+                  <h3>Comment réinitialiser mon mot de passe ?</h3>
+                  <span class="material-icons toggle-icon">{{ isQuestionExpanded('tech-1') ? 'remove' : 'add' }}</span>
+                </div>
+                <div class="faq-answer" [class.open]="isQuestionExpanded('tech-1')">
+                  <p>Cliquez sur « Mot de passe oublié » lors de la connexion, puis suivez le lien reçu par e-mail pour
+                    créer un nouveau mot de passe.</p>
+                </div>
+              </div>
+            }
+
+            @if (isQuestionMatchingSearch("L'application est-elle disponible sur mobile ?")) {
+              <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" (click)="toggleQuestion('tech-2')" (keydown.enter)="toggleQuestion('tech-2')" [class.open]="isQuestionExpanded('tech-2')">
+                  <h3>L'application est-elle disponible sur mobile ?</h3>
+                  <span class="material-icons toggle-icon">{{ isQuestionExpanded('tech-2') ? 'remove' : 'add' }}</span>
+                </div>
+                <div class="faq-answer" [class.open]="isQuestionExpanded('tech-2')">
+                  <p>Oui. Le site SellMatch est entièrement responsive et accessible sur smartphone, tablette et ordinateur.</p>
+                </div>
+              </div>
+            }
+
+            @if (isQuestionMatchingSearch('Comment supprimer mon compte ?')) {
+              <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" (click)="toggleQuestion('tech-3')" (keydown.enter)="toggleQuestion('tech-3')" [class.open]="isQuestionExpanded('tech-3')">
+                  <h3>Comment supprimer mon compte ?</h3>
+                  <span class="material-icons toggle-icon">{{ isQuestionExpanded('tech-3') ? 'remove' : 'add' }}</span>
+                </div>
+                <div class="faq-answer" [class.open]="isQuestionExpanded('tech-3')">
+                  <p>Vous pouvez demander la suppression de votre compte depuis vos paramètres. Toutes vos données seront
+                    définitivement effacées de nos systèmes.</p>
+                </div>
+              </div>
+            }
+
+            @if (isQuestionMatchingSearch('Que faire en cas de problème technique ?')) {
+              <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" (click)="toggleQuestion('tech-4')" (keydown.enter)="toggleQuestion('tech-4')" [class.open]="isQuestionExpanded('tech-4')">
+                  <h3>Que faire en cas de problème technique ?</h3>
+                  <span class="material-icons toggle-icon">{{ isQuestionExpanded('tech-4') ? 'remove' : 'add' }}</span>
+                </div>
+                <div class="faq-answer" [class.open]="isQuestionExpanded('tech-4')">
+                  <p>Si vous rencontrez un bug ou un dysfonctionnement, contactez notre support à
+                    <strong>support&#64;sellmatch.fr</strong>. Nous répondons sous 24 h.</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- ESTIMATION -->
+      @if (activeCategory === 'all' || activeCategory === 'estimation') {
+        <div class="faq-category">
+          <div class="category-header">
+            <span class="material-icons">calculate</span>
+            <h2>Estimation immobilière</h2>
+          </div>
+          <div class="faq-list">
+            <app-faq-estimation [Variant]="'accordion'"></app-faq-estimation>
+          </div>
+        </div>
+      }
+
+    </div>
+  </div>
+</div>

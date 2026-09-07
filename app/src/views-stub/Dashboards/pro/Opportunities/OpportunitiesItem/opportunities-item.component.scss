@@ -1,0 +1,317 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region OpportuniteCard
+.opportunite-card {
+  display: flex;
+  gap: 1rem; // - cm - Harmonisé avec dossier-item/mandat-item
+  padding: 1rem; // - cm - Harmonisé avec dossier-item/mandat-item
+  background: $surface-subtle; // - cm - Fond harmonisé via token (réagit au dark theme)
+  border-radius: $border-radius-md;
+  border: 1px solid rgba($primary-color, 0.08);
+  transition: all $transition-normal;
+  cursor: pointer;
+  position: relative;
+
+  @media (min-width: 576px) {
+    padding: 1.25rem;
+    gap: 1.25rem;
+  }
+
+  &:hover {
+    background: $surface-hover; // - cm - Fond hover harmonisé via token (réagit au dark theme)
+    box-shadow: 0 4px 20px rgba($primary-color, 0.12);
+  }
+  // - cm - Style Premium
+  &.Premium {
+    background: linear-gradient(135deg, rgba($warning-color, 0.08), rgba($accent-color, 0.08));
+    border: 2px solid rgba($warning-color, 0.4);
+    box-shadow: 0 4px 20px rgba($warning-color, 0.15);
+    padding-top: 1.75rem; // - cm - Harmonisé avec dossier-item/mandat-item
+
+    @media (min-width: 576px) {
+      padding-top: 2rem;
+    }
+
+    &:hover {
+      background: linear-gradient(135deg, rgba($warning-color, 0.12), rgba($accent-color, 0.12));
+      box-shadow: 0 6px 25px rgba($warning-color, 0.25);
+      border-color: rgba($warning-color, 0.6);
+    }
+
+    .opp-content {
+      .opp-header {
+        .opp-info {
+          h4 {
+            color: color-mix(in srgb, $warning-color, black 10%);
+          }
+        }
+      }
+    }
+  }
+  // - cm - Image
+  .opp-image {
+    position: relative;
+    width: 140px;
+    min-width: 140px;
+    height: 110px;
+    border-radius: $border-radius-sm;
+    overflow: hidden;
+
+    img,
+    .image-placeholder {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .image-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba($primary-color, 0.1), rgba($accent-color, 0.1));
+
+      .material-icons {
+        font-size: 32px;
+        color: $primary-light;
+      }
+    }
+  }
+  // - cm - Content
+  .opp-content {
+    flex: 1;
+    min-width: 0; // - cm - Permet au contenu de rétrécir et éviter le débordement
+    display: flex;
+    flex-direction: column;
+
+    .opp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+
+      .opp-info {
+        min-width: 0;
+
+        h4 {
+          font-size: 15px;
+          font-weight: 600;
+          color: $text-primary;
+          margin: 0 0 4px 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .location {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          font-size: 12px;
+          color: $text-secondary;
+          margin: 0;
+          overflow: hidden;
+
+          span:not(.material-icons) {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          .material-icons {
+            font-size: 14px;
+            color: $accent-color;
+          }
+        }
+      }
+    }
+
+    .opp-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 10px;
+
+      .detail {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        color: $text-secondary;
+
+        .material-icons {
+          font-size: 16px;
+          color: $primary-light;
+        }
+      }
+    }
+
+    .opp-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+
+      .commission-info {
+        .label {
+          font-size: 11px;
+          color: $text-secondary;
+          display: block;
+        }
+
+        .value {
+          font-size: 16px;
+          font-weight: 700;
+          color: $success-color;
+        }
+      }
+
+      .meta {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 2px;
+
+        .candidates,
+        .time {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          font-size: 11px;
+          color: $text-secondary;
+
+          .material-icons {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+    // - cm - Bouton candidater
+    .btn-candidater {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px;
+      background: linear-gradient(135deg, $primary-color, $accent-color);
+      color: $white;
+      border: none;
+      border-radius: $border-radius-sm;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all $transition-normal;
+
+      .material-icons {
+        font-size: 18px;
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba($primary-color, 0.4);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+    // - cm - Status candidature
+    .candidature-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px;
+      border-radius: $border-radius-sm;
+      font-size: 13px;
+      font-weight: 500;
+
+      .material-icons {
+        font-size: 18px;
+      }
+
+      &.status-pending {
+        background: rgba($warning-color, 0.1);
+        color: $warning-color;
+
+        .material-icons {
+          animation: spin 2s linear infinite;
+        }
+      }
+
+      &.status-viewed {
+        background: rgba($primary-color, 0.1);
+        color: $primary-color;
+      }
+
+      &.status-shortlisted {
+        background: rgba($accent-color, 0.1);
+        color: $accent-color;
+      }
+
+      &.status-selected {
+        background: rgba($success-color, 0.1);
+        color: $success-color;
+      }
+
+      &.status-rejected {
+        background: rgba($error-color, 0.1);
+        color: $error-color;
+      }
+    }
+  }
+}
+//#endregion
+
+//#region StatutBadges
+// - cm - Statut badges
+.statut-badge {
+  padding: 4px 10px;
+  border-radius: $border-radius-sm;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  &.statut-nouveau {
+    background: rgba($success-color, 0.15);
+    color: $success-color;
+  }
+
+  &.statut-en-attente {
+    background: rgba($warning-color, 0.15);
+    color: $warning-color;
+  }
+
+  &.statut-candidature-envoyee {
+    background: rgba($primary-color, 0.15);
+    color: $primary-color;
+  }
+
+  &.statut-actif {
+    background: rgba($success-color, 0.15);
+    color: $success-color;
+  }
+}
+//#endregion
+
+//#region Responsive
+// - cm - Tablette (iPad Air) : switch en colonne comme sur mobile
+@include tablet {
+  .opportunite-card {
+    flex-direction: column;
+
+    &.Premium {
+      padding-top: 2rem; // - cm - Harmonisé avec dossier-item/mandat-item
+    }
+
+    .opp-image {
+      width: 100%;
+      min-width: 100%;
+      height: 160px;
+    }
+  }
+}
+//#endregion

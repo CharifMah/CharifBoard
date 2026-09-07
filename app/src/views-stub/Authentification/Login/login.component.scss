@@ -1,0 +1,618 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region Mixins
+// - cm - Mixins gradient et effets
+@mixin gradient-bg {
+  background: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
+}
+
+@mixin gradient-text {
+  background: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@mixin glass-effect {
+  background: $card-background; // - cm - Token thème au lieu de rgba($white, 0.95)
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+//#endregion
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-card {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 440px;
+  @include glass-effect;
+  border-radius: $border-radius-xl;
+  padding: 3rem;
+  box-shadow: $shadow-heavy, 0 0 0 1px rgba($white, 0.1) inset;
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  // Top gradient line
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    @include gradient-bg;
+    border-radius: 0 0 4px 4px;
+  }
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+
+  .logo {
+    width: 64px;
+    height: 64px;
+    @include gradient-bg;
+    border-radius: $border-radius;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 8px 24px rgba(var(--sm-primary-rgb), 0.3);
+    animation: pulse 2s infinite;
+
+    .material-icons {
+      font-size: 32px;
+      color: $white;
+    }
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: $text-primary;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    color: $text-secondary;
+    font-size: 0.95rem;
+  }
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: $text-primary;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: color $transition-normal;
+  }
+
+  .input-wrapper {
+    position: relative;
+
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: $text-secondary; // - cm - Token thème au lieu de $gray-400
+      transition: color $transition-normal;
+      z-index: 1;
+
+      .material-icons {
+        font-size: 20px;
+      }
+    }
+
+    input {
+      width: 100%;
+      padding: 1rem 1rem 1rem 3rem;
+      border: 2px solid $border-color;
+      border-radius: $border-radius-md;
+      font-size: 1rem;
+      background: $card-background;
+      transition: all $transition-normal;
+      color: $text-primary;
+
+      &::placeholder {
+        color: $text-secondary;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 4px rgba(var(--sm-primary-rgb), 0.1), 0 4px 12px rgba(var(--sm-primary-rgb), 0.1);
+
+        & + .input-icon,
+        & ~ .input-icon {
+          color: $primary-color;
+        }
+      }
+
+      &.invalid {
+        border-color: $error-color;
+        animation: shake 0.5s ease;
+
+        &:focus {
+          box-shadow: 0 0 0 4px rgba(var(--sm-error-rgb), 0.1), 0 4px 12px rgba(var(--sm-error-rgb), 0.1);
+        }
+      }
+
+      &.valid {
+        border-color: $success-color;
+      }
+    }
+  }
+}
+
+.password-input {
+  .input-wrapper {
+    input {
+      padding-right: 3.5rem;
+    }
+  }
+
+  .toggle-password {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    color: $text-secondary; // - cm - Token thème au lieu de $gray-300
+    transition: all $transition-normal;
+    border-radius: $border-radius-sm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      color: $primary-color;
+      background: rgba(var(--sm-primary-rgb), 0.1);
+    }
+
+    .material-icons {
+      font-size: 20px;
+    }
+  }
+}
+
+.password-strength {
+  margin-top: 0.75rem;
+
+  .strength-bar {
+    height: 4px;
+    background: $border-color;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+
+    .strength-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: all $transition-normal;
+      width: 0%;
+
+      &.weak {
+        width: 33%;
+        background: $error-color;
+      }
+
+      &.medium {
+        width: 66%;
+        background: $warning-color;
+      }
+
+      &.strong {
+        width: 100%;
+        background: $success-color;
+      }
+    }
+  }
+
+  .strength-text {
+    font-size: 0.75rem;
+    color: $text-secondary;
+  }
+}
+
+.error-message {
+  background: linear-gradient(135deg, rgba(var(--sm-error-rgb), 0.1) 0%, rgba(var(--sm-error-rgb), 0.05) 100%);
+  border: 1px solid rgba(var(--sm-error-rgb), 0.2);
+  color: $error-color;
+  padding: 1rem 1.25rem;
+  border-radius: $border-radius-md;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: slideDown 0.3s ease;
+
+  .material-icons {
+    font-size: 20px;
+  }
+
+  span {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+}
+
+.field-error {
+  color: $error-color;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  animation: slideDown 0.3s ease;
+
+  .material-icons {
+    font-size: 14px;
+  }
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  .checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+
+    .custom-checkbox {
+      width: 20px;
+      height: 20px;
+      border: 2px solid $border-color-strong;
+      border-radius: $border-radius-sm;
+      position: relative;
+      transition: all $transition-normal;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+
+        &:checked + .checkmark {
+          opacity: 1;
+          transform: scale(1);
+        }
+
+        &:checked ~ .checkbox-bg {
+          @include gradient-bg;
+          border-color: transparent;
+        }
+      }
+
+      .checkbox-bg {
+        position: absolute;
+        inset: -2px;
+        border: 2px solid $border-color-strong;
+        border-radius: $border-radius-sm;
+        transition: all $transition-normal;
+      }
+
+      .checkmark {
+        color: $white;
+        font-size: 14px;
+        opacity: 0;
+        transform: scale(0.5);
+        transition: all $transition-fast;
+        z-index: 1;
+
+        .material-icons {
+          font-size: 14px;
+        }
+      }
+    }
+
+    span {
+      font-size: 0.9rem;
+      color: $text-secondary;
+    }
+  }
+
+  .forgot-password {
+    color: $primary-color;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all $transition-normal;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      @include gradient-bg;
+      transition: width 0.3s ease;
+    }
+
+    &:hover {
+      &::after {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 1rem 2rem;
+  @include gradient-bg;
+  color: $white;
+  border: none;
+  border-radius: $border-radius-md;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all $transition-slow;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(var(--sm-primary-rgb), 0.3);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient( 90deg, transparent, rgba($white, 0.2), transparent );
+    transition: left 0.5s ease;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(var(--sm-primary-rgb), 0.4);
+
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-text {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .material-icons {
+    font-size: 20px;
+    transition: transform $transition-normal;
+  }
+
+  &:hover:not(:disabled) .material-icons {
+    transform: translateX(4px);
+  }
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba($white, 0.3);
+  border-top-color: $white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 2rem 0;
+  gap: 1rem;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, $border-color, transparent);
+  }
+
+  span {
+    color: $text-secondary; // - cm - Token thème au lieu de $gray-300
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+}
+
+.social-login {
+  display: flex;
+  gap: 1rem;
+
+  .social-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    border: 2px solid $border-color;
+    border-radius: $border-radius-md;
+    background: $card-background;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $text-primary;
+    cursor: pointer;
+    transition: all $transition-normal;
+
+    img {
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      border-color: $primary-color;
+      background: rgba(var(--sm-primary-rgb), 0.02);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    &.google:hover {
+      border-color: $red-500;
+    }
+
+    &.facebook:hover {
+      border-color: $info-color;
+    }
+  }
+}
+
+.login-footer {
+  margin-top: 2rem;
+  text-align: center;
+
+  p {
+    color: $text-secondary;
+    font-size: 0.95rem;
+
+    a {
+      color: $primary-color;
+      font-weight: 600;
+      text-decoration: none;
+      position: relative;
+      transition: color $transition-normal;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        @include gradient-bg;
+        transition: width 0.3s ease;
+      }
+
+      &:hover::after {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.security-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  color: $text-secondary; // - cm - Token thème au lieu de $gray-300
+  font-size: 0.8rem;
+
+  .material-icons {
+    font-size: 16px;
+    color: $success-color;
+  }
+}
+
+//#region Responsive
+// - cm - Responsive
+@include small {
+  .login-container {
+    padding: 1rem;
+  }
+
+  .login-card {
+    padding: 2rem 1.5rem;
+    border-radius: $border-radius-xl;
+  }
+
+  .login-header {
+    h1 {
+      font-size: 1.5rem;
+    }
+  }
+
+  .form-options {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .social-login {
+    flex-direction: column;
+
+    .social-btn {
+      width: 100%;
+    }
+  }
+}
+
+.success-message {
+  background: linear-gradient(135deg, rgba(var(--sm-success-rgb), 0.1) 0%, rgba(var(--sm-success-rgb), 0.05) 100%);
+  border: 1px solid rgba(var(--sm-success-rgb), 0.2);
+  color: $success-color;
+  padding: 1rem 1.25rem;
+  border-radius: $border-radius-md;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: slideDown 0.3s ease;
+
+  .material-icons {
+    font-size: 20px;
+  }
+
+  span {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+//#endregion

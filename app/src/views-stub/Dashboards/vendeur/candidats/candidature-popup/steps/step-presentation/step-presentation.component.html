@@ -1,0 +1,114 @@
+<div class="step-content">
+  <h3 class="step-title">
+    <span class="material-icons">person</span>
+    Présentez-vous au vendeur
+  </h3>
+  <p class="step-description">
+    Expliquez pourquoi vous êtes le meilleur choix pour vendre ce bien.
+  </p>
+
+  <!-- Présentation -->
+  <div class="form-group">
+    <label for="presentation">Votre présentation *</label>
+    <textarea
+      id="presentation"
+      [ngModel]="presentation"
+      (ngModelChange)="onPresentationChange($event)"
+      placeholder="Bonjour, je suis agent immobilier depuis X années dans la région de..."
+      rows="4"
+      [class.invalid]="presentation && presentation.length < 50">
+    </textarea>
+    <div class="char-count" [class.warning]="presentation && presentation.length < 50">
+        {{ presentation.length || 0 }} / 50 caractères minimum
+    </div>
+  </div>
+
+  <!-- Section Services Proposés -->
+  <div class="services-section">
+    <div class="services-header">
+      <div class="services-title">
+        <span class="material-icons">build</span>
+        <span>Services proposés *</span>
+      </div>
+      <div class="services-counter" [class.valid]="getSelectedServicesCount() > 0">
+        <span class="material-icons">{{ getSelectedServicesCount() > 0 ? 'check_circle' : 'info' }}</span>
+        <span>{{ getSelectedServicesCount() }} sélectionné{{ getSelectedServicesCount() > 1 ? 's' : '' }}</span>
+      </div>
+    </div>
+
+    @if (isLoadingServices) {
+      <div class="services-loading">
+        <div class="spinner-small"></div>
+        <span>Chargement des services...</span>
+      </div>
+    } @else {
+      <div class="services-categories">
+        @for (categoryGroup of servicesByCategory; track categoryGroup.category) {
+          <div class="category-block">
+            <div class="category-header" (click)="toggleCategory(categoryGroup.category)">
+              <div class="category-info">
+                <span class="material-icons category-icon">{{ getCategoryIcon(categoryGroup.category) }}</span>
+                <span class="category-name">{{ categoryGroup.categoryLabel }}</span>
+                <span class="category-count">
+                  {{ getSelectedCountInCategory(categoryGroup.category) }}/{{ categoryGroup.services.length }}
+                </span>
+              </div>
+              <div class="category-actions">
+                <app-button
+                  class="btn-toggle-all" variant="ghost" [circle]="true" size="sm"
+                  [icon]="isCategoryFullySelected(categoryGroup.category) ? 'remove_done' : 'check'"
+                  ariaLabel="Tout sélectionner" animTrigger="none"
+                  (click)="$event.stopPropagation()"
+                  (ButtonClick)="toggleAllInCategory(categoryGroup.category)" />
+                <span
+                  class="material-icons expand-icon"
+                  [class.expanded]="isCategoryExpanded(categoryGroup.category)">
+                  expand_more
+                </span>
+              </div>
+            </div>
+
+            @if (isCategoryExpanded(categoryGroup.category)) {
+              <div class="category-services">
+                @for (service of categoryGroup.services; track service.id) {
+                  <label class="service-item" [class.selected]="isServiceSelected(service.id!)">
+                    <input
+                      type="checkbox"
+                      [checked]="isServiceSelected(service.id!)"
+                      (change)="toggleService(service.id!)">
+                    <span class="service-checkbox">
+                      <span class="material-icons">{{ isServiceSelected(service.id!) ? 'check' : '' }}</span>
+                    </span>
+                    <span class="service-name">{{ service.serviceLabel }}</span>
+                  </label>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      @if (getSelectedServicesCount() === 0) {
+        <div class="services-warning">
+          <span class="material-icons">warning</span>
+          <span>Sélectionnez au moins un service pour continuer</span>
+        </div>
+      }
+    }
+  </div>
+
+  <!-- Délai estimé -->
+  <div class="form-group">
+    <label for="timeline">Délai estimé de vente</label>
+    <select
+      id="timeline"
+      [ngModel]="estimatedTimeline"
+      (ngModelChange)="onTimelineChange($event)">
+      <option value="">Sélectionner un délai</option>
+      <option value="1-2 mois">1 à 2 mois</option>
+      <option value="2-3 mois">2 à 3 mois</option>
+      <option value="3-6 mois">3 à 6 mois</option>
+      <option value="6+ mois">Plus de 6 mois</option>
+    </select>
+  </div>
+</div>

@@ -1,0 +1,85 @@
+<app-grid #recrutementGrid
+          [Data]="EffectiveData()"
+          [Loading]="EffectiveLoading()"
+          [Error]="EffectiveError()"
+          [Filterable]="Filterable"
+          [FilterFields]="RecrutementFilterFields()"
+          [Editable]="!ReadOnly"
+          (CellEdited)="OnCellEdited($event)"
+          (ActionClicked)="OnActionClicked($event)"
+          [AutoAddRow]="false"
+          [AllowAddRow]="!ReadOnly"
+          [NewRowFactory]="CreateNewRecrutement"
+          (RowAdded)="OnRowAdded($event)"
+          [AllowExport]="true"
+          ExportFilenamePrefix="'recrutement'"
+          [ExportApiPath]="'/api/Recrutements/ExportXlsx'"
+          [ExportFormat]="'both'"
+          [StorageKey]="StorageKey"
+          [EmptyTextCle]="'recrutements.grid.empty'"
+          [ServerSide]="ServerSide"
+          [Selectable]="true"
+          (SelectionChanged)="OnSelectionChanged($event)">
+
+  <div gridBulkActions>
+    <app-button variant="danger" size="sm" [icon]="'delete'"
+                (ButtonClick)="OnAskBulkDelete()">
+      Supprimer la sélection
+    </app-button>
+  </div>
+
+  <app-grid-column Key="contactId" LabelCle="recrutements.contact_id" [Sortable]="false" Width="160px" [Editable]="true"
+                   EditorType="select"
+                   [EditorOptions]="ContactOptions()" [ShowEditor]="!ReadOnly">
+  </app-grid-column>
+
+  <app-grid-column Key="classement" LabelCle="recrutements.classement" [Sortable]="false" Width="160px"
+                   [Editable]="!ReadOnly" EditorType="select"
+                   [EditorOptions]="ClassementOpts" [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="origineId" LabelCle="recrutements.origine_id" [Sortable]="true" Width="130px" [Editable]="true"
+                   EditorType="select"
+                   [EditorOptions]="OrigineOpts()" [ShowEditor]="!ReadOnly">
+
+  </app-grid-column>
+
+  <app-grid-column Key="statutId" LabelCle="recrutements.statut_id" [Sortable]="true" Width="130px" [Editable]="true"
+                   EditorType="select"
+                   [EditorOptions]="StatutOpts()" [ShowEditor]="!ReadOnly">
+
+  </app-grid-column>
+
+  <app-grid-column Key="prochaineActionObjectif" LabelCle="recrutements.prochaine_action_objectif" [Sortable]="false"
+                   Width="180px" [Editable]="true" EditorType="text" [ShowEditor]="!ReadOnly"
+                   EditorPlaceholderCle="recrutements.prochaine_action_objectifPlaceholder"/>
+</app-grid>
+
+<app-popup [(isOpen)]="ShowDeletePopup"
+           title="Supprimer ce candidat ?"
+           subtitle="Cette action est irréversible."
+           icon="delete" type="error" size="small"
+           [showFooter]="true"
+           confirmText="Supprimer"
+           cancelText="Annuler"
+           [confirmLoading]="Deleting()"
+           (confirmed)="OnConfirmDelete()"
+           (cancelled)="OnCancelDelete()"
+           (closed)="OnCancelDelete()">
+  @if (RowToDelete()) {
+    <p>Confirmer la suppression de la ligne sélectionnée ?</p>
+  }
+</app-popup>
+
+<app-popup [(isOpen)]="ShowBulkDeletePopup"
+           title="Supprimer la sélection"
+           [subtitle]="'Confirmer la suppression de ' + SelectedRows().length + ' ligne(s) ?'"
+           icon="delete" type="error" size="small"
+           [showFooter]="true"
+           confirmText="Supprimer"
+           cancelText="Annuler"
+           [confirmLoading]="Deleting()"
+           (confirmed)="OnConfirmBulkDelete()"
+           (cancelled)="OnCancelBulkDelete()"
+           (closed)="OnCancelBulkDelete()">
+  <p>Cette action est irréversible et supprimera toutes les lignes cochées.</p>
+</app-popup>

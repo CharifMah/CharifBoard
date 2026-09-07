@@ -1,0 +1,25 @@
+<div class="pg">
+  <h1>Playground @sellmatch/ui</h1>
+  <p>Démo live des composants du package <code>@sellmatch/ui</code> (shared + core de SellMatch.Client).</p>
+
+  <section class="pg__section">
+    <h2>app-badge</h2>
+    <div class="pg__row">
+      @for (b of Badges; track b.type) {
+        <app-badge [type]="b.type" [label]="b.label" />
+      }
+      <app-badge type="error" [count]="7" />
+      <app-badge type="info" label="Pulse" [pulse]="true" />
+    </div>
+  </section>
+
+  <section class="pg__section">
+    <h2>app-skeleton</h2>
+    <div class="pg__row pg__row--col">
+      <app-skeleton Width="70%" Height="18px" style="--shimmer-delay: 0ms" />
+      <app-skeleton Width="90%" Height="14px" style="--shimmer-delay: 200ms" />
+      <app-skeleton Width="40%" Height="14px" style="--shimmer-delay: 400ms" />
+      <app-skeleton Size="sm" style="--shimmer-delay: 600ms" />
+    </div>
+  </section>
+</div>

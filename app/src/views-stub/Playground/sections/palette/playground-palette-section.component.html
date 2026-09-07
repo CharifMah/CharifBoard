@@ -1,0 +1,126 @@
+<app-playground-section
+  id="palette"
+  title="app-palette"
+  category="Base"
+  description="Design system : toutes les variables de variables.scss affichees sous forme de cards. Auto-reactif : ajout d'une variable = apparition apres reload."
+  [code]="PaletteCode">
+
+  <!--#region Filtres + grille variables
+      - cm - Toute variable detectee dans variables.scss apparait ici. Filtres par categorie
+      - cm - devinee depuis le prefixe du nom. Couleurs themables resolues via getComputedStyle.
+  -->
+  <div class="pg-palette-toolbar">
+    <app-input type="search" label="Recherche" placeholder="ex: primary, shadow, gradient"
+      [value]="VariablesSearch()" (valueChange)="SetSearch($event)" />
+
+    <div class="pg-palette-chips">
+      <button type="button" class="pg-palette-chip"
+        [class.pg-palette-chip--active]="VariablesFilter() === 'all'"
+        (click)="SetFilter('all')">
+        Toutes ({{ Variables().length }})
+      </button>
+      @for (lCat of Categories(); track lCat) {
+        <button type="button" class="pg-palette-chip"
+          [class.pg-palette-chip--active]="VariablesFilter() === lCat"
+          (click)="SetFilter(lCat)">
+          {{ lCat }} ({{ CountByCategory(lCat) }})
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (LoadStatus() === 'loading') {
+    <p class="pg-palette-status">Chargement de variables.scss...</p>
+  }
+  @else if (LoadStatus() === 'error') {
+    <p class="pg-palette-status pg-palette-status--error">
+      Erreur : {{ LoadError() }}
+    </p>
+  }
+  @else if (LoadStatus() === 'ok') {
+    <p class="pg-palette-count">
+      {{ VariablesFiltered().length }} / {{ Variables().length }} variables affichees.
+    </p>
+
+    <div class="pg-palette-grid">
+      @for (lVariable of VariablesFiltered(); track lVariable.Name) {
+        <div class="pg-palette-swatch"
+          [class.pg-palette-swatch--no-color]="!lVariable.PreviewColor"
+          [style.background-color]="lVariable.PreviewColor"
+          [style.color]="TextColor(lVariable.PreviewColor)"
+          (click)="CopyToClipboard(lVariable)"
+          [title]="'Cliquer pour copier : $' + lVariable.Name + ': ' + lVariable.Value + ';'">
+          <span class="pg-palette-category">{{ lVariable.Category }}</span>
+          <span class="pg-palette-name">${{ lVariable.Name }}</span>
+          <span class="pg-palette-value">{{ lVariable.Value }}</span>
+        </div>
+      }
+    </div>
+  }
+  <!--#endregion-->
+
+  <!--#region Gradients animes plein bouton
+      - cm - 5 palettes de gradient anime en permanence (6s ease-in-out infinite).
+      - cm - Reutilise <app-button gradient="..."> qui herite du keyframe btn-gradient-shift
+      - cm - declare dans button.component.scss. Couleurs = $gradient-* de variables.scss.
+  -->
+  <section style="margin-top: 32px;">
+    <h3>Gradients animes plein bouton</h3>
+    <p>5 palettes : background-position anime en boucle sur 6s. Couleurs via <code>$gradient-*</code> dans <code>variables.scss</code>.</p>
+
+    <div class="pg-row">
+      <app-button gradient="default" icon="auto_awesome">Default</app-button>
+      <app-button gradient="sunset"   icon="wb_sunny">Sunset</app-button>
+      <app-button gradient="ocean"    icon="water_drop">Ocean</app-button>
+      <app-button gradient="neon"     icon="flash_on">Neon</app-button>
+      <app-button gradient="aurora"   icon="stars">Aurora</app-button>
+    </div>
+
+    <div class="pg-row" style="margin-top: 12px;">
+      <app-button gradient="default" size="sm" icon="bolt">Small</app-button>
+      <app-button gradient="sunset"  size="md" icon="bolt">Medium</app-button>
+      <app-button gradient="ocean"   size="lg" icon="bolt">Large</app-button>
+      <app-button gradient="neon"    size="xl" icon="bolt">XLarge</app-button>
+      <app-button gradient="aurora"  icon="arrow_forward" iconPosition="right">Continuer</app-button>
+      <app-button gradient="default" [outline]="true"  icon="bookmark">Outline</app-button>
+      <app-button gradient="ocean"   [rounded]="true"  icon="send">Envoyer</app-button>
+    </div>
+
+    <div class="pg-row" style="margin-top: 12px;">
+      <app-button gradient="default" icon="close"     [circle]="true" ariaLabel="Fermer" />
+      <app-button gradient="sunset"  icon="edit"      [circle]="true" ariaLabel="Modifier" />
+      <app-button gradient="ocean"   icon="delete"    [circle]="true" ariaLabel="Supprimer" />
+      <app-button gradient="neon"    icon="check"     [circle]="true" ariaLabel="Valider" />
+      <app-button gradient="aurora"  icon="favorite"  [circle]="true" ariaLabel="Favori" />
+    </div>
+  </section>
+  <!--#endregion-->
+
+  <!--#region Apercu plein ecran des gradients
+      - cm - Bandes geantes pour bien voir chaque palette + son animation en boucle.
+  -->
+  <section style="margin-top: 24px;">
+    <h3>Apercu plein ecran</h3>
+    <p>5 bandes de 120px de haut, animation permanente, les couleurs vivent sous tes yeux.</p>
+
+    <div class="pg-gradient-stripes">
+      <div class="pg-gradient-stripe pg-gradient-stripe--default" (click)="CopyToClipboard(GradientVar('default'))">
+        <span>default</span>
+      </div>
+      <div class="pg-gradient-stripe pg-gradient-stripe--sunset" (click)="CopyToClipboard(GradientVar('sunset'))">
+        <span>sunset</span>
+      </div>
+      <div class="pg-gradient-stripe pg-gradient-stripe--ocean" (click)="CopyToClipboard(GradientVar('ocean'))">
+        <span>ocean</span>
+      </div>
+      <div class="pg-gradient-stripe pg-gradient-stripe--neon" (click)="CopyToClipboard(GradientVar('neon'))">
+        <span>neon</span>
+      </div>
+      <div class="pg-gradient-stripe pg-gradient-stripe--aurora" (click)="CopyToClipboard(GradientVar('aurora'))">
+        <span>aurora</span>
+      </div>
+    </div>
+  </section>
+  <!--#endregion-->
+
+</app-playground-section>

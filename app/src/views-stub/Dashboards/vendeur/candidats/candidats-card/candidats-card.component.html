@@ -1,0 +1,71 @@
+<!-- candidats-card.component.html -->
+<app-section-card [Title]="'Candidats pour ce bien'" [Icon]="'people'">
+    @if (DossierSelectionne) {
+    <div class="candidats-card">
+        <div class="candidats-header">
+            <span class="candidats-count">{{ Candidats.length }} professionnel(s)</span>
+        </div>
+
+        <app-list [Items]="Candidats" [Loading]="false" [LoadingMessage]="'Chargement des candidats...'"
+            [EmptyMessage]="'Aucun candidat pour le moment'" [EmptyIcon]="'person_off'">
+
+            <ng-template #itemTemplate let-app>
+                <div class="candidat-mini-card">
+                    <a [routerLink]="this.RouteUtils.GetRoute(this.Routes.PROFILPRO,{ profilUrl: app.professional?.profilUrl ?? '' })"
+                        target="_blank">
+                        <app-avatar [avatarUrl]="this.ApiBaseUrl + $safeNavigationMigration(app.professional?.avatarUrl)"
+                                    [alt]="this.getFullName(app.professional)" size="sm" [border]="true" borderColor="primary">
+                        </app-avatar>
+                    </a>
+
+                    <div class="candidat-info">
+                        <span class="candidat-nom">{{ this.getFullName(app.professional) }}</span>
+                        <span class="candidat-company">{{ app.professional?.companyName ?? 'Indépendant' }}</span>
+                        <span class="candidat-location">
+                            <span class="material-icons">location_on</span>
+                            {{ app.professional?.city ?? 'Non renseigné' }}
+                        </span>
+                    </div>
+                    <div class="candidat-meta">
+                        <span class="candidat-statut" [ngClass]="GetCandidatStatutClass(app)">
+                            {{ GetCandidatStatut(app) }}
+                        </span>
+                        <span class="candidat-date">{{ FormatDate(app.createdAt) }}</span>
+                    </div>
+                    <app-button [circle]="true" [icon]="'visibility'" variant="primary"
+                        (ButtonClick)="VoirCandidat(app)">
+                    </app-button>
+                </div>
+            </ng-template>
+
+            <ng-template #emptyTemplate>
+                <div class="empty-candidats">
+                    <span class="material-icons">person_off</span>
+                    <p>Aucun candidat pour le moment</p>
+                </div>
+            </ng-template>
+        </app-list>
+
+        <app-button variant="secondary" [fullWidth]="true" icon="arrow_forward" iconPosition="right"
+            (ButtonClick)="GoToCandidats()">Voir tous les candidats</app-button>
+    </div>
+    } @else {
+    <div class="no-selection">
+        <span class="material-icons">touch_app</span>
+        <p>Sélectionnez un dossier pour voir les candidats</p>
+    </div>
+    }
+</app-section-card>
+
+<!-- Popup de confirmation avec app-popup -->
+<app-popup [(isOpen)]="_ShowConfirmationPopup" [title]="'Confirmer la sélection'" [icon]="'check_circle'"
+    [type]="'success'" [showFooter]=true [confirmText]="'Confirmer'" [cancelText]="'Annuler'" [size]="'small'"
+    [closeOnEscape]="true" [closeOnOverlay]="true" (confirmed)="ConfirmerAction()" (cancelled)="AnnulerAction()"
+    (closed)="AnnulerAction()">
+
+    <p>{{ _ConfirmationRaison }}</p>
+</app-popup>
+
+<app-candidat-popup [(isOpen)]="_ShowCandidatPopup" [candidat]="_CandidatSelectionne"
+    (isOpenChange)="OnCandidatPopupChange($event)" (selectionner)="OuvrirPopupConfirmation($event)">
+</app-candidat-popup>

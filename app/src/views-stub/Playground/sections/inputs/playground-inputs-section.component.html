@@ -1,0 +1,239 @@
+<app-playground-section
+  id="input"
+  title="app-input"
+  category="Base"
+  description="Champ de saisie générique avec validation, icônes, et tous les types : text, email, number, password, tel, date, search, select, checkbox, textarea, autocomplete adresse."
+  [code]="InputCode">
+
+  <!-- - cm - Barre de toggles d'état (app-input type=checkbox compact, jamais d'input HTML natif) -->
+  <div class="playground__toggle-bar">
+    <app-input type="checkbox" label="Disabled" [compact]="true"
+      [value]="IsDisabled()" (valueChange)="ToggleDisabled($event)" />
+    <app-input type="checkbox" label="Readonly" [compact]="true"
+      [value]="IsReadonly()" (valueChange)="ToggleReadonly($event)" />
+    <app-input type="checkbox" label="Simuler erreur" [compact]="true"
+      [value]="SimulateError()" (valueChange)="ToggleSimulateError($event)" />
+  </div>
+
+  <div class="playground__demo--grid">
+    <app-input type="text" label="Nom" placeholder="Saisir un nom" [value]="DemoText()" (valueChange)="DemoText.set($event)" [required]="true" [maxLength]="50" [showCharCount]="true" [disabled]="IsDisabled()" [readonly]="IsReadonly()" />
+    <app-input type="email" label="Email" placeholder="exemple@domaine.fr" [value]="DemoEmail()" (valueChange)="DemoEmail.set($event)" [required]="SimulateError()" [immediateValidation]="SimulateError()" [disabled]="IsDisabled()" [readonly]="IsReadonly()" />
+    <app-input type="number" label="Montant (€)" placeholder="0" [min]="0" [max]="100000" [step]="100" [disabled]="IsDisabled()" [readonly]="IsReadonly()" />
+    <app-input type="password" label="Mot de passe" placeholder="********" [disabled]="IsDisabled()" [readonly]="IsReadonly()" />
+    <app-input type="tel" label="Téléphone" placeholder="06 12 34 56 78" [maxLength]="20" [disabled]="IsDisabled()" [readonly]="IsReadonly()" />
+    <app-input type="date" label="Date" [disabled]="IsDisabled()" [readonly]="IsReadonly()" />
+    <app-input type="search" label="Rechercher" placeholder="Rechercher..." iconLeft="search" [disabled]="IsDisabled()" [readonly]="IsReadonly()" />
+    <app-input type="select" label="Rôle" [options]="RoleOptions" placeholder="Sélectionner un rôle" [disabled]="IsDisabled()" [readonly]="IsReadonly()" />
+    <app-input type="select" label="Rôle (compact)" [options]="RoleOptions" [compact]="true" [disabled]="IsDisabled()" [readonly]="IsReadonly()" />
+    <app-input type="checkbox" label="Accepter les conditions" [disabled]="IsDisabled()" [readonly]="IsReadonly()" />
+    <app-input type="checkbox" label="Sélectionner tout" [indeterminate]="true" [disabled]="IsDisabled()" [readonly]="IsReadonly()" />
+    <app-input type="textarea" label="Description" placeholder="Saisir une description" [maxLength]="500" [showCharCount]="true" [disabled]="IsDisabled()" [readonly]="IsReadonly()" />
+    <app-input type="text" label="Avec préfixe/suffixe" prefix="€" suffix="/mois" [disabled]="IsDisabled()" [readonly]="IsReadonly()" />
+    <app-input type="text" label="Readonly" [readonly]="true" value="Valeur non modifiable" [disabled]="IsDisabled()" />
+    <app-input type="text" label="Avec hint" hint="Saisissez votre nom complet" [disabled]="IsDisabled()" [readonly]="IsReadonly()" />
+
+    <!-- - cm - Démo autocomplete adresse : placeholder parlant + FormControl pour montrer l'intégration complète. -->
+    <app-input type="text" [isAddressAutocomplete]="true"
+      label="Adresse (autocomplete)"
+      placeholder="Ex : 15 Rue de la Paix, Paris"
+      hint="Mapbox Search Box — bbox France métro + proximité Paris"
+      [formControl]="PlaygroundAddress"
+      (valueChange)="OnPlaygroundAddressChange($event)"
+      [disabled]="IsDisabled()" [readonly]="IsReadonly()" />
+  </div>
+
+  <!-- - cm - Aperçu JSON de l'adresse sélectionnée : illustre que le composant émet un objet AdressesDTO complet
+       (coords + postcode + city + type + relevance...) utilisable directement par un parent. -->
+  @if (SelectedAddressJson() !== 'null') {
+      <details class="playground__address-preview">
+        <summary>Adresse sélectionnée (objet AdressesDTO complet)</summary>
+        <pre>{{ SelectedAddressJson() }}</pre>
+      </details>
+    }
+
+    <!--#region Demo select dynamique
+         - cm - Montre 3 tailles (sm/md/lg) du meme select avec value/output live.
+         - cm - Absorption de l'ancien onglet "Input (select custom)" qui etait dans data/.
+    -->
+    <h3 class="pg-errors-title">Select dynamique (3 tailles)</h3>
+    <p class="pg-errors-desc">Demonstration d'un select dynamique lie a un signal : changer la valeur met a jour l'affichage ci-dessous.</p>
+
+    <div style="display:flex; flex-direction:column; gap:16px; padding:8px 0; max-width:340px;">
+      <div>
+        <span class="pg-errors-desc">size="sm" (compact, footer pagination)</span>
+        <app-input type="select" size="sm"
+          [value]="SelectValue()" [options]="SelectOptions"
+          placeholderOption="Tous"
+          (valueChange)="OnSelectChange($event)" />
+      </div>
+      <div>
+        <span class="pg-errors-desc">size="md" (defaut)</span>
+        <app-input type="select"
+          [value]="SelectValue()" [options]="SelectOptions"
+          placeholderOption="Tous"
+          (valueChange)="OnSelectChange($event)" />
+      </div>
+      <div>
+        <span class="pg-errors-desc">size="lg" (confortable)</span>
+        <app-input type="select" size="lg"
+          [value]="SelectValue()" [options]="SelectOptions"
+          placeholderOption="Tous"
+          (valueChange)="OnSelectChange($event)" />
+      </div>
+    </div>
+    <p style="margin:8px 0 0; font-size:0.85rem; color:var(--sm-text-secondary);">
+      Valeur courante : <strong>{{ SelectValue() }}</strong>
+    </p>
+    <!--#endregion-->
+
+  <!-- - cm - Démos d'erreurs : tableau compact 5 colonnes (validateur / label /
+       valeur / état / message), toutes les démos visibles en une page.
+       Les inputs restent éditables (signaux Angular, pas de FormControl parent). -->
+  <h3 class="pg-errors-title">Démos d'erreurs de validation</h3>
+  <p class="pg-errors-desc">Chaque ligne montre un validateur précis. Modifiez la valeur pour voir l'erreur correspondante.</p>
+
+  <table class="pg-errors-table">
+    <thead>
+      <tr>
+        <th scope="col" class="pg-col-validator">Validateur</th>
+        <th scope="col" class="pg-col-label">Label</th>
+        <th scope="col" class="pg-col-input">Valeur saisie</th>
+        <th scope="col" class="pg-col-state">État</th>
+        <th scope="col" class="pg-col-message">Message d'erreur</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td data-label="Validateur"><span class="pg-validator-badge" data-validator="required">required</span></td>
+        <td data-label="Label" class="pg-cell-label">Erreur required *</td>
+        <td data-label="Valeur" class="pg-cell-input">
+          <app-input type="text" placeholder="Saisissez quelque chose"
+            [value]="ErrorRequired()" (valueChange)="ErrorRequired.set($event)"
+            [required]="true" [immediateValidation]="true" [size]="'sm'" />
+        </td>
+        <td data-label="État" class="pg-cell-state"><span class="pg-state-badge" data-state="error">error</span></td>
+        <td data-label="Message" class="pg-cell-error">Ce champ est requis</td>
+      </tr>
+
+      <tr>
+        <td data-label="Validateur"><span class="pg-validator-badge" data-validator="email">email</span></td>
+        <td data-label="Label" class="pg-cell-label">Erreur email *</td>
+        <td data-label="Valeur" class="pg-cell-input">
+          <app-input type="email" placeholder="exemple@domaine.fr"
+            [value]="ErrorEmail()" (valueChange)="ErrorEmail.set($event)"
+            [required]="true" [immediateValidation]="true" [size]="'sm'" />
+        </td>
+        <td data-label="État" class="pg-cell-state"><span class="pg-state-badge" data-state="error">error</span></td>
+        <td data-label="Message" class="pg-cell-error">Adresse email invalide</td>
+      </tr>
+
+      <tr>
+        <td data-label="Validateur"><span class="pg-validator-badge" data-validator="minLength">minLength(3)</span></td>
+        <td data-label="Label" class="pg-cell-label">Erreur minLength (3)</td>
+        <td data-label="Valeur" class="pg-cell-input">
+          <app-input type="text" placeholder="Min 3 caractères"
+            [value]="ErrorMinLength()" (valueChange)="ErrorMinLength.set($event)"
+            [minLength]="3" [immediateValidation]="true" [size]="'sm'" />
+        </td>
+        <td data-label="État" class="pg-cell-state"><span class="pg-state-badge" data-state="error">error</span></td>
+        <td data-label="Message" class="pg-cell-error">Minimum 3 caractères</td>
+      </tr>
+
+      <tr>
+        <td data-label="Validateur"><span class="pg-validator-badge" data-validator="maxLength">maxLength(5)</span></td>
+        <td data-label="Label" class="pg-cell-label">Erreur maxLength (5)</td>
+        <td data-label="Valeur" class="pg-cell-input">
+          <app-input type="text" placeholder="Max 5 caractères"
+            [value]="ErrorMaxLength()" (valueChange)="ErrorMaxLength.set($event)"
+            [maxLength]="5" [showCharCount]="true" [immediateValidation]="true" [size]="'sm'" />
+        </td>
+        <td data-label="État" class="pg-cell-state"><span class="pg-state-badge" data-state="error">error</span></td>
+        <td data-label="Message" class="pg-cell-error">Maximum 5 caractères (saisi : 6)</td>
+      </tr>
+
+      <tr>
+        <td data-label="Validateur"><span class="pg-validator-badge" data-validator="min">min(10)</span></td>
+        <td data-label="Label" class="pg-cell-label">Erreur min (10)</td>
+        <td data-label="Valeur" class="pg-cell-input">
+          <app-input type="number" placeholder="Min 10"
+            [value]="ErrorMin()" (valueChange)="ErrorMin.set($event)"
+            [min]="10" [immediateValidation]="true" [size]="'sm'" />
+        </td>
+        <td data-label="État" class="pg-cell-state"><span class="pg-state-badge" data-state="error">error</span></td>
+        <td data-label="Message" class="pg-cell-error">Valeur minimum : 10</td>
+      </tr>
+
+      <tr>
+        <td data-label="Validateur"><span class="pg-validator-badge" data-validator="max">max(100)</span></td>
+        <td data-label="Label" class="pg-cell-label">Erreur max (100)</td>
+        <td data-label="Valeur" class="pg-cell-input">
+          <app-input type="number" placeholder="Max 100"
+            [value]="ErrorMax()" (valueChange)="ErrorMax.set($event)"
+            [max]="100" [immediateValidation]="true" [size]="'sm'" />
+        </td>
+        <td data-label="État" class="pg-cell-state"><span class="pg-state-badge" data-state="error">error</span></td>
+        <td data-label="Message" class="pg-cell-error">Valeur maximum : 100</td>
+      </tr>
+
+      <tr>
+        <td data-label="Validateur"><span class="pg-validator-badge" data-validator="pattern">pattern</span></td>
+        <td data-label="Label" class="pg-cell-label">Erreur pattern (tél)</td>
+        <td data-label="Valeur" class="pg-cell-input">
+          <app-input type="tel" placeholder="06 12 34 56 78"
+            [value]="ErrorPattern()" (valueChange)="ErrorPattern.set($event)"
+            [maxLength]="20" [immediateValidation]="true" [size]="'sm'" />
+        </td>
+        <td data-label="État" class="pg-cell-state"><span class="pg-state-badge" data-state="error">error</span></td>
+        <td data-label="Message" class="pg-cell-error">Format invalide</td>
+      </tr>
+
+      <tr>
+        <td data-label="Validateur"><span class="pg-validator-badge" data-validator="custom">customValidator</span></td>
+        <td data-label="Label" class="pg-cell-label">Erreur custom (pas de chiffre) *</td>
+        <td data-label="Valeur" class="pg-cell-input">
+          <app-input type="text" placeholder="Lettres uniquement"
+            [value]="ErrorCustom()" (valueChange)="ErrorCustom.set($event)"
+            [required]="true" [customValidators]="NoDigitsValidator" [immediateValidation]="true" [size]="'sm'" />
+        </td>
+        <td data-label="État" class="pg-cell-state"><span class="pg-state-badge" data-state="error">error</span></td>
+        <td data-label="Message" class="pg-cell-error">Valeur invalide</td>
+      </tr>
+
+      <tr>
+        <td data-label="Validateur"><span class="pg-validator-badge" data-validator="maxLength">maxLength(10)</span></td>
+        <td data-label="Label" class="pg-cell-label">Erreur maxLength (textarea) *</td>
+        <td data-label="Valeur" class="pg-cell-input">
+          <app-input type="text" placeholder="10 car. max (textarea démo)" [maxLength]="10"
+            [value]="ErrorTextarea()" (valueChange)="ErrorTextarea.set($event)"
+            [required]="true" [showCharCount]="true" [immediateValidation]="true" [size]="'sm'" />
+        </td>
+        <td data-label="État" class="pg-cell-state"><span class="pg-state-badge" data-state="error">error</span></td>
+        <td data-label="Message" class="pg-cell-error">Maximum 10 caractères (saisi : 24)</td>
+      </tr>
+
+      <tr>
+        <td data-label="Validateur"><span class="pg-validator-badge" data-validator="hint">hint + error</span></td>
+        <td data-label="Label" class="pg-cell-label">Hint vs erreur</td>
+        <td data-label="Valeur" class="pg-cell-input">
+          <app-input type="text" placeholder="Saisissez au moins 3 caractères"
+            [value]="ErrorHint()" (valueChange)="ErrorHint.set($event)"
+            [minLength]="3" hint="Saisissez au moins 3 caractères" [immediateValidation]="true" [size]="'sm'" />
+        </td>
+        <td data-label="État" class="pg-cell-state"><span class="pg-state-badge" data-state="error">error</span></td>
+        <td data-label="Message" class="pg-cell-error">Minimum 3 caractères</td>
+      </tr>
+
+      <tr>
+        <td data-label="Validateur"><span class="pg-validator-badge" data-validator="combo">email + required + maxLength</span></td>
+        <td data-label="Label" class="pg-cell-label">Email + required + maxLength *</td>
+        <td data-label="Valeur" class="pg-cell-input">
+          <app-input type="email" placeholder="exemple@domaine.fr"
+            [value]="ErrorCombo()" (valueChange)="ErrorCombo.set($event)"
+            [required]="true" [maxLength]="20" [immediateValidation]="true" [size]="'sm'" />
+        </td>
+        <td data-label="État" class="pg-cell-state"><span class="pg-state-badge" data-state="error">error</span></td>
+        <td data-label="Message" class="pg-cell-error">Plusieurs règles : email + required + maxLength</td>
+      </tr>
+    </tbody>
+  </table>
+</app-playground-section>

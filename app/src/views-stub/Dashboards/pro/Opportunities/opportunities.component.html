@@ -1,0 +1,47 @@
+<app-section-card [Title]="'Opportunités de mandats'" [ShowSeeAll]="ShowSeeAll" (SeeAllClick)="GoToOpportunities()">
+
+    <app-list [Items]="this.ActiveTab === 'nouvelles' ? this.OpportunitesNouvelles : this.OpportunitesCandidatures"
+              [Loading]="Loading"
+              [LoadingMessage]="'Chargement des opportunités...'"
+              [EmptyMessage]="'Aucune opportunité pour le moment'"
+              [EmptyIcon]="'inbox'"
+              [Tabs]="GetOpportunitesTabs()"
+              [ActiveTab]="ActiveTab"
+              [Paginated]="true"
+              [ServerSidePagination]="true"
+              [PageSize]="this.PaginationByTab[this.ActiveTab].pageSize"
+              [TotalItemsCount]="this.State.GetOpportunitesCount(this.ActiveTab)"
+              [ShowPageSizeSelector]="true"
+              [ShowFirstLastButtons]="true"
+              [ShowFilterBar]="true"
+              [ShowFilterApplyButton]="true"
+              (FilterChange)="OnFilterChanged($event)"
+              [FilterSchema]="OpportunityFilterSchema"
+              [FilterInitialValue]="Filter"
+              (TabChange)="SetActiveTab($event)"
+              (PageChange)="OnPageChange($event)"
+              (PageSizeChange)="OnPageSizeChange($event)">
+
+        <ng-template #itemTemplate let-opp>
+            <app-opportunities-item [Opportunity]="opp"
+                                    [IsNouvellesTab]="this.ActiveTab === 'nouvelles'"
+                                    [StatutLabel]="this.State.GetStatutLabel(opp)"
+                                    [StatutClass]="this.State.GetStatutClass(opp)"
+                                    [CommissionEstimee]="FormatPrice(this.State.GetCommissionEstimee(opp))"
+                                    [FormattedPrice]="FormatPrice(opp.priceRangeMin)"
+                                    [TimeAgo]="this.State.GetTimeAgo(opp.createdAt)"
+                                    [ApplicationStatus]="this.State.GetApplicationStatus(opp.id)"
+                                    [ApplicationStatusLabel]="this.State.GetApplicationStatusLabel(opp.id)"
+                                    [ApplicationStatusIcon]="this.State.GetApplicationStatusIcon(opp.id)"
+                                    (Candidater)="this.Candidater($event)">
+            </app-opportunities-item>
+        </ng-template>
+
+    </app-list>
+
+</app-section-card>
+
+<app-candidature-popup [(isOpen)]="this.ShowCandidatureModal"
+                       [opportunity]="this.OpportuniteSelectionnee"
+                       (candidatureCreated)="this.OnCandidatureCreated($event)">
+</app-candidature-popup>

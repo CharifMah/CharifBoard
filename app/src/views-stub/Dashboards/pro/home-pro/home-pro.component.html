@@ -1,0 +1,27 @@
+<!-- home-pro.component.html -->
+<div class="dashboard-home">
+    <app-dashboard-header [showGreeting]="true" [title]="''" [subtitle]="'Gérez vos prospect et candidatures en temps réel.'">
+    </app-dashboard-header>
+
+    <app-splitter [Sizes]="[70, 30]" [MinPanelSize]="300" [GutterSize]="12">
+        <!-- Panel 1 : Colonne gauche - Opportunités + Mandats -->
+        <ng-container panel1>
+            <div class="left-column">
+                <app-opportunities [ShowSeeAll]="true"></app-opportunities>
+                <app-mandats [ShowSeeAll]="true"></app-mandats>
+            </div>
+        </ng-container>
+
+        <!-- Panel 2 : Colonne droite - Messages + Stats -->
+        <ng-container panel2>
+            <div class="right-column">
+                <app-section-card [Title]="'Messages'" [ShowSeeAll]="true" (SeeAllClick)="GoToMessages()">
+                    <app-message-card></app-message-card>
+                </app-section-card>
+                <app-section-card [Title]="'Statistiques'">
+                    <app-stats-card></app-stats-card>
+                </app-section-card>
+            </div>
+        </ng-container>
+    </app-splitter>
+</div>

@@ -2,14 +2,18 @@
 
 <app-social-bar />
 
-<div class="main">
-  <app-title />
-  <app-about />
-</div>
+@if (IsPlayground()) {
+  <router-outlet />
+} @else {
+  <div class="main">
+    <app-title />
+    <app-about />
+  </div>
 
-<app-windows-host />
+  <app-windows-host />
 
-<div class="container">
-  <app-cards />
-  <app-sliders />
-</div>
+  <div class="container">
+    <app-cards />
+    <app-sliders />
+  </div>
+}

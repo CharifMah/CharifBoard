@@ -1,0 +1,103 @@
+<app-grid #projetGrid
+          [Data]="EffectiveData()"
+          [Loading]="EffectiveLoading()"
+          [Error]="EffectiveError()"
+          [TrackBy]="TrackByProjet"
+          [Filterable]="Filterable"
+          [FilterFields]="ProjetFilterFields()"
+          [Editable]="!ReadOnly"
+          (CellEdited)="OnCellEdited($event)"
+          (ActionClicked)="OnActionClicked($event)"
+          [AutoAddRow]="false"
+          [NewRowFactory]="CreateNewProjet"
+          [AllowAddRow]="!ReadOnly"
+          (RowAdded)="OnRowAdded($event)"
+          [AllowExport]="true"
+          ExportFilenamePrefix="'projets'"
+          [ExportApiPath]="'/api/Recherches/ExportXlsx'"
+          [ExportFormat]="'both'"
+          [StorageKey]="StorageKey"
+          [EmptyTextCle]="'recherches.grid.empty'"
+          [ServerSide]="ServerSide"
+          [Selectable]="Selectable"
+          (SelectionChanged)="OnSelectionChanged($event)">
+
+  <div gridBulkActions>
+    <app-button variant="danger" size="sm" [icon]="'delete'"
+                (ButtonClick)="OnAskBulkDelete()">
+      Supprimer la sélection
+    </app-button>
+  </div>
+
+  <app-grid-column Key="nomProjet"
+                   LabelCle="recherches.NomProjet"
+                   [Sortable]="true" Width="200px" [Editable]="true" EditorType="text"
+                   [EditorValidator]="GetFieldValidator('nomProjet')" [EditorMaxLength]="GetFieldMaxLength('nomProjet')"
+                   [ShowEditor]="!ReadOnly"
+                   EditorPlaceholderCle="recherches.nom_projetPlaceholder"/>
+
+  <app-grid-column Key="contactId"
+                   LabelCle="recherches.ContactId"
+                   [Sortable]="true" Width="180px" [Editable]="!ReadOnly" EditorType="select"
+                   [EditorOptions]="ContactOptions()" [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="typeRechercheId"
+                   LabelCle="recherches.TypeRechercheId"
+                   [Sortable]="true" Width="110px" [Editable]="true" EditorType="select"
+                   [EditorOptions]="TypeRechercheOptions()" [EditorValidator]="GetFieldValidator('typeRechercheId')"
+                   [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="budgetMax"
+                   LabelCle="recherches.BudgetMax"
+                   [Sortable]="true" Width="140px" [Editable]="true" EditorType="number" [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="surfaceMin"
+                   LabelCle="recherches.SurfaceMin"
+                   [Sortable]="false" Width="120px" [Editable]="true" EditorType="number" [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="nbChambres"
+                   LabelCle="recherches.NbChambres"
+                   [Sortable]="false" Width="110px" [Editable]="true" EditorType="number" [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="secteurRecherche"
+                   LabelCle="recherches.SecteurRecherche"
+                   [Sortable]="false" Width="160px" [Editable]="true" EditorType="text"
+                   [EditorValidator]="GetFieldValidator('secteurRecherche')"
+                   [EditorMaxLength]="GetFieldMaxLength('secteurRecherche')" [ShowEditor]="!ReadOnly"
+                   EditorPlaceholderCle="recherches.secteur_recherchePlaceholder"/>
+
+  <app-grid-column Key="statutId"
+                   LabelCle="recherches.StatutId"
+                   [Sortable]="true" Width="130px" [Editable]="true" EditorType="select"
+                   [EditorOptions]="StatutOptionsProjet()" [ShowEditor]="!ReadOnly"/>
+</app-grid>
+
+<app-popup [(isOpen)]="ShowDeletePopup"
+           title="Supprimer ce projet ?"
+           subtitle="Cette action est irréversible."
+           icon="delete" type="error" size="small"
+           [showFooter]="true"
+           confirmText="Supprimer"
+           cancelText="Annuler"
+           [confirmLoading]="Deleting()"
+           (confirmed)="OnConfirmDelete()"
+           (cancelled)="OnCancelDelete()"
+           (closed)="OnCancelDelete()">
+  @if (RowToDelete()) {
+    <p>Confirmer la suppression du projet sélectionné ?</p>
+  }
+</app-popup>
+
+<app-popup [(isOpen)]="ShowBulkDeletePopup"
+           title="Supprimer la sélection"
+           [subtitle]="'Confirmer la suppression de ' + SelectedRows().length + ' projet(s) ?'"
+           icon="delete" type="error" size="small"
+           [showFooter]="true"
+           confirmText="Supprimer"
+           cancelText="Annuler"
+           [confirmLoading]="Deleting()"
+           (confirmed)="OnConfirmBulkDelete()"
+           (cancelled)="OnCancelBulkDelete()"
+           (closed)="OnCancelBulkDelete()">
+  <p>Cette action est irréversible et supprimera tous les projets cochés.</p>
+</app-popup>

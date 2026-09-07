@@ -1,0 +1,39 @@
+<!-- - cm - Filter bar -->
+<app-playground-section
+  id="filter-bar"
+  title="app-filter-bar"
+  category="Form"
+  description="Barre de filtres générique avec champs text/select/date/checkbox, repliable."
+  [code]="FilterBarCode">
+  <div class="playground__toggle-bar">
+    <app-input type="checkbox" label="Disabled" [compact]="true"
+      [value]="FilterBarDisabled()" (valueChange)="ToggleFilterBarDisabled($event)" />
+  </div>
+  <app-filter-bar [Fields]="EffectiveFilterFields()" [Collapsible]="true" [StartCollapsed]="false"
+    (FilterChange)="OnFilterChange($event)" />
+</app-playground-section>
+
+<!-- - cm - Upload file -->
+<app-playground-section
+  id="upload-file"
+  title="app-upload-file"
+  category="Form"
+  description="Upload de fichiers avec types configurables, preview, drag & drop, conversion WebP."
+  [code]="UploadFileCode">
+  <div class="playground__toggle-bar">
+    <app-input type="checkbox" label="Auto upload" [compact]="true"
+      [value]="UploadAutoUpload()" (valueChange)="ToggleUploadAuto($event)" />
+  </div>
+  <app-upload-file [fileTypes]="UploadFileTypes" [showPreview]="true" [autoUpload]="UploadAutoUpload()"
+    (fileSelected)="OnFileSelected($event)" (uploadError)="OnUploadError($event)" (uploadSuccess)="OnUploadSuccess($event)" />
+</app-playground-section>
+
+<!-- - cm - Jodit editor -->
+<app-playground-section
+  id="jodit-editor"
+  title="app-jodit-editor"
+  category="Form"
+  description="Éditeur WYSIWYG Jodit (toolbar type Outlook), compatible [(ngModel)]."
+  [code]="JoditCode">
+  <app-jodit-editor [(ngModel)]="JoditContent" />
+</app-playground-section>

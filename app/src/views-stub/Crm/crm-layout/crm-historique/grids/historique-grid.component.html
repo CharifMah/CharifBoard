@@ -1,0 +1,87 @@
+<app-grid #historiqueGrid
+          [Data]="EffectiveData()"
+          [Loading]="EffectiveLoading()"
+          [Error]="EffectiveError()"
+          [TrackBy]="TrackByHistorique"
+          [Filterable]="Filterable"
+          [FilterFields]="FilterFields()"
+          [Editable]="!ReadOnly"
+          [EditActionLabelCle]="'historique-echanges.gridActionsEdit'"
+          [DeleteActionLabelCle]="'historique-echanges.gridActionsDelete'"
+          (CellEdited)="OnCellEdited($event)"
+          (ActionClicked)="OnActionClicked($event)"
+          [AutoAddRow]="false"
+          [NewRowFactory]="CreateNewHistorique"
+          [AllowAddRow]="!ReadOnly"
+          (RowAdded)="OnRowAdded($event)"
+          [AllowExport]="true"
+          ExportFilenamePrefix="'historique'"
+          [ExportApiPath]="'/api/HistoriqueEchanges/ExportXlsx'"
+          [ExportFormat]="'both'"
+          [StorageKey]="StorageKey"
+          [EmptyTextCle]="'historique-echanges.gridEmpty'"
+          [ServerSide]="ServerSide"
+          [Selectable]="Selectable"
+          (SelectionChanged)="OnSelectionChanged($event)">
+
+  <div gridBulkActions>
+    <app-button variant="danger" size="sm" [icon]="'delete'"
+      (ButtonClick)="OnAskBulkDelete()">
+      Supprimer la sélection
+    </app-button>
+  </div>
+
+  <app-grid-column Key="actionEchange" LabelCle="historique-echanges.action"
+    [Sortable]="true" Width="180px" [Editable]="!ReadOnly" EditorType="text"
+    [EditorValidator]="GetFieldValidator('actionEchange')" [EditorMaxLength]="GetFieldMaxLength('actionEchange')" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="historique-echanges.actionPlaceholder"/>
+
+  <app-grid-column Key="typeEchangeId" LabelCle="historique-echanges.type"
+    [Sortable]="true" Width="130px" [Editable]="!ReadOnly" EditorType="select"
+    [EditorOptions]="TypeEchangeOptions()" [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="contactId" LabelCle="historique-echanges.contact"
+    [Sortable]="true" Width="180px" [Editable]="!ReadOnly" EditorType="select"
+    [EditorOptions]="ContactOptions()" [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="compteRendu" LabelCle="historique-echanges.compteRendu"
+    [Sortable]="false" Width="300px" [Editable]="!ReadOnly" EditorType="textarea" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="historique-echanges.compteRenduPlaceholder"/>
+
+  <app-grid-column Key="resultatProchaineAction" LabelCle="historique-echanges.prochaineAction"
+    [Sortable]="false" Width="200px" [Editable]="!ReadOnly" EditorType="textarea" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="historique-echanges.prochaineActionPlaceholder"/>
+
+  <app-grid-column Key="dateEchange" LabelCle="historique-echanges.date"
+    [Sortable]="true" Width="140px" [Editable]="!ReadOnly" EditorType="date" [ShowEditor]="!ReadOnly"/>
+</app-grid>
+
+<app-popup [(isOpen)]="ShowDeletePopup"
+  title="Supprimer cet échange ?"
+  subtitle="Cette action est irréversible."
+  icon="delete" type="error" size="small"
+  [showFooter]="true"
+  confirmText="Supprimer"
+  cancelText="Annuler"
+  [confirmLoading]="Deleting()"
+  (confirmed)="OnConfirmDelete()"
+  (cancelled)="OnCancelDelete()"
+  (closed)="OnCancelDelete()">
+  @if (RowToDelete()) {
+    <p>Confirmer la suppression de l'échange sélectionné ?</p>
+  }
+</app-popup>
+
+<app-popup [(isOpen)]="ShowBulkDeletePopup"
+  title="Supprimer la sélection"
+  [subtitle]="'Confirmer la suppression de ' + SelectedRows().length + ' échange(s) ?'"
+  icon="delete" type="error" size="small"
+  [showFooter]="true"
+  confirmText="Supprimer"
+  cancelText="Annuler"
+  [confirmLoading]="Deleting()"
+  (confirmed)="OnConfirmBulkDelete()"
+  (cancelled)="OnCancelBulkDelete()"
+  (closed)="OnCancelBulkDelete()">
+  <p>Cette action est irréversible et supprimera tous les échanges cochés.</p>
+</app-popup>

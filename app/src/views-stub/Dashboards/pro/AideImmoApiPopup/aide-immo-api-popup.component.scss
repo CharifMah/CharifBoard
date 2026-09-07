@@ -1,0 +1,116 @@
+// - cm - aide-immo-api-popup.component.scss
+@use 'variables' as *;
+
+//#region ImmodvisorGuide
+.immodvisor-guide {
+    padding: 0 20px;
+    max-width: 800px;
+    margin: 0 auto;
+
+    .guide-section {
+        margin-bottom: 30px;
+
+        .guide-step {
+            color: $primary-color;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid $primary-color;
+        }
+
+        p {
+            margin-bottom: 10px;
+            line-height: 1.5;
+            color: $text-primary;
+        }
+
+        .code-block {
+            background-color: $gray-100;
+            padding: 10px;
+            border-radius: $border-radius-sm;
+            font-family: monospace;
+            margin: 10px 0;
+            border-left: 3px solid $primary-color;
+        }
+
+        .guide-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: $border-radius-md;
+            box-shadow: $shadow-light;
+            margin: 15px 0;
+            border: 1px solid $border-color;
+            transition: $transition-normal;
+
+            &:hover {
+                box-shadow: $shadow-medium;
+                transform: translateY(-2px);
+            }
+        }
+
+        strong {
+            font-weight: 600;
+            color: $primary-color;
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 10px 0;
+
+            li {
+                margin-bottom: 8px;
+                list-style-type: disc;
+                color: $text-primary;
+            }
+        }
+    }
+
+    .guide-conclusion {
+        margin-top: 40px;
+        text-align: center;
+        padding: 20px;
+        background-color: $primary-light;
+        background: linear-gradient(135deg, $primary-light, $white);
+        border-radius: $border-radius-md;
+        box-shadow: $shadow-light;
+
+        h3 {
+            color: $primary-dark;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: $text-primary;
+        }
+    }
+}
+
+//#endregion
+
+//#region PopupOverride
+// - cm - Surcharge des styles pour le composant popup
+::ng-deep {
+    .popup-type-info .popup-icon {
+        color: $primary-color;
+    }
+
+    .popup-title {
+        color: $primary-dark;
+    }
+
+    .popup-subtitle {
+        color: $text-secondary;
+    }
+
+    .btn-cancel {
+        background-color: $surface-hover;
+        color: $text-secondary;
+
+        &:hover {
+            background-color: $border-color-strong;
+        }
+    }
+}
+//#endregion

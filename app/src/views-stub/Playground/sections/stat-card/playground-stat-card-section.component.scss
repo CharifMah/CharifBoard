@@ -1,0 +1,94 @@
+@use 'variables' as *;
+
+//#region Switcher
+.playground-stat-card__switcher {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+  background: $surface-muted;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+}
+
+.playground-stat-card__switcher-label {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
+}
+
+.playground-stat-card__variant-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+}
+
+.playground-stat-card__variant-btn {
+  padding: 6px 12px;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $text-secondary;
+  background: $card-background;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-sm;
+  cursor: pointer;
+  transition: background $transition-fast, color $transition-fast, border-color $transition-fast, transform $transition-fast;
+
+  &:hover {
+    background: $surface-hover;
+    border-color: $border-color-strong;
+    color: $text-primary;
+  }
+
+  &--active {
+    background: $primary-color;
+    color: $white;
+    border-color: $primary-color;
+    box-shadow: $shadow-light;
+
+    &:hover {
+      background: $primary-dark;
+      color: $white;
+    }
+  }
+}
+//#endregion
+
+//#region Grid
+.playground-stat-card__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: $spacing-md;
+}
+//#endregion
+
+//#region Note
+.playground-stat-card__note {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  margin-top: $spacing-md;
+  padding: $spacing-sm $spacing-md;
+  background: rgba($info-color, 0.08);
+  border-left: 3px solid $info-color;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-sm;
+  color: $text-secondary;
+
+  .material-icons {
+    font-size: 18px;
+    color: $info-color;
+  }
+
+  code {
+    padding: 1px 6px;
+    background: $surface-muted;
+    border-radius: 4px;
+    font-family: ui-monospace, 'SF Mono', Menlo, Monaco, Consolas, monospace;
+    font-size: $font-size-xs;
+    color: $text-primary;
+  }
+}
+//endregion

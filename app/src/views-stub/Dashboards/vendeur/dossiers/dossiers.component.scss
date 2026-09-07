@@ -1,0 +1,448 @@
+@use 'variables' as *;
+
+//#region DossiersPage
+.dossiers-page {
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  @media (max-width: #{$mobile-breakpoint}) {
+    padding: 0 6px; // - cm - Padding horizontal réduit sur mobile
+  }
+
+  // - cm - Header actions — bandeau soft avec lignes fines en haut et en bas
+  > .header-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding: 0.5rem 0.25rem;
+    border-top: 1px solid rgba(var(--sm-text-secondary-rgb), 0.1);
+    border-bottom: 1px solid rgba(var(--sm-text-secondary-rgb), 0.1);
+
+    ::ng-deep app-button .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: $border-radius;
+      background: linear-gradient(135deg, $accent-color, $primary-color);
+      box-shadow: 0 6px 20px rgba($accent-color, 0.45);
+      color: $white;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform $transition-normal, box-shadow $transition-normal;
+      animation: pulse-glow 2.5s ease-in-out infinite;
+
+      &:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 8px 28px rgba($accent-color, 0.6);
+        animation-play-state: paused;
+      }
+
+      &:active {
+        transform: translateY(0) scale(0.99);
+      }
+    }
+
+    @media (max-width: #{$tablet-breakpoint}) {
+      padding: 0.4rem 0.25rem;
+    }
+
+    @media (max-width: #{$mobile-breakpoint}) {
+      justify-content: center;
+      margin-bottom: 0.85rem;
+      padding: 0.4rem;
+
+      ::ng-deep app-button .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 9px 16px;
+        font-size: 12px;
+        letter-spacing: 0.2px;
+      }
+    }
+  }
+}
+//#endregion
+
+//#region PageHeader
+.page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+  }
+
+  .header-content {
+    h1 {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: $text-primary;
+      margin: 0 0 0.5rem;
+
+      @media (min-width: 768px) {
+        font-size: 1.75rem;
+      }
+
+      .material-icons {
+        color: $primary-color;
+        font-size: 1.75rem;
+
+        @media (min-width: 768px) {
+          font-size: 2rem;
+        }
+      }
+    }
+
+    p {
+      color: $text-secondary;
+      margin: 0;
+      font-size: 0.9rem;
+
+      @media (min-width: 768px) {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+
+    @media (min-width: 576px) {
+      flex-direction: row;
+      align-items: center;
+      width: auto;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: $card-background;
+      border: 1px solid rgba(var(--sm-text-secondary-rgb), 0.2);
+      border-radius: $border-radius;
+      padding: 0.5rem 0.75rem;
+      width: 100%;
+
+      @media (min-width: 576px) {
+        width: 220px;
+      }
+
+      @media (min-width: 768px) {
+        width: 250px;
+      }
+
+      .material-icons {
+        color: $text-secondary;
+        font-size: 1.25rem;
+      }
+
+      input {
+        border: none;
+        background: transparent;
+        outline: none;
+        font-size: 0.875rem;
+        color: $text-primary;
+        width: 100%;
+
+        &::placeholder {
+          color: $text-secondary;
+        }
+      }
+    }
+  }
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+
+  @media (min-width: 992px) {
+    grid-template-columns: 1fr 380px;
+    gap: 2rem;
+  }
+
+  @media (min-width: 1200px) {
+    grid-template-columns: 1fr 420px;
+  }
+}
+
+.dossiers-section {
+  // - cm - Override list-content pour afficher correctement
+  ::ng-deep .list-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    @media (min-width: 576px) {
+      gap: 1rem;
+    }
+  }
+}
+
+.detail-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  @media (min-width: 992px) {
+    position: sticky;
+    top: 1rem;
+    height: fit-content;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+  }
+}
+
+.candidats-card {
+  background: $card-background;
+  border-radius: $border-radius;
+  padding: 1rem;
+  box-shadow: $shadow;
+
+  @media (min-width: 768px) {
+    padding: 1.25rem;
+  }
+
+  .candidats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(var(--sm-text-secondary-rgb), 0.1);
+
+    h3 {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: $text-primary;
+      margin: 0;
+
+      .material-icons {
+        color: $primary-color;
+        font-size: 1.25rem;
+      }
+    }
+
+    .candidats-count {
+      font-size: 0.8rem;
+      color: $text-secondary;
+      background: rgba($primary-color, 0.1);
+      padding: 0.25rem 0.5rem;
+      border-radius: $border-radius-sm;
+    }
+  }
+  // - cm - Override pour la liste de candidats dans la sidebar
+  ::ng-deep .list-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+  }
+}
+
+.vente-detail-card {
+  background: $card-background;
+  border-radius: $border-radius;
+  padding: 1.25rem;
+  box-shadow: $shadow;
+
+  .vente-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(var(--sm-text-secondary-rgb), 0.1);
+
+    .success-icon {
+      font-size: 1.75rem;
+      color: $success-color;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: $text-primary;
+      margin: 0;
+    }
+  }
+
+  .vente-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .label {
+        font-size: 0.85rem;
+        color: $text-secondary;
+      }
+
+      .value {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: $text-primary;
+
+        &.prix {
+          color: $primary-color;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+
+  .economies-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, rgba($success-color, 0.1), rgba($success-color, 0.05));
+    border-radius: $border-radius;
+
+    .material-icons {
+      font-size: 1.5rem;
+      color: $success-color;
+    }
+
+    .economies-info {
+      display: flex;
+      flex-direction: column;
+
+      .economies-label {
+        font-size: 0.8rem;
+        color: $text-secondary;
+      }
+
+      .economies-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: $success-color;
+      }
+    }
+  }
+}
+
+.estimation-card {
+  background: $card-background;
+  border-radius: $border-radius;
+  padding: 1rem;
+  box-shadow: $shadow;
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: $text-primary;
+    margin: 0 0 0.75rem;
+
+    .material-icons {
+      color: $primary-color;
+      font-size: 1.25rem;
+    }
+  }
+
+  .estimation-result {
+    text-align: center;
+    padding: 0.75rem;
+    background: rgba($primary-color, 0.05);
+    border-radius: $border-radius;
+
+    .time {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: $primary-color;
+      margin-bottom: 0.25rem;
+    }
+
+    .label {
+      font-size: 0.8rem;
+      color: $text-secondary;
+    }
+  }
+}
+
+.no-selection {
+  text-align: center;
+  padding: 2rem 1rem;
+  background: $card-background;
+  border-radius: $border-radius;
+  box-shadow: $shadow;
+
+  .material-icons {
+    font-size: 3rem;
+    color: rgba($primary-color, 0.3);
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    margin: 0;
+    color: $text-secondary;
+    font-size: 0.95rem;
+  }
+}
+
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  background: $card-background;
+  border-radius: $border-radius;
+  box-shadow: $shadow;
+
+  .material-icons {
+    font-size: 3.5rem;
+    color: rgba(var(--sm-text-secondary-rgb), 0.3);
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: $text-primary;
+    margin: 0 0 0.5rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: $text-secondary;
+    margin: 0 0 1.5rem;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+

@@ -1,0 +1,295 @@
+<app-playground-section
+id="button"
+title="app-button"
+category="Base"
+description="Bouton générique avec variants (primary/secondary/success/danger/warning/info/light/dark/ghost), tailles (sm/md/lg/xl), icônes, loading, disabled, outline, circle, rounded, groupement, routerLink."
+[code]="ButtonCode">
+
+<div class="pg-buttons">
+
+  <!--#region Toggle bar
+      - cm - Les 3 toggles actifs sur la base, mais chaque sous-section peut
+      - cm - avoir ses propres toggles locaux (ex: etats sans loading global).
+  -->
+  <div class="playground__toggle-bar">
+    <app-input type="checkbox" label="Loading" [compact]="true"
+      [value]="IsLoading()" (valueChange)="ToggleLoading($event)" />
+    <app-input type="checkbox" label="Disabled" [compact]="true"
+      [value]="IsDisabled()" (valueChange)="ToggleDisabled($event)" />
+    <app-input type="checkbox" label="Variante erreur" [compact]="true"
+      [value]="IsError()" (valueChange)="ToggleError($event)" />
+  </div>
+  <!--#endregion-->
+
+  <!--#region Variantes semantiques
+      - cm - Toutes les couleurs semantiques en filled, appliquees sur la barre d etat.
+      - cm - L erreur bascule le primary en danger.
+  -->
+  <section>
+    <h3>Couleurs semantiques</h3>
+    <p>9 variantes filled, chaque variante a son propre sheen anime au hover.</p>
+    <div class="pg-row">
+      <app-button [variant]="IsError() ? 'danger' : 'primary'" icon="save"
+        [loading]="IsLoading()" [disabled]="IsDisabled()">Primary</app-button>
+      <app-button variant="secondary" icon="edit"
+        [loading]="IsLoading()" [disabled]="IsDisabled()">Secondary</app-button>
+      <app-button variant="success" icon="check"
+        [loading]="IsLoading()" [disabled]="IsDisabled()">Success</app-button>
+      <app-button variant="danger" icon="delete"
+        [loading]="IsLoading()" [disabled]="IsDisabled()">Danger</app-button>
+      <app-button variant="warning" icon="warning"
+        [loading]="IsLoading()" [disabled]="IsDisabled()">Warning</app-button>
+      <app-button variant="info" icon="info"
+        [loading]="IsLoading()" [disabled]="IsDisabled()">Info</app-button>
+      <app-button variant="light" icon="light_mode"
+        [loading]="IsLoading()" [disabled]="IsDisabled()">Light</app-button>
+      <app-button variant="dark" icon="dark_mode"
+        [loading]="IsLoading()" [disabled]="IsDisabled()">Dark</app-button>
+      <app-button variant="ghost" icon="close"
+        [loading]="IsLoading()" [disabled]="IsDisabled()">Ghost</app-button>
+    </div>
+  </section>
+  <!--#endregion-->
+
+      <!--#region Gradients animes plein bouton
+                  - cm - 5 palettes de gradient anime en permanence (pas juste au hover).
+                  - cm - Active par l'input [gradient] du composant. Les palettes viennent
+                  - cm - des variables $gradient-* de variables.scss (auto-reactif).
+              -->
+              <section>
+                <h3>Gradients animes</h3>
+                <p>5 palettes plein bouton : gradient anime permanent, profondeur hover. Couleurs definies dans <code>variables.scss</code>.</p>
+
+                <!-- - cm - Toggle-bar locale pour voir Loading/Disabled/Error sur les gradients. -->
+                <div class="pg-row" style="margin-bottom: 12px;">
+                  <app-input type="checkbox" label="Loading" [compact]="true"
+                    [value]="IsGradientLoading()" (valueChange)="ToggleGradientLoading($event)" />
+                  <app-input type="checkbox" label="Disabled" [compact]="true"
+                    [value]="IsGradientDisabled()" (valueChange)="ToggleGradientDisabled($event)" />
+                  <app-input type="checkbox" label="Error (gradient danger)" [compact]="true"
+                    [value]="IsGradientError()" (valueChange)="ToggleGradientError($event)" />
+                </div>
+
+                <div class="pg-row">
+                  <app-button gradient="default" icon="auto_awesome"
+                    [loading]="IsGradientLoading()" [disabled]="IsGradientDisabled()">Default</app-button>
+                  <app-button gradient="sunset" icon="wb_sunny"
+                    [loading]="IsGradientLoading()" [disabled]="IsGradientDisabled()">Sunset</app-button>
+                  <app-button gradient="ocean" icon="water_drop"
+                    [loading]="IsGradientLoading()" [disabled]="IsGradientDisabled()">Ocean</app-button>
+                  <app-button gradient="neon" icon="flash_on"
+                    [loading]="IsGradientLoading()" [disabled]="IsGradientDisabled()">Neon</app-button>
+                  <app-button gradient="aurora" icon="stars"
+                    [loading]="IsGradientLoading()" [disabled]="IsGradientDisabled()">Aurora</app-button>
+                  @if (IsGradientError()) {
+                    <app-button gradient="default" icon="error" variant="danger"
+                      [loading]="IsGradientLoading()" [disabled]="IsGradientDisabled()">Error</app-button>
+                  }
+                </div>
+
+                <div class="pg-row" style="margin-top: 12px;">
+                  <app-button gradient="default" size="sm" icon="bolt">Small</app-button>
+                  <app-button gradient="sunset" size="md" icon="bolt">Medium</app-button>
+                  <app-button gradient="ocean" size="lg" icon="bolt">Large</app-button>
+                  <app-button gradient="neon" size="xl" icon="bolt">XLarge</app-button>
+                  <app-button gradient="aurora" icon="arrow_forward" iconPosition="right">Continuer</app-button>
+                  <app-button gradient="default" icon="add" [circle]="true" ariaLabel="Ajouter" />
+                  <app-button gradient="ocean" icon="send" [rounded]="true">Envoyer</app-button>
+                  <app-button gradient="aurora" [outline]="true" icon="bookmark">Sauvegarder</app-button>
+                </div>
+
+                <div class="pg-row" style="margin-top: 12px;">
+                  <app-button gradient="default" icon="close" [circle]="true" ariaLabel="Fermer" />
+                  <app-button gradient="sunset" icon="edit" [circle]="true" ariaLabel="Modifier" />
+                  <app-button gradient="ocean" icon="delete" [circle]="true" ariaLabel="Supprimer" />
+                  <app-button gradient="neon" icon="check" [circle]="true" ariaLabel="Valider" />
+                  <app-button gradient="aurora" icon="favorite" [circle]="true" ariaLabel="Favori" />
+                </div>
+              </section>
+              <!--#endregion-->
+
+          <!--#region Tailles
+      - cm - Grille compacte sm/md/lg/xl avec libelles : montre la grille 4-8px
+      - cm - et la hierarchie des hauteurs / border-radius.
+  -->
+  <section>
+    <h3>Tailles</h3>
+    <p>4 tailles (sm/md/lg/xl), grille de padding 4-8px coherente.</p>
+    <div class="pg-row">
+      <app-button variant="primary" size="sm" icon="bolt">Small</app-button>
+      <app-button variant="primary" size="md" icon="bolt">Medium</app-button>
+      <app-button variant="primary" size="lg" icon="bolt">Large</app-button>
+      <app-button variant="primary" size="xl" icon="bolt">XLarge</app-button>
+    </div>
+  </section>
+  <!--#endregion-->
+
+  <!--#region Outline
+      - cm - Chaque couleur en outline : utile pour confirmer visuellement que le rendu
+      - cm - a bien un hover background tinte (pas de "ghost vide").
+  -->
+  <section>
+    <h3>Outline</h3>
+    <p>Bordure fine + hover background tinte a la couleur du variant. Equilibre le poids visuel avec les filled.</p>
+    <div class="pg-row">
+      <app-button variant="primary" [outline]="true" icon="bookmark">Outline</app-button>
+      <app-button variant="secondary" [outline]="true" icon="settings">Outline</app-button>
+      <app-button variant="success" [outline]="true" icon="check_circle">Outline</app-button>
+      <app-button variant="danger" [outline]="true" icon="block">Outline</app-button>
+      <app-button variant="warning" [outline]="true" icon="schedule">Outline</app-button>
+      <app-button variant="info" [outline]="true" icon="help">Outline</app-button>
+      <app-button variant="dark" [outline]="true" icon="lock">Outline</app-button>
+    </div>
+  </section>
+  <!--#endregion-->
+
+  <!--#region Icônes
+      - cm - Position gauche (defaut), droite (iconPosition="right"), standalone (circle)
+      - cm - avec ariaLabel obligatoire pour l accessibilite.
+  -->
+  <section>
+    <h3>Positions d icônes</h3>
+    <p>Icône gauche (defaut), icône droite, ou bouton cercle standalone (accessibilite via ariaLabel).</p>
+    <div class="pg-row">
+      <app-button variant="primary" icon="save">Enregistrer</app-button>
+      <app-button variant="success" icon="arrow_forward" iconPosition="right">Continuer</app-button>
+      <app-button variant="danger" icon="delete" iconPosition="right">Supprimer</app-button>
+      <app-button variant="primary" icon="add" [circle]="true" ariaLabel="Ajouter" />
+      <app-button variant="secondary" icon="edit" [circle]="true" ariaLabel="Modifier" />
+      <app-button variant="info" icon="visibility" [circle]="true" ariaLabel="Voir" />
+      <app-button variant="light" icon="share" [circle]="true" ariaLabel="Partager" />
+      <app-button variant="dark" icon="more_vert" [circle]="true" ariaLabel="Plus" />
+    </div>
+  </section>
+  <!--#endregion-->
+
+  <!--#region Icon grid (cercles)
+      - cm - Grille d icones Material en cercle : exemples concrets d utilisation de btn-circle.
+      - cm - Les couleurs des cercles s adaptent au variant (primary/info/danger/...).
+  -->
+  <section>
+    <h3>Icones cercles (Material)</h3>
+    <p>15 icones standalone, variantes primary/info/danger pour distinguer les actions.</p>
+    <div class="pg-icon-grid">
+      <app-button variant="primary" icon="home" [circle]="true" ariaLabel="Accueil" />
+      <app-button variant="primary" icon="search" [circle]="true" ariaLabel="Rechercher" />
+      <app-button variant="primary" icon="favorite" [circle]="true" ariaLabel="Favori" />
+      <app-button variant="primary" icon="bookmark" [circle]="true" ariaLabel="Marquer" />
+      <app-button variant="primary" icon="notifications" [circle]="true" ariaLabel="Notifications" />
+      <app-button variant="info" icon="mail" [circle]="true" ariaLabel="Email" />
+      <app-button variant="info" icon="phone" [circle]="true" ariaLabel="Telephone" />
+      <app-button variant="info" icon="chat" [circle]="true" ariaLabel="Message" />
+      <app-button variant="success" icon="check" [circle]="true" ariaLabel="Valider" />
+      <app-button variant="success" icon="cloud_done" [circle]="true" ariaLabel="Synchronise" />
+      <app-button variant="warning" icon="edit" [circle]="true" ariaLabel="Modifier" />
+      <app-button variant="warning" icon="schedule" [circle]="true" ariaLabel="Horaire" />
+      <app-button variant="danger" icon="delete" [circle]="true" ariaLabel="Supprimer" />
+      <app-button variant="danger" icon="block" [circle]="true" ariaLabel="Bloquer" />
+      <app-button variant="dark" icon="more_horiz" [circle]="true" ariaLabel="Plus" />
+    </div>
+  </section>
+  <!--#endregion-->
+
+  <!--#region Etats (Normal / Loading / Disabled)
+      - cm - Toggles locaux pour cette sous-section : on montre l etat chargeur sans casser
+      - cm - les autres demos. Trois colonnes pour comparer visuellement les 3 etats.
+  -->
+  <section>
+    <h3>Etats cote a cote</h3>
+    <p>Comparaison Normal / Loading / Disabled avec 3 couleurs semantiques.</p>
+    <div class="pg-state-grid">
+      <div class="pg-state-card">
+        <span class="pg-state-label">Normal</span>
+        <app-button variant="primary" icon="save">Enregistrer</app-button>
+        <app-button variant="success" icon="check">Valider</app-button>
+        <app-button variant="danger" icon="delete">Supprimer</app-button>
+      </div>
+      <div class="pg-state-card">
+        <span class="pg-state-label">Loading</span>
+        <app-button variant="primary" icon="save" [loading]="true">Enregistrer</app-button>
+        <app-button variant="success" icon="check" [loading]="true">Valider</app-button>
+        <app-button variant="danger" icon="delete" [loading]="true">Supprimer</app-button>
+      </div>
+      <div class="pg-state-card">
+        <span class="pg-state-label">Disabled</span>
+        <app-button variant="primary" icon="save" [disabled]="true">Enregistrer</app-button>
+        <app-button variant="success" icon="check" [disabled]="true">Valider</app-button>
+        <app-button variant="danger" icon="delete" [disabled]="true">Supprimer</app-button>
+      </div>
+    </div>
+  </section>
+  <!--#endregion-->
+
+  <!--#region Groupes / Toolbar
+      - cm - Toolbar avec 3 boutons : visuel compact, toutes les couleurs en ghost/outline
+      - cm - pour eviter la surcharge visuelle. Cas reel : tabs / segmented control.
+  -->
+  <section>
+    <h3>Toolbar (groupe)</h3>
+    <p>3 boutons regroupes, meme variant pour eviter la surcharge. Utilisable comme segmented control.</p>
+    <div class="pg-toolbar">
+      <app-button variant="ghost" icon="view_list">Liste</app-button>
+      <app-button variant="ghost" icon="view_module">Cartes</app-button>
+      <app-button variant="ghost" icon="view_map">Carte</app-button>
+    </div>
+    <div class="pg-toolbar" style="margin-top: 12px;">
+      <app-button variant="primary" icon="format_align_left" ariaLabel="Aligner gauche" [circle]="true" />
+      <app-button variant="primary" icon="format_align_center" ariaLabel="Aligner centre" [circle]="true" />
+      <app-button variant="primary" icon="format_align_right" ariaLabel="Aligner droite" [circle]="true" />
+    </div>
+  </section>
+  <!--#endregion-->
+
+  <!--#region Cas pratiques
+      - cm - 4 exemples de mise en page reelle :
+      - cm - (1) confirmation destructive, (2) navigation fiche, (3) save bar,
+      - cm - (4) toolbar CRM (filtres rapides).
+  -->
+  <section>
+    <h3>Cas d usage</h3>
+    <p>Exemples de mise en page reelle (popup confirm, save bar, nav link, toolbar CRM).</p>
+
+    <!-- - cm - Confirmation destructive : danger outline a gauche (annuler), danger filled a droite (confirmer). -->
+    <div class="pg-use-case">
+      <span class="pg-use-case-label">Supprimer definitivement cette annonce ? Cette action est irreversible.</span>
+      <div class="pg-use-case-actions">
+        <app-button variant="ghost">Annuler</app-button>
+        <app-button variant="danger" icon="delete">Supprimer definitivement</app-button>
+      </div>
+    </div>
+
+    <!-- - cm - Save bar : primary filled (action principale) + ghost (secondaire). -->
+    <div class="pg-use-case">
+      <span class="pg-use-case-label">Modifications non enregistrees sur la fiche bien "Appartement Paris 11".</span>
+      <div class="pg-use-case-actions">
+        <app-button variant="ghost">Annuler</app-button>
+        <app-button variant="primary" icon="save">Enregistrer le brouillon</app-button>
+      </div>
+    </div>
+
+    <!-- - cm - Toolbar CRM : filtres rapides en chaines, icones seules en circle. -->
+    <div class="pg-use-case">
+      <span class="pg-use-case-label">CRM : actions rapides sur la fiche contact selectionnee.</span>
+      <div class="pg-use-case-actions">
+        <app-button variant="primary" icon="phone" [circle]="true" ariaLabel="Appeler" />
+        <app-button variant="info" icon="mail" [circle]="true" ariaLabel="Email" />
+        <app-button variant="success" icon="event" [circle]="true" ariaLabel="Planifier rdv" />
+        <app-button variant="warning" icon="edit_note" [circle]="true" ariaLabel="Note" />
+        <app-button variant="dark" icon="more_vert" [circle]="true" ariaLabel="Plus" />
+      </div>
+    </div>
+
+    <!-- - cm - Navigation fiche : primary outline + ghost (etats coexistants). -->
+    <div class="pg-use-case">
+      <span class="pg-use-case-label">Fiche bien "Maison Lyon 3" — vue courtier.</span>
+      <div class="pg-use-case-actions">
+        <app-button variant="ghost" icon="arrow_back">Retour</app-button>
+        <app-button variant="primary" [outline]="true" icon="open_in_new">Apercu</app-button>
+        <app-button variant="primary" icon="send">Envoyer aux acheteurs</app-button>
+      </div>
+    </div>
+  </section>
+  <!--#endregion-->
+
+</div>
+</app-playground-section>

@@ -1,0 +1,14 @@
+<app-playground-section
+  id="avatar"
+  title="app-avatar"
+  category="Data"
+  description="Avatar utilisateur avec statut en ligne, tailles, bordure, image."
+  [code]="AvatarCode">
+  <div class="playground__demo-inline">
+    <app-avatar [size]="'sm'" />
+    <app-avatar [size]="'md'" [status]="'online'" />
+    <app-avatar [size]="'xl'" [border]="true" borderColor="#1976d2" />
+    <app-avatar avatarUrl="https://i.pravatar.cc/150?img=1" [size]="'lg'" alt="Avatar demo" />
+    <app-avatar [size]="'md'" [status]="'offline'" />
+  </div>
+</app-playground-section>

@@ -1,0 +1,55 @@
+<h3>app-section-card</h3>
+<app-playground-section
+  id="section-card"
+  title="app-section-card (mode statique)"
+  category="Data"
+  description="Carte section avec titre, icone, lien Voir tout."
+  [code]="SectionCardCode">
+  <app-section-card Title="Mes contacts" Icon="contacts" [ShowSeeAll]="true" SeeAllLabel="Voir tout" SeeAllLink="/crm/contacts">
+    <p>Contenu de la section card. Utilisee dans les dashboards pour grouper des elements.</p>
+  </app-section-card>
+</app-playground-section>
+
+<h3>app-section-card (mode repliable)</h3>
+<app-playground-section
+  id="section-card-collapsible"
+  title="app-section-card (Collapsible=true)"
+  category="Data"
+  description="Carte section repliable avec slot header-title (remplace Title si projete), slot header-actions (boutons contextuels), binding [Collapsed] et evenement (CollapsedChange). Cliquer sur le titre ou le chevron pour plier/deplier. Cliquer sur un bouton d'action ne replie PAS la carte (stopPropagation automatique)."
+  [code]="SectionCardCollapsibleCode">
+  <app-section-card [Collapsible]="true" [Collapsed]="false"
+    Icon="folder">
+    <div slot="header-title">
+      <strong>Titre personnalise</strong>
+      <span style="color: var(--sm-text-secondary); font-size: 0.85em;">(slot header-title)</span>
+    </div>
+    <div slot="header-actions">
+      <app-button variant="ghost" size="sm" [circle]="true" icon="edit" ariaLabel="Editer"
+        (ButtonClick)="OnCollapsibleAction('edit')" />
+      <app-button variant="ghost" size="sm" [circle]="true" icon="delete" ariaLabel="Supprimer"
+        (ButtonClick)="OnCollapsibleAction('delete')" />
+    </div>
+    <p>Contenu de la carte repliable. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+  </app-section-card>
+</app-playground-section>
+
+<h3>app-help-card</h3>
+<app-playground-section
+  id="help-card"
+  title="app-help-card"
+  category="Data"
+  description="Carte d'aide avec titre, message, bouton d'action."
+  [code]="HelpCardCode">
+  <app-help-card title="Besoin d'aide ?" message="Consultez notre documentation pour configurer votre CRM." buttonText="Voir l'aide" />
+</app-playground-section>
+
+<h3>app-scroll-indicator</h3>
+<app-playground-section
+  id="scroll-indicator"
+  title="app-scroll-indicator"
+  category="Navigation"
+  description="Bouton flottant Remonter en haut avec defilement fluide."
+  [code]="ScrollIndicatorCode">
+  <app-scroll-indicator label="Remonter" />
+</app-playground-section>

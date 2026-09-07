@@ -1,0 +1,65 @@
+@use 'variables' as *;
+
+//#region Host
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+//#endregion
+
+//#region Main content
+.main-content {
+  width: 100%;
+  min-height: 0;
+  padding: $spacing-md 0;
+}
+//#endregion
+
+//#region View transitions
+.view-enter {
+  width: 100%;
+  animation: fadeIn $transition-slow ease both;
+}
+//#endregion
+
+//#region Vue IA (chat agent embedded plein écran)
+// - cm - La page IA rend le chat agent en mode embedded ; on lui donne une hauteur pleine
+// pour que le chat (height: 100%) occupe toute la zone de contenu.
+.view-enter--ia {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - #{$navbar-height});
+  min-height: 600px;
+  width: 100%;
+
+  app-crm-agent-chat {
+    flex: 1;
+    display: block;
+    min-height: 0;
+  }
+}
+//#endregion
+
+//#region Defer placeholders (@defer blocks)
+// - cm - Placeholder leger rendu pendant le chargement d'une sous-vue CRM en lazy.
+// Utilise les variables thematisees (light + dark) via $surface-muted / $surface-hover.
+.view-defer-placeholder {
+  width: 100%;
+  min-height: 320px;
+  border-radius: $radius-md;
+  background: linear-gradient(
+    90deg,
+    $surface-muted 0%,
+    $surface-hover 50%,
+    $surface-muted 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+.view-defer-placeholder--ia {
+  flex: 1;
+  min-height: 600px;
+}
+//#endregion

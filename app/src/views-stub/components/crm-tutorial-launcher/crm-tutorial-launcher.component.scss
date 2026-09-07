@@ -1,0 +1,88 @@
+@use 'variables' as *;
+
+//#region Launcher
+// - cm - FAB circulaire violet en bas a droite, decale a gauche de la bulle chat IA (60px + 8px de gap)
+// - cm - Enveloppe via app-tooltip : le host :host(.tooltip) rend l'aire de survol legement plus grande
+// - cm - donc on remet position:relative pour que le bouton garde son ancrage fixed sans casser le tooltip
+.crm-tutorial-launcher {
+  position: fixed;
+  right: 92px;
+  bottom: 24px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  color: $white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  // - cm - Au-dessus du contenu mais sous l'overlay du tutoriel (qui est a 10050)
+  z-index: $z-index-popup;
+  // - cm - Ombre renforcee pour rester lisible dans les deux themes
+  box-shadow: 0 6px 18px rgba($primary-color, 0.4), 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: background-color $transition-fast, box-shadow $transition-fast,
+              transform $transition-fast;
+
+  &:hover,
+  &:focus-visible {
+    background: linear-gradient(135deg, $primary-dark 0%, $primary-color 100%);
+    box-shadow: 0 10px 24px rgba($primary-color, 0.55), 0 3px 6px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    outline: 3px solid $primary-light;
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &__icon {
+    font-size: 26px;
+    line-height: 1;
+    color: $white;
+    // - cm - Ombre subtile pour detachement sur les fonds clairs comme sombres
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    transition: transform $transition-fast;
+  }
+
+  // - cm - Halo subtil autour du FAB : ombre etalee qui tient en dark comme en light
+  &__halo {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    box-shadow: 0 0 0 0 rgba($primary-color, 0.45);
+    transition: box-shadow $transition-normal ease;
+  }
+
+  &:hover &__icon,
+  &:focus-visible &__icon {
+    transform: scale(1.08);
+  }
+
+  &:hover &__halo,
+  &:focus-visible &__halo {
+    box-shadow: 0 0 0 10px rgba($primary-color, 0);
+  }
+}
+//#endregion
+
+//#region Responsive
+@media (max-width: #{$mobile-breakpoint}) {
+  .crm-tutorial-launcher {
+    right: 76px;
+    bottom: 16px;
+    width: 44px;
+    height: 44px;
+
+    &__icon {
+      font-size: 22px;
+    }
+  }
+}
+//#endregion

@@ -1,0 +1,522 @@
+<!-- - cm - Données structurées JSON-LD injectées via SeoService au ngOnInit -->
+<!-- - cm - Page d'estimation : structure sémantique pour SEO + layout large -->
+<main class="estimation-page">
+
+    <!-- - cm - En-tête SEO : un seul H1, badge de confiance et points clés inline -->
+    <header class="estimation-hero">
+        <span class="estimation-hero__badge">
+            <app-tooltip Text="La base DVF+ regroupe des ventes immobilières publiées officiellement. Elle sert à comparer le bien avec des transactions réelles observées sur le marché." Position="bottom">
+                <span class="material-icons" aria-hidden="true">verified</span>
+            </app-tooltip>
+            Estimation basée sur les données officielles DVF+
+        </span>
+
+        <h1 class="estimation-hero__title" appScrollReveal [Animation]="'word'">
+            Estimez gratuitement la valeur de votre bien immobilier
+        </h1>
+
+        <p class="estimation-hero__subtitle">
+            Obtenez une fourchette de prix fiable en quelques minutes, basée sur les données officielles
+            des transactions immobilières (DVF+). Sans engagement et sans démarchage non souhaité.
+        </p>
+
+        <ul class="estimation-hero__perks" aria-label="Avantages de l'estimation">
+            <li class="estimation-hero__perk">
+                <app-tooltip Text="L'estimation nécessite une adresse et quelques caractéristiques du bien afin de rechercher des transactions comparables autour de la zone indiquée." Position="top">
+                    <span class="material-icons" aria-hidden="true">schedule</span>
+                </app-tooltip>
+                Résultat en 2 minutes
+            </li>
+            <li class="estimation-hero__perk">
+                <app-tooltip Text="Le résultat affiché est une estimation indicative. Il donne un ordre de grandeur à partir des données disponibles, sans remplacer une expertise immobilière complète." Position="top">
+                    <span class="material-icons" aria-hidden="true">euro</span>
+                </app-tooltip>
+                100% gratuit
+            </li>
+            <li class="estimation-hero__perk">
+                <app-tooltip Text="Les informations saisies permettent de calculer une estimation plus cohérente : localisation, surface, état du bien et caractéristiques principales." Position="top">
+                    <span class="material-icons" aria-hidden="true">lock</span>
+                </app-tooltip>
+                Données confidentielles
+            </li>
+        </ul>
+    </header>
+
+    <!-- - cm - Layout principal en grille : panneau latéral + zone de formulaire -->
+    <div class="estimation-layout">
+
+        <!-- - cm - Panneau latéral de réassurance / contenu SEO -->
+        <aside class="estimation-aside" appScrollReveal [Animation]="'fade'" aria-label="Pourquoi utiliser notre estimateur">
+            <section class="aside-block">
+                <h2 class="aside-block__title">Une estimation en toute confiance</h2>
+                <ul class="aside-list">
+                    <li class="aside-list__item">
+                        <app-tooltip Text="DVF+ est utilisée comme source de comparaison, car elle contient des mutations immobilières réelles avec prix, dates, surfaces et localisations." Position="right">
+                            <span class="aside-list__icon material-icons" aria-hidden="true">verified</span>
+                        </app-tooltip>
+                        <span>Données officielles DVF+ issues des ventes réelles</span>
+                    </li>
+                    <li class="aside-list__item">
+                        <app-tooltip Text="Le calcul croise la position du bien avec ses caractéristiques pour sélectionner des ventes proches et restituer une fourchette de valeur estimée." Position="right">
+                            <span class="aside-list__icon material-icons" aria-hidden="true">bolt</span>
+                        </app-tooltip>
+                        <span>Résultat immédiat, 100% gratuit et sans engagement</span>
+                    </li>
+                    <li class="aside-list__item">
+                        <app-tooltip Text="Plus les données renseignées sont précises, plus la comparaison avec les biens vendus récemment peut être pertinente." Position="right">
+                            <span class="aside-list__icon material-icons" aria-hidden="true">lock</span>
+                        </app-tooltip>
+                        <span>Vos données restent confidentielles et protégées (RGPD)</span>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="aside-block aside-block--steps">
+                <h2 class="aside-block__title">Comment ça marche ?</h2>
+                <ol class="aside-steps">
+                    <li class="aside-steps__item"><strong>Localisez</strong> votre bien grâce à l'adresse.</li>
+                    <li class="aside-steps__item"><strong>Décrivez</strong> ses caractéristiques principales.</li>
+                    <li class="aside-steps__item"><strong>Recevez</strong> votre estimation détaillée.</li>
+                </ol>
+            </section>
+        </aside>
+
+        <!-- - cm - Zone principale : stepper + formulaire / résultat -->
+        <section class="estimation-main" appScrollReveal [Animation]="'fade'" aria-label="Formulaire d'estimation">
+
+            <!-- - cm - Barre de progression cliquable (StepperCurrentStep mappe le résultat interne sur l'étape 3) -->
+            @if (CurrentStep >= 1 && CurrentStep <= 6) {
+            <app-stepper [Steps]="EstimationSteps" [CurrentStep]="StepperCurrentStep" (StepClick)="GoToStep($event)"></app-stepper>
+            }
+
+            <!-- - cm - Formulaire principal (Étapes 1 à 2) -->
+            <form [formGroup]="EstimationForm" class="estimation-form" (ngSubmit)="NextStep()" (keydown.enter)="OnFormEnter($event)">
+
+                <!-- - cm - ÉTAPE 1 : Localisation -->
+                @if (CurrentStep === 1) {
+                <fieldset class="step-card" formGroupName="step1">
+                    <legend class="step-card__legend">
+                        <h2 class="step-card__title">Où se trouve votre bien ?</h2>
+                        <p class="step-card__hint">Saisissez l'adresse complète pour affiner les comparables.</p>
+                    </legend>
+
+                    <div class="form-grid form-grid--single">
+                        <div class="form-group form-group--full">
+                            <app-input formControlName="address"
+                                       id="address"
+                                       name="address"
+                                       [label]="'Adresse'"
+                                       [type]="'text'"
+                                       [placeholder]="'Ex: 15 Rue de la Paix, Paris'"
+                                       [required]="true"
+                                       [customValidators]="AddressValidators"
+                                       [errorMessages]="AddressErrorMessages"
+                                       [isAddressAutocomplete]="true"
+                                       autocomplete="street-address">
+                            </app-input>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <app-button variant="primary" size="lg" icon="arrow_forward" iconPosition="right" (ButtonClick)="NextStep()">Suivant</app-button>
+                    </div>
+                </fieldset>
+                }
+
+                <!-- - cm - ÉTAPE 2 : Type & Surface -->
+                @if (CurrentStep === 2) {
+                <fieldset class="step-card" formGroupName="step2">
+                    <legend class="step-card__legend">
+                        <h2 class="step-card__title">Quel type de bien ?</h2>
+                        <p class="step-card__hint">Ces premières données cadrent les transactions comparables.</p>
+                    </legend>
+
+                    <div class="form-grid form-grid--two">
+                        <div class="form-group">
+                            <label class="form-group__label form-group__label--with-tooltip" for="propertyType">
+                                Type de bien <span class="required-mark">*</span>
+                                <app-tooltip Text="Le type de bien permet d'éviter les comparaisons incohérentes." Position="top">
+                                    <span class="tooltip-info material-icons" aria-hidden="true">help</span>
+                                </app-tooltip>
+                            </label>
+                            <div class="native-select-wrapper">
+                                <select id="propertyType" class="native-select" formControlName="propertyType">
+                                    <option value="maison">Maison</option>
+                                    <option value="appartement">Appartement</option>
+                                    <option value="terrain">Terrain</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-group__label form-group__label--with-tooltip" for="surface">
+                                Surface (m²) <span class="required-mark">*</span>
+                                <app-tooltip Text="La surface habitable est utilisée pour calculer le prix au m²." Position="top">
+                                    <span class="tooltip-info material-icons" aria-hidden="true">help</span>
+                                </app-tooltip>
+                            </label>
+                            <app-input formControlName="surface" id="surface" name="surface" [label]="''" [type]="'number'" [placeholder]="'Ex: 65'" [required]="true" [min]="9"
+                                       autocomplete="floor-size"
+                                       [errorMessages]="{ required: 'Surface requise (min 9m²)', min: 'Valeur minimum : 9' }"></app-input>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-group__label form-group__label--with-tooltip" for="nbRooms">
+                                Nombre de pièces
+                                <app-tooltip Text="La distribution intérieure influence aussi la valeur." Position="top">
+                                    <span class="tooltip-info material-icons" aria-hidden="true">help</span>
+                                </app-tooltip>
+                            </label>
+                            <app-input formControlName="nbRooms" id="nbRooms" name="nbRooms" [label]="''" [type]="'number'" [placeholder]="'Ex: 4'"
+                                       autocomplete="rooms"></app-input>
+                        </div>
+                    </div>
+
+                    <p class="subliminal-msg">{{ SubliminalMessages[2] }}</p>
+
+                    <div class="actions actions--end">
+                        <app-button variant="primary" size="lg" icon="arrow_forward" iconPosition="right" (ButtonClick)="NextStep()">Suivant</app-button>
+                    </div>
+                </fieldset>
+                }
+
+                <!-- - cm - ÉTAPE 3 : État & Contexte -->
+                @if (CurrentStep === 3) {
+                <fieldset class="step-card" formGroupName="step2">
+                    <legend class="step-card__legend">
+                        <h2 class="step-card__title">Dans quel état se trouve le bien ?</h2>
+                        <p class="step-card__hint">Les détails valorisent mieux les écarts entre deux biens proches.</p>
+                    </legend>
+
+                    <div class="form-grid form-grid--two">
+                        <div class="form-group">
+                            <label class="form-group__label form-group__label--with-tooltip" for="condition">
+                                État général <span class="required-mark">*</span>
+                                <app-tooltip Text="Un bien neuf, rénové ou à rénover ne se compare pas de la même manière." Position="top">
+                                    <span class="tooltip-info material-icons" aria-hidden="true">help</span>
+                                </app-tooltip>
+                            </label>
+                            <div class="native-select-wrapper">
+                                <select id="condition" class="native-select" formControlName="condition">
+                                    <option value="a_renover">À rénover</option>
+                                    <option value="correct">Correct</option>
+                                    <option value="bon">Bon</option>
+                                    <option value="excellent">Excellent</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-group__label form-group__label--with-tooltip" for="yearBuilt">
+                                Année de construction
+                                <app-tooltip Text="L'année donne un contexte sur le bâtiment et ses normes." Position="top">
+                                    <span class="tooltip-info material-icons" aria-hidden="true">help</span>
+                                </app-tooltip>
+                            </label>
+                            <app-input formControlName="yearBuilt" id="yearBuilt" name="yearBuilt" [label]="''" [type]="'number'" [placeholder]="'Ex: 1995'"
+                                       autocomplete="build-year"></app-input>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-group__label form-group__label--with-tooltip" for="surfaceTerrain">
+                                Surface du terrain (m²)
+                                <app-tooltip Text="Surtout utile pour les maisons et les terrains." Position="top">
+                                    <span class="tooltip-info material-icons" aria-hidden="true">help</span>
+                                </app-tooltip>
+                            </label>
+                            <app-input formControlName="surfaceTerrain" id="surfaceTerrain" name="surfaceTerrain" [label]="''" [type]="'number'" [placeholder]="'Optionnel'"
+                                       autocomplete="land-size"></app-input>
+                        </div>
+                    </div>
+
+                    <p class="subliminal-msg">{{ SubliminalMessages[3] }}</p>
+
+                    <div class="actions actions-split">
+                        <app-button variant="light" size="lg" icon="arrow_back" (ButtonClick)="PrevStep()">Retour</app-button>
+                        <app-button variant="primary" size="lg" icon="arrow_forward" iconPosition="right" (ButtonClick)="NextStep()">Suivant</app-button>
+                    </div>
+                </fieldset>
+                }
+
+                <!-- - cm - ÉTAPE 4 : Atouts du bien -->
+                @if (CurrentStep === 4) {
+                <fieldset class="step-card" formGroupName="step2">
+                    <legend class="step-card__legend">
+                        <h2 class="step-card__title">Quels atouts pour votre bien ?</h2>
+                        <p class="step-card__hint">Ces éléments aident à préparer un dossier plus convaincant.</p>
+                    </legend>
+
+                    <div class="form-group form-group--full">
+                        <span class="form-group__label form-group__label--with-tooltip">
+                            Équipements
+                            <app-tooltip Text="Les atouts comme un garage ou une terrasse peuvent expliquer des écarts de prix." Position="top">
+                                <span class="tooltip-info material-icons" aria-hidden="true">help</span>
+                            </app-tooltip>
+                        </span>
+                        <div class="checkboxes">
+                            <label class="checkbox-pill"><input type="checkbox" formControlName="hasGarage" /> <span>Garage</span></label>
+                            <label class="checkbox-pill"><input type="checkbox" formControlName="hasTerrace" /> <span>Terrasse</span></label>
+                            <label class="checkbox-pill"><input type="checkbox" formControlName="hasGarden" /> <span>Jardin</span></label>
+                        </div>
+                    </div>
+
+                    <aside class="soft-account-nudge" aria-label="Incitation à créer un compte SellMatch">
+                        <span class="soft-account-nudge__icon material-icons" aria-hidden="true">folder_open</span>
+                        <div>
+                            <strong>Votre dossier prend déjà forme.</strong>
+                            <span>Après l'estimation, créez votre compte SellMatch pour le sauvegarder et comparer les bons professionnels sans repartir de zéro.</span>
+                        </div>
+                    </aside>
+
+                    <p class="subliminal-msg">{{ SubliminalMessages[4] }}</p>
+
+                    <div class="actions actions-split">
+                        <app-button variant="light" size="lg" icon="arrow_back" (ButtonClick)="PrevStep()">Retour</app-button>
+                        <app-button variant="primary" size="lg" icon="arrow_forward" iconPosition="right" (ButtonClick)="NextStep()">Suivant</app-button>
+                    </div>
+                </fieldset>
+                }
+            </form>
+
+            <!-- - cm - ÉTAPE 5 : RÉSULTAT (affiché sans inscription) -->
+            @if (CurrentStep === 5 && EstimationResult) {
+            <div class="result-screen">
+
+                <!-- - cm - Bloc stratégique SellMatch (en premier plan) -->
+                @if (ShowSellMatchPitch) {
+                <aside class="sellmatch-pitch" aria-label="Comparer les professionnels">
+                    <div class="sellmatch-pitch__header">
+                        <span class="material-icons sellmatch-pitch__icon" aria-hidden="true">handshake</span>
+                        <div>
+                            <strong class="sellmatch-pitch__title">Connaître la valeur d'un bien, c'est bien.</strong>
+                            <p class="sellmatch-pitch__text">Choisir le bon professionnel pour le vendre, c'est souvent ce qui fait gagner ou perdre plusieurs milliers d'euros.</p>
+                        </div>
+                    </div>
+                    <ul class="sellmatch-pitch__list" role="list">
+                        <li role="listitem">
+                            <span class="material-icons" aria-hidden="true">lock</span>
+                            Vos coordonnées restent privées
+                        </li>
+                        <li role="listitem">
+                            <span class="material-icons" aria-hidden="true">folder</span>
+                            Vous créez un seul dossier
+                        </li>
+                        <li role="listitem">
+                            <span class="material-icons" aria-hidden="true">business</span>
+                            Les professionnels candidatent
+                        </li>
+                        <li role="listitem">
+                            <span class="material-icons" aria-hidden="true">compare_arrows</span>
+                            Vous comparez leurs propositions
+                        </li>
+                        <li role="listitem">
+                            <span class="material-icons" aria-hidden="true">phone_in_talk</span>
+                            Vous choisissez qui peut vous contacter
+                        </li>
+                    </ul>
+                    <p class="sellmatch-pitch__free">100% gratuit. Sans engagement. Sans démarchage subi.</p>
+                    <div class="pitch-actions">
+                        <app-button variant="success" size="lg" icon="handshake" iconPosition="right" (ButtonClick)="GoToRegistration()">{{ isLoggedIn ? 'Accéder à mon dossier' : 'Oui, comparer les professionnels' }}</app-button>
+                        <app-button variant="light" size="md" (ButtonClick)="ShowSellMatchPitch = false">Continuer vers mon estimation</app-button>
+                    </div>
+                </aside>
+                }
+
+                <!-- - cm - En-tête résultat : titre + badge confiance -->
+                <header class="result-header">
+                    <h2 class="result-header__title">Votre estimation indicative</h2>
+                    <span class="result-header__confidence confidence-badge" [class]="EstimationResult.niveauConfiance"
+                          role="status"
+                          [attr.aria-label]="'Niveau de confiance : ' + EstimationResult.niveauConfiance">
+                        <app-tooltip Text="Le niveau de confiance dépend notamment du nombre de ventes comparables disponibles, de leur proximité et de leur similarité avec le bien estimé." Position="bottom">
+                            <span class="material-icons" aria-hidden="true">insights</span>
+                        </app-tooltip>
+                        {{ EstimationResult.niveauConfiance }}
+                    </span>
+                </header>
+
+                <!-- - cm - Prix au m² + transactions sur une ligne -->
+                <div class="result-stats" role="list" aria-label="Indicateurs clés">
+                    <span class="result-stats__item" role="listitem">
+                        <span class="result-stats__icon material-icons" aria-hidden="true">square_foot</span>
+                        <span class="result-stats__label">Prix moyen au m²</span>
+                        <strong class="result-stats__value">{{ EstimationResult.prixMoyenMetrCarre | number:'1.0-0':'fr' }} €/m²</strong>
+                    </span>
+                    <span class="result-stats__item" role="listitem">
+                        <app-tooltip Text="Les transactions affichées sont les références utilisées pour comprendre le marché local et situer le bien par rapport aux ventes observées." Position="bottom">
+                            <span class="result-stats__icon material-icons" aria-hidden="true">analytics</span>
+                        </app-tooltip>
+                        <span class="result-stats__label">Transactions analysées</span>
+                        <strong class="result-stats__value">{{ EstimationResult.nombreTransactions | number:'1.0-0':'fr' }}</strong>
+                    </span>
+                </div>
+
+                <!-- - cm - Avertissement indicatif -->
+                <p class="disclaimer" role="note">
+                    <span class="material-icons" aria-hidden="true">info</span>
+                    Estimation indicative basée sur les données DVF+. Elle ne remplace pas une expertise immobilière.
+                </p>
+
+                <!-- - cm - Détails techniques repliables -->
+                <details class="technical-details">
+                    <summary class="technical-details__summary">
+                        <span class="material-icons" aria-hidden="true">calculate</span>
+                        Détails techniques du calcul
+                        <span class="material-icons technical-details__chevron" aria-hidden="true">expand_more</span>
+                    </summary>
+                    <ul class="technical-details__list">
+                        <li>La position du bien est déterminée à partir de l'adresse sélectionnée, puis les ventes DVF+ proches sont recherchées dans un rayon géographique.</li>
+                        <li>Les transactions sont filtrées selon le type de bien, la surface minimale et les caractéristiques principales renseignées dans le formulaire.</li>
+                        <li>Le prix moyen au m² est calculé à partir des ventes comparables retenues, en excluant les références trop éloignées ou trop peu cohérentes.</li>
+                        <li>La fourchette basse et haute est construite autour de cette valeur moyenne afin de représenter l'incertitude liée au marché local et au volume de données.</li>
+                        <li>Le niveau de confiance augmente lorsque le nombre de transactions comparables est suffisant et que les références sont proches du bien estimé.</li>
+                    </ul>
+                </details>
+
+                <!-- - cm - Graphique d'évolution des prix -->
+                <section class="fs-chart-section" aria-label="Évolution mensuelle des prix immobiliers">
+                    <app-evolution-mensuelle-prix-commune
+                        [Longitude]="EvolutionChartLongitude"
+                        [Latitude]="EvolutionChartLatitude"
+                        [RayonMetres]="EvolutionChartRayonMetres"
+                        [TypeBien]="EvolutionChartTypeBien">
+                    </app-evolution-mensuelle-prix-commune>
+                </section>
+
+                <!-- - cm - Fourchette de prix (en bas, avant les actions dossier) -->
+                <div class="price-range" role="region" aria-label="Fourchette de prix estimée">
+                    <span class="price-range__min" aria-label="Prix minimum estimé">{{ EstimationResult.prixMinEstime | number:'1.0-0':'fr' }} €</span>
+                    <span class="price-range__sep" aria-hidden="true">—</span>
+                    <span class="price-range__max" aria-label="Prix maximum estimé">{{ EstimationResult.prixMaxEstime | number:'1.0-0':'fr' }} €</span>
+                </div>
+
+                <!-- - cm - Actions principales -->
+                <div class="result-actions">
+                    <app-button variant="light" size="lg" icon="arrow_back" (ButtonClick)="EditCharacteristics()">
+                        Modifier les caractéristiques
+                    </app-button>
+                    <app-button variant="primary" size="lg" [icon]="isLoggedIn ? 'dashboard' : 'real_estate_agent'" iconPosition="right" (ButtonClick)="GoToRegistration()">
+                        {{ isLoggedIn ? 'Accéder à mon dossier' : 'Déposer mon dossier' }}
+                    </app-button>
+                </div>
+            </div>
+            }
+
+            <!-- - cm - ÉTAPE 6 : INSCRIPTION (optionnelle, après clic sur "Déposer mon dossier") -->
+            @if (CurrentStep === 6) {
+            <section class="step-card step-card--register" aria-label="Inscription">
+                <header class="step-card__legend">
+                    <h2 class="step-card__title">Finalisez votre dossier</h2>
+                    <p class="step-card__hint">Créez votre compte pour enregistrer votre estimation et être contacté par nos experts.</p>
+                </header>
+
+                <app-register [IsEstimation]="true" [TabVisible]="false" (RegisterSuccess)="OnRegisterSuccess($event)"></app-register>
+
+                <div class="actions actions--end">
+                    <app-button variant="light" size="md" icon="arrow_back" (ButtonClick)="CurrentStep = 5">Retour aux résultats</app-button>
+                </div>
+            </section>
+            }
+
+        </section>
+    </div>
+
+    <!-- - cm - Bloc contenu SEO éditorial : explications, méthodologie, FAQ visible -->
+    <section class="estimation-seo" aria-label="Comprendre l'estimation immobilière">
+
+        <!-- - cm - Section : Qu'est-ce que l'estimation immobilière -->
+        <article class="seo-block" appScrollReveal [Animation]="'fade'">
+            <h2 class="seo-block__title">Qu'est-ce qu'une estimation immobilière ?</h2>
+            <p class="seo-block__text">
+                L'estimation immobilière consiste à évaluer la valeur marchande d'un bien immobilier (maison, appartement, terrain)
+                à un instant donné. Elle s'appuie sur les transactions réelles récentes observées dans la même zone géographique,
+                croisées avec les caractéristiques du bien (surface, type, état, équipements). Une bonne estimation donne une
+                fourchette de prix réaliste, pas un chiffre unique, car la valeur d'un bien dépend de nombreux facteurs locaux.
+            </p>
+        </article>
+
+        <!-- - cm - Section : DVF+ -->
+        <article class="seo-block" appScrollReveal [Animation]="'fade'">
+            <h2 class="seo-block__title">DVF+ : la base de données officielle utilisée par SellMatch</h2>
+            <p class="seo-block__text">
+                SellMatch utilise la base <strong>DVF+ (Demandes de Valeurs Foncières)</strong>, publiée par l'administration
+                fiscale française. Elle recense toutes les mutations immobilières (ventes) réalisées en France, avec leur prix,
+                leur date, la surface du bien et sa localisation précise. Contrairement aux estimations basées sur des annonces
+                (qui sont des prix souhaités par les vendeurs), DVF+ contient les <strong>prix réellement payés</strong> par les
+                acquéreurs. C'est la source la plus fiable pour estimer la valeur d'un bien.
+            </p>
+        </article>
+
+        <!-- - cm - Section : Méthodologie -->
+        <article class="seo-block" appScrollReveal [Animation]="'fade'">
+            <h2 class="seo-block__title">Comment est calculée votre estimation ?</h2>
+            <p class="seo-block__text">
+                Notre algorithme procède en plusieurs étapes :
+            </p>
+            <ol class="seo-block__list">
+                <li><strong>Localisation</strong> — votre adresse est géolocalisée pour rechercher les ventes DVF+ dans un rayon proche.</li>
+                <li><strong>Filtrage</strong> — les transactions sont filtrées par type de bien (maison, appartement, terrain) et surface minimale.</li>
+                <li><strong>Prix au m²</strong> — le prix moyen au m² est calculé à partir des ventes comparables retenues.</li>
+                <li><strong>Fourchette</strong> — une fourchette basse et haute est construite pour refléter l'incertitude du marché local.</li>
+                <li><strong>Niveau de confiance</strong> — il augmente avec le nombre de transactions comparables disponibles près de votre bien.</li>
+            </ol>
+        </article>
+
+        <!-- - cm - Section : Estimation par type de bien -->
+        <article class="seo-block" appScrollReveal [Animation]="'fade'">
+            <h2 class="seo-block__title">Estimation selon le type de bien</h2>
+            <div class="seo-types">
+                <div class="seo-types__card">
+                    <span class="material-icons seo-types__icon" aria-hidden="true">home</span>
+                    <h3 class="seo-types__title">Estimation d'une maison</h3>
+                    <p class="seo-types__text">
+                        L'estimation d'une maison prend en compte la surface habitable, la surface du terrain, le nombre de pièces
+                        et l'état général. Les maisons avec jardin, garage ou terrasse bénéficient généralement d'une valorisation
+                        supplémentaire par rapport aux appartements équivalents.
+                    </p>
+                </div>
+                <div class="seo-types__card">
+                    <span class="material-icons seo-types__icon" aria-hidden="true">apartment</span>
+                    <h3 class="seo-types__title">Estimation d'un appartement</h3>
+                    <p class="seo-types__text">
+                        Pour un appartement, l'estimation croise la surface, le nombre de pièces, l'étage, l'état et les équipements
+                        (garage, terrasse, jardin). La localisation dans la commune et la proximité des transports influencent
+                        fortement la valeur au m².
+                    </p>
+                </div>
+                <div class="seo-types__card">
+                    <span class="material-icons seo-types__icon" aria-hidden="true">landscape</span>
+                    <h3 class="seo-types__title">Estimation d'un terrain</h3>
+                    <p class="seo-types__text">
+                        L'estimation d'un terrain se base principalement sur sa surface, sa localisation et sa constructibilité.
+                        Les transactions DVF+ de terrains comparables dans la même zone permettent d'établir un prix au m² pertinent.
+                    </p>
+                </div>
+            </div>
+        </article>
+
+        <!-- - cm - Section : FAQ visible (composant partagé) -->
+        <article class="seo-block seo-block--faq" appScrollReveal [Animation]="'fade'">
+            <h2 class="seo-block__title">Questions fréquentes sur l'estimation immobilière</h2>
+            <app-faq-estimation [Variant]="'details'"></app-faq-estimation>
+        </article>
+
+        <!-- - cm - Section : Estimation par ville (liens internes SEO longue traîne) -->
+        <article class="seo-block seo-block--villes" appScrollReveal [Animation]="'fade'">
+            <h2 class="seo-block__title">Estimation immobilière par ville</h2>
+            <p class="seo-block__intro">
+                Consultez le prix au m² et l'évolution du marché immobilier dans les principales villes françaises.
+            </p>
+            <nav class="ville-links" aria-label="Estimation immobilière par ville">
+                @for (lVille of EstimationVilles; track lVille.slug)
+                {
+                    <a class="ville-links__item"
+                       [routerLink]="this.RouteUtils.GetRoute(this.Routes.ESTIMATION_VILLE, { ville: lVille.slug })">
+                        {{ lVille.nom }}
+                    </a>
+                }
+            </nav>
+        </article>
+
+    </section>
+</main>

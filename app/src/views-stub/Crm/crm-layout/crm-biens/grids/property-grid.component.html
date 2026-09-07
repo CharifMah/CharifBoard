@@ -1,0 +1,97 @@
+<app-grid #propertyGrid [Data]="EffectiveData()" [Loading]="EffectiveLoading()" [Error]="EffectiveError()"
+          [TrackBy]="TrackByProperty"
+          [Filterable]="Filterable" [FilterFields]="PropertyFilterFields()"
+          [Editable]="!ReadOnly"
+          (CellEdited)="OnCellEdited($event)" (ActionClicked)="ActionClicked.emit($event)"
+          [AllowAddRow]="!ReadOnly" [AutoAddRow]="false" [NewRowFactory]="CreateNewProperty"
+          [ValidateRows]="!ReadOnly" [RequireAllFields]="!ReadOnly"
+          (RowAdded)="RowAdded.emit($event)" (RowValidated)="RowValidated.emit($event)"
+          [AllowExport]="true" ExportFilenamePrefix="'biens'"
+          [ExportApiPath]="'/api/Properties/ExportXlsx'" [ExportFormat]="'both'"
+          [StorageKey]="StorageKey"
+          [EmptyText]="EmptyText()"
+          [ServerSide]="ServerSide"
+          [Selectable]="Selectable"
+          (SelectionChanged)="SelectionChanged.emit($event)">
+  <ng-content select="[gridBulkActions]"></ng-content>
+  <app-grid-column Key="reference" [Label]="ColReference()" [Sortable]="true" [Editable]="true"
+                   EditorType="text"
+                   [EditorValidator]="GetFieldValidator('reference')" [EditorMaxLength]="GetFieldMaxLength('reference')"
+                   [ShowEditor]="!ReadOnly"
+                   EditorPlaceholderCle="properties.referencePlaceholder"/>
+  <app-grid-column Key="typeBienId" [Label]="ColTypeBien()" [Sortable]="true" [Editable]="true"
+                   EditorType="select"
+                   [EditorOptions]="TypeBienOpts" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="adresse" [Label]="ColAdresse()" [Sortable]="true" [Editable]="true"
+                   EditorType="address" [ShowEditor]="!ReadOnly">
+    <ng-template #cell let-row="row">
+      <app-address-map-tooltip
+        [Address]="row.adresse"
+        [Label]="row.adresse?.city ?? ''"
+        Position="bottom"
+        Variant="light"
+        [MaxWidth]="380"
+        [MapHeight]="220"
+        [MapZoom]="15"
+        [ShowStyleSelector]="true"
+        [MarkerType]="'property'"/>
+    </ng-template>
+  </app-grid-column>
+  <app-grid-column Key="proprietaireId" [Label]="ColProprietaire()" [Sortable]="true" [Editable]="true"
+                   EditorType="select"
+                   [EditorOptions]="ContactOpts" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="surface" [Label]="ColSurface()" [Sortable]="true" [Editable]="true"
+                   EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="surfaceTerrain" [Label]="ColSurfaceTerrain()" [Sortable]="true" [Editable]="true"
+                   EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="nbPieces" [Label]="ColNbPieces()" [Sortable]="true" [Editable]="true"
+                   EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="nbChambres" [Label]="ColNbChambres()" [Sortable]="true" [Editable]="true"
+                   EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="etage" [Label]="ColEtage()" [Sortable]="true" [Editable]="true" EditorType="number"
+                   [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="ascenseur" [Label]="ColAscenseur()" [Sortable]="true" [Editable]="true"
+                   EditorType="text" [ShowEditor]="!ReadOnly"
+                   EditorPlaceholderCle="properties.ascenseurPlaceholder"/>
+  <app-grid-column Key="stationnement" [Label]="ColStationnement()" [Sortable]="true" [Editable]="true"
+                   EditorType="text"
+                   [EditorValidator]="GetFieldValidator('stationnement')"
+                   [EditorMaxLength]="GetFieldMaxLength('stationnement')" [ShowEditor]="!ReadOnly"
+                   EditorPlaceholderCle="properties.stationnementPlaceholder"/>
+  <app-grid-column Key="anneeConstruction" [Label]="ColAnneeConstruction()" [Sortable]="true"
+                   [Editable]="true" EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="dpe" [Label]="ColDpe()" [Sortable]="true" [Editable]="true" EditorType="text"
+                   [EditorValidator]="GetFieldValidator('dpe')" [EditorMaxLength]="GetFieldMaxLength('dpe')"
+                   [ShowEditor]="!ReadOnly"
+                   EditorPlaceholderCle="properties.dpePlaceholder"/>
+  <app-grid-column Key="ges" [Label]="ColGes()" [Sortable]="true" [Editable]="true" EditorType="text"
+                   [EditorValidator]="GetFieldValidator('ges')" [EditorMaxLength]="GetFieldMaxLength('ges')"
+                   [ShowEditor]="!ReadOnly"
+                   EditorPlaceholderCle="properties.gesPlaceholder"/>
+  <app-grid-column Key="chauffage" [Label]="ColChauffage()" [Sortable]="true" [Editable]="true"
+                   EditorType="text"
+                   [EditorValidator]="GetFieldValidator('chauffage')" [EditorMaxLength]="GetFieldMaxLength('chauffage')"
+                   [ShowEditor]="!ReadOnly"
+                   EditorPlaceholderCle="properties.chauffagePlaceholder"/>
+  <app-grid-column Key="climatisation" [Label]="ColClimatisation()" [Sortable]="true" [Editable]="true"
+                   EditorType="text" [ShowEditor]="!ReadOnly"
+                   EditorPlaceholderCle="properties.climatisationPlaceholder"/>
+  <app-grid-column Key="etatGeneral" [Label]="ColEtatGeneral()" [Sortable]="true" [Editable]="true"
+                   EditorType="text"
+                   [EditorValidator]="GetFieldValidator('etatGeneral')"
+                   [EditorMaxLength]="GetFieldMaxLength('etatGeneral')" [ShowEditor]="!ReadOnly"
+                   EditorPlaceholderCle="properties.etat_generalPlaceholder"/>
+  <app-grid-column Key="prixAffiche" [Label]="ColPrixAffiche()" [Sortable]="true" [Editable]="true"
+                   EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="charges" [Label]="ColCharges()" [Sortable]="true" [Editable]="true"
+                   EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="disponibilite" [Label]="ColDisponibilite()" [Sortable]="true" [Editable]="true"
+                   EditorType="date" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="dateCommercialisation" [Label]="ColDateCommercialisation()" [Sortable]="true"
+                   [Editable]="true" EditorType="date" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="statut" [Label]="ColStatut()" [Sortable]="true" [Editable]="true"
+                   EditorType="text"
+                   [EditorValidator]="GetFieldValidator('statut')" [EditorMaxLength]="GetFieldMaxLength('statut')"
+                   [ShowEditor]="!ReadOnly"
+                   EditorPlaceholderCle="properties.statutPlaceholder"/>
+</app-grid>

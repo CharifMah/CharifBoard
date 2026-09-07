@@ -1,0 +1,51 @@
+<div class="unauthorized-container">
+  <div class="unauthorized-card">
+    <!-- Icône -->
+    <div class="unauthorized-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+      </svg>
+    </div>
+
+    <!-- Titre -->
+    <h1 class="unauthorized-title">Accès refusé</h1>
+
+    <!-- Message -->
+    <p class="unauthorized-message">
+      Vous n'avez pas les permissions nécessaires pour accéder à cette page.
+    </p>
+
+    <!-- Infos utilisateur si connecté -->
+    @if (isLoggedIn) {
+      <div class="user-info">
+        <p>Connecté en tant que : <strong>{{ UsersService.getUserName() }}</strong></p>
+        <p>Rôle actuel : <strong>{{ userRole }}</strong></p>
+      </div>
+    }
+
+    <!-- Actions -->
+    <div class="unauthorized-actions">
+      <app-button variant="light" [outline]="true" icon="arrow_back" (ButtonClick)="goBack()">
+        Retour
+      </app-button>
+
+      @if (isLoggedIn) {
+        <app-button variant="primary" (ButtonClick)="goToDashboard()">
+          Mon Dashboard
+        </app-button>
+      }
+
+      @if (!isLoggedIn) {
+        <app-button variant="primary" (ButtonClick)="goToLogin()">
+          Se connecter
+        </app-button>
+      }
+    </div>
+
+    <!-- Lien accueil -->
+    <a class="home-link" [routerLink]="this.RouteUtils.GetRoute(Routes.HOME)">
+      Retourner à l'accueil
+    </a>
+  </div>
+</div>

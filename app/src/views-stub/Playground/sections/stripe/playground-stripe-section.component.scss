@@ -1,0 +1,330 @@
+@use 'variables' as *;
+
+//#region Demo
+.playground-stripe__demo {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+//#endregion
+
+//#region Plans
+.playground-stripe__plans {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+
+  &-label {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+  }
+
+  &-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: $spacing-md;
+  }
+}
+
+.playground-stripe__plan-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-lg $spacing-md;
+  background: $bg-primary;
+  border: 2px solid $border-color;
+  border-radius: $radius-lg;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    border-color: rgba($primary-color, 0.4);
+    box-shadow: 0 4px 12px rgba($primary-color, 0.1);
+  }
+
+  &--selected {
+    border-color: $primary-color;
+    background: rgba($primary-color, 0.04);
+    box-shadow: 0 4px 16px rgba($primary-color, 0.15);
+  }
+
+  .playground-stripe__plan-check {
+    position: absolute;
+    top: $spacing-sm;
+    right: $spacing-sm;
+    font-size: 1.25rem;
+    color: $primary-color;
+  }
+}
+
+.playground-stripe__plan-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: $radius-md;
+}
+
+.playground-stripe__plan-icon {
+  font-size: 3rem;
+  color: $primary-color;
+}
+
+.playground-stripe__plan-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-xs;
+  text-align: center;
+}
+
+.playground-stripe__plan-name {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
+}
+
+.playground-stripe__plan-desc {
+  font-size: $font-size-xs;
+  color: $text-secondary;
+  max-width: 200px;
+}
+
+.playground-stripe__plan-prices {
+  display: flex;
+  gap: $spacing-sm;
+  margin-top: $spacing-xs;
+}
+
+.playground-stripe__plan-price {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &--active {
+    background: rgba($primary-color, 0.1);
+
+    .playground-stripe__plan-price-value {
+      color: $primary-color;
+    }
+  }
+
+  &:hover:not(&--active) {
+    background: rgba($text-secondary, 0.08);
+  }
+
+  &-value {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+  }
+
+  &-label {
+    font-size: $font-size-xs;
+    color: $text-secondary;
+  }
+}
+//#endregion
+
+//#region Loading
+.playground-stripe__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  padding: $spacing-lg;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+}
+
+.playground-stripe__spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba($primary-color, 0.2);
+  border-top-color: $primary-color;
+  border-radius: 50%;
+  animation: playground-stripe__spin 0.8s linear infinite;
+}
+
+@keyframes playground-stripe__spin {
+  to { transform: rotate(360deg); }
+}
+//#endregion
+
+//#region Checkout
+.playground-stripe__checkout {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  background: $surface-muted;
+  border: 1px solid $border-color;
+  border-radius: $radius-lg;
+
+  &-header {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    padding-bottom: $spacing-md;
+    border-bottom: 1px solid $border-color;
+  }
+
+  &-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    border-radius: $radius-md;
+  }
+
+  &-title {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+  }
+
+  &-element {
+    min-height: 200px;
+  }
+}
+//#endregion
+
+//#region Error
+.playground-stripe__error {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-md;
+  background: rgba($danger-color, 0.06);
+  border: 1px solid rgba($danger-color, 0.2);
+  border-radius: $radius-md;
+  color: $danger-color;
+  font-size: $font-size-sm;
+
+  .material-icons {
+    font-size: $font-size-lg;
+    flex-shrink: 0;
+  }
+}
+//#endregion
+
+//#region Success
+.playground-stripe__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-xl;
+  background: rgba($success-color, 0.06);
+  border: 1px solid rgba($success-color, 0.2);
+  border-radius: $radius-lg;
+  text-align: center;
+
+  &-icon {
+    font-size: 3rem;
+    color: $success-color;
+  }
+
+  &-text {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $success-color;
+    margin: 0;
+  }
+}
+//#endregion
+
+//#region Hint
+.playground-stripe__hint {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  margin: 0;
+  padding: $spacing-sm $spacing-md;
+  background: rgba($info-color, 0.06);
+  border-radius: $radius-md;
+  border: 1px solid rgba($info-color, 0.15);
+
+  .material-icons {
+    font-size: $font-size-lg;
+    color: $info-color;
+  }
+
+  code {
+    padding: 1px 6px;
+    background: rgba($primary-color, 0.08);
+    border-radius: $border-radius-sm;
+    font-family: 'Courier New', monospace;
+    font-size: $font-size-xs;
+  }
+}
+//#endregion
+
+//#region Info
+.playground-stripe__info {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.playground-stripe__subtitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $primary-color;
+  margin: 0;
+}
+
+.playground-stripe__desc {
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  margin: 0;
+
+  code {
+    padding: 1px 6px;
+    background: rgba($primary-color, 0.08);
+    border-radius: $border-radius-sm;
+    font-family: 'Courier New', monospace;
+    font-size: $font-size-xs;
+  }
+}
+
+.playground-stripe__methods {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: $spacing-md;
+
+  h4 {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $primary-color;
+    margin: 0 0 $spacing-xs;
+  }
+
+  p {
+    color: $text-secondary;
+    font-size: $font-size-xs;
+    margin: 0;
+
+    code {
+      padding: 1px 4px;
+      background: rgba($primary-color, 0.08);
+      border-radius: $border-radius-sm;
+      font-family: 'Courier New', monospace;
+      font-size: $font-size-xs;
+    }
+  }
+}
+
+.playground-stripe__method {
+  padding: $spacing-md;
+  background: $bg-primary;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+}
+//#endregion

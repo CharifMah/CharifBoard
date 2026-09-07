@@ -1,0 +1,71 @@
+@if (Opportunity) {
+<div class="opportunite-card" [class.Premium]="Opportunity.isPrio">
+  @if (Opportunity.isPrio) {
+  <app-badge type="premium" position="top-right" size="md" [pulse]="true" [animated]="true">
+  </app-badge>
+  }
+
+  <div class="opp-image">
+    <div class="image-placeholder property">
+      <span class="material-icons">home</span>
+    </div>
+  </div>
+
+  <div class="opp-content">
+    <div class="opp-header">
+      <div class="opp-info">
+        <h4>{{ Opportunity.address?.street }}</h4>
+        <p class="location">
+          <span class="material-icons">location_on</span>
+          {{ Opportunity.address?.city }}
+        </p>
+      </div>
+
+    </div>
+
+    <div class="opp-details">
+      <span class="detail">
+        <span class="material-icons">home</span>
+        {{ Opportunity.propertyType }}
+      </span>
+      <span class="detail">
+        <span class="material-icons">square_foot</span>
+        {{ Opportunity.surface }} m²
+      </span>
+      <span class="detail">
+        <span class="material-icons">sell</span>
+        {{ FormattedPrice }}
+      </span>
+    </div>
+    <!-- FOOTER -->
+    <div class="opp-footer">
+      <div class="commission-info">
+        <span class="label">Commission estimée</span>
+        <span class="value">{{ CommissionEstimee }}</span>
+      </div>
+
+      <div class="meta">
+        <!-- <app-badge [label]="StatutLabel" size="xs" position="right" type="info" [pulse]="true" [animated]="true">
+        </app-badge> -->
+        <span class="candidates">
+          <span class="material-icons">people</span>
+          {{ Opportunity.applications?.length || 0 }} candidats
+        </span>
+        <span class="time">{{ TimeAgo }}</span>
+      </div>
+
+    </div>
+
+    @if (IsNouvellesTab) {
+    <app-button variant="primary" [fullWidth]="true" icon="send" (ButtonClick)="OnCandidaterClick($event)">
+      Candidater
+    </app-button>
+    } @else {
+    <div class="candidature-status" [ngClass]="'status-' + ApplicationStatus">
+      <span class="material-icons">{{ ApplicationStatusIcon }}</span>
+      {{ ApplicationStatusLabel }}
+    </div>
+    }
+  </div>
+</div>
+}

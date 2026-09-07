@@ -1,0 +1,306 @@
+@use 'variables' as *;
+
+//#region Host
+:host
+{
+    display: block;
+    width: 100%;
+}
+//#endregion
+
+//#region Grid
+.crm-parametres__grid
+{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    padding: 1.5rem;
+}
+//#endregion
+
+//#region Card
+.crm-parametres__card
+{
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    background: $card-background;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    box-shadow: $shadow;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover
+    {
+        transform: translateY(-2px);
+        box-shadow: $btn-hover-shadow;
+    }
+}
+
+.crm-parametres__card-head
+{
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    h3
+    {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: $text-primary;
+    }
+}
+
+.crm-parametres__icon
+{
+    font-size: 1.75rem;
+    color: $primary-color;
+}
+
+.crm-parametres__desc
+{
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: $text-secondary;
+    flex: 1;
+}
+//#endregion
+
+//#region Form
+.settings-form
+{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.settings-form__row
+{
+    display: flex;
+    gap: 1rem;
+
+    .settings-field
+    {
+        flex: 1;
+    }
+}
+
+.settings-field
+{
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.settings-field__label
+{
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: $text-secondary;
+}
+
+// - cm - Icone "info" dans le label d'un champ : declenche une bulle d'aide au survol / focus.
+// `cursor: help` et opacite attenuee au repos pour signaler l'interaction sans alourdir la popup.
+.settings-field__info
+{
+    font-size: 0.95rem;
+    color: $text-secondary;
+    opacity: 0.55;
+    cursor: help;
+    transition: opacity $transition-fast, color $transition-fast;
+
+    &:hover,
+    &:focus
+    {
+        opacity: 1;
+        color: $primary-color;
+        outline: none;
+    }
+}
+
+.settings-field__input
+{
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+    color: $text-primary;
+    background: $card-background;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-sm;
+    transition: border-color $transition-fast, box-shadow $transition-fast;
+
+    &:focus
+    {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+    }
+}
+
+.settings-field__select
+{
+    cursor: pointer;
+}
+
+.settings-section-title
+{
+    margin: 0.5rem 0 0;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $text-primary;
+}
+
+.settings-error
+{
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+    color: $error-light;
+    background: rgba($error-color, 0.1);
+    border-radius: $border-radius-sm;
+}
+//#endregion
+
+//#region Alertes (crm.alertes)
+.settings-alertes
+{
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+}
+
+.settings-alertes__filters
+{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    .is-active
+    {
+        background: $primary-color;
+        color: $text-on-primary;
+    }
+}
+
+.settings-alertes__list
+{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+}
+
+.settings-alerte
+{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: $surface-subtle;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-sm;
+}
+
+.settings-alerte__info
+{
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+    flex: 1;
+}
+
+.settings-alerte__type
+{
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: $primary-color;
+}
+
+.settings-alerte__message
+{
+    font-size: 0.875rem;
+    color: $text-primary;
+    word-break: break-word;
+}
+
+.settings-alerte__meta
+{
+    font-size: 0.75rem;
+    color: $text-secondary;
+}
+
+.settings-alerte__actions
+{
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    flex-shrink: 0;
+}
+
+.settings-alerte__statut
+{
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: $border-radius-sm;
+
+    &--traite
+    {
+        color: $success-color;
+        background: rgba($success-color, 0.1);
+    }
+
+    &--ignore
+    {
+        color: $text-secondary;
+        background: rgba($text-secondary, 0.1);
+    }
+}
+
+.settings-empty
+{
+    text-align: center;
+    font-size: 0.875rem;
+    color: $text-secondary;
+    padding: 1.5rem 0;
+}
+//#endregion
+
+//#region Radios
+.settings-radios
+{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.settings-radio
+{
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    color: $text-primary;
+    cursor: pointer;
+
+    input
+    {
+        width: 1rem;
+        height: 1rem;
+        accent-color: $primary-color;
+        cursor: pointer;
+    }
+}
+//#endregion
+

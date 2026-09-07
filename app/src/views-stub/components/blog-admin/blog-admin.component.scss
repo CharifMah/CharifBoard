@@ -1,0 +1,920 @@
+﻿@use 'variables' as *;
+
+.blog-admin {
+  padding: 1.5rem;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  &__header-info {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+
+  &__title {
+    margin: 0;
+    color: $text-primary;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  &__count {
+    color: $text-secondary;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  // - cm - Liste d'articles (cartes)
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    background: $card-background;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-md;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: rgba($primary-color, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    &--featured {
+      border-left: 3px solid $warning-color;
+    }
+  }
+
+  &__item-main {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__item-thumb {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: $border-radius-sm;
+    overflow: hidden;
+    background: $surface-muted;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .material-icons {
+      font-size: 1.5rem;
+      color: $text-secondary;
+    }
+
+    app-image {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+
+  &__item-title {
+    color: $text-primary;
+    font-size: 0.95rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__item-slug {
+    color: $text-secondary;
+    font-size: 0.78rem;
+    font-family: monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__item-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  &__item-date {
+    color: $text-secondary;
+    font-size: 0.75rem;
+  }
+
+  &__item-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+  }
+
+  &__item-status {
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  // - cm - Badges
+  &__badge {
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &--toggle:hover {
+      opacity: 0.8;
+      transform: scale(1.05);
+    }
+
+    &--published {
+      background: rgba($success-color, 0.1);
+      color: color-mix(in srgb, $success-color, black 15%);
+    }
+
+    &--draft {
+      background: rgba($gray-400, 0.15);
+      color: $text-secondary;
+    }
+
+    &--featured {
+      background: rgba($warning-color, 0.1);
+      color: color-mix(in srgb, $warning-color, black 12%);
+    }
+
+    &--inactive {
+      background: rgba($gray-200, 0.3);
+      color: $text-secondary;
+    }
+  }
+
+  // - cm - Actions
+  &__actions {
+    display: flex;
+    gap: 0.35rem;
+    white-space: nowrap;
+  }
+
+  &__btn-action {
+    // - cm - Override du bouton interne app-button (host ne doit pas doubler width/background/border-radius)
+    width: auto;
+    height: auto;
+    background: transparent;
+    border-radius: 0;
+
+    ::ng-deep .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      .material-icons {
+        font-size: 1.1rem;
+      }
+    }
+  }
+
+  &__btn-history {
+    ::ng-deep .btn {
+      background: rgba($gray-400, 0.12);
+      color: $text-secondary;
+
+      &:hover {
+        background: rgba($gray-400, 0.2);
+      }
+    }
+  }
+
+  &__btn-edit {
+    ::ng-deep .btn {
+      background: rgba($primary-color, 0.08);
+      color: $primary-color;
+
+      &:hover {
+        background: rgba($primary-color, 0.15);
+      }
+    }
+  }
+
+  &__btn-delete {
+    ::ng-deep .btn {
+      background: rgba($error-color, 0.08);
+      color: $error-color;
+
+      &:hover {
+        background: rgba($error-color, 0.15);
+      }
+    }
+  }
+
+  // - cm - États
+  &__loading,
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 3rem 1rem;
+    color: $text-secondary;
+    text-align: center;
+
+    .material-icons {
+      font-size: 2.5rem;
+      color: $text-secondary;
+    }
+  }
+
+  // - cm - Formulaire (dans app-popup)
+  &__form {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  // - cm - Preview image de couverture
+  &__cover-preview {
+    position: relative;
+    margin-bottom: 0.75rem;
+    border-radius: $border-radius-md;
+    overflow: hidden;
+    border: 1px solid $border-color;
+  }
+
+  &__cover-img {
+    display: block;
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+  }
+
+  &__cover-remove {
+    // - cm - Positionnement du host app-button (le rendu cercle vient de btn-close dans app-button)
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+
+    ::ng-deep .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.5);
+      color: $white;
+      cursor: pointer;
+      transition: background 0.2s ease;
+
+      .material-icons {
+        font-size: 1rem;
+      }
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.7);
+      }
+    }
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    position: relative;
+
+    label {
+      color: $text-secondary;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .required {
+      color: $error-color;
+    }
+
+    input,
+    textarea,
+    select {
+      padding: 0.6rem 0.75rem;
+      border: 1px solid $border-color;
+      border-radius: $border-radius-sm;
+      font-size: 0.9rem;
+      color: $text-primary;
+      background: $card-background;
+      transition: border-color 0.2s ease;
+
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      font-family: monospace;
+    }
+  }
+
+  &__char-count {
+    align-self: flex-end;
+    color: $text-secondary;
+    font-size: 0.75rem;
+  }
+
+  &__row {
+    display: flex;
+    gap: 1rem;
+
+    .blog-admin__field {
+      flex: 1;
+    }
+  }
+
+  &__checkboxes {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  &__checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    color: $text-secondary;
+    font-size: 0.9rem;
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+  }
+
+  &__editor-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 0;
+  }
+
+  // - cm - Preview (contenu dans app-popup)
+  &__preview-body {
+    padding: 1.5rem;
+  }
+
+  &__preview-cover {
+    width: 100%;
+    height: 250px;
+    margin-bottom: 1.5rem;
+    border-radius: $border-radius-md;
+    background-size: cover;
+    background-position: center;
+    background-color: $surface-muted;
+  }
+
+  &__preview-category {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    background: rgba($primary-color, 0.08);
+    color: $primary-color;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: capitalize;
+  }
+
+  &__preview-title {
+    margin: 0 0 0.75rem;
+    color: $text-primary;
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1.25;
+  }
+
+  &__preview-excerpt {
+    margin: 0 0 1rem;
+    color: $text-secondary;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  &__preview-reading {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    color: $text-secondary;
+    font-size: 0.85rem;
+  }
+
+  &__preview-content {
+    color: $text-secondary;
+    font-size: 1rem;
+    line-height: 1.8;
+
+    h2 {
+      margin: 2rem 0 0.75rem;
+      color: $text-primary;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    h3 {
+      margin: 1.5rem 0 0.5rem;
+      color: $text-primary;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 0 0 1rem;
+    }
+
+    ul, ol {
+      margin: 0 0 1rem;
+      padding-left: 1.5rem;
+    }
+
+    strong {
+      color: $text-primary;
+      font-weight: 700;
+    }
+  }
+
+  // - cm - Historique (contenu dans app-popup)
+  &__versions {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  &__version {
+    padding: 1rem;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-sm;
+    background: $surface-muted;
+
+    &--expanded {
+      border-color: rgba($primary-color, 0.3);
+      background: $card-background;
+    }
+  }
+
+  &__version-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  &__version-info {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+
+    strong {
+      color: $text-primary;
+      font-size: 0.9rem;
+    }
+  }
+
+  &__version-date {
+    color: $text-secondary;
+    font-size: 0.82rem;
+  }
+
+  &__version-title {
+    color: $text-secondary;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  &__version-excerpt {
+    margin: 0 0 0.75rem;
+    color: $text-secondary;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  &__version-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  // - cm - Diff
+  &__diff {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid rgba($primary-color, 0.15);
+    border-radius: $border-radius-sm;
+    background: rgba($primary-color, 0.02);
+  }
+
+  &__diff-header {
+    display: flex;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid $border-color;
+  }
+
+  &__diff-col {
+    flex: 1;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+
+    &--current {
+      color: $text-secondary;
+    }
+
+    &--version {
+      color: $primary-color;
+      text-align: right;
+    }
+  }
+
+  &__diff-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid $border-color;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &--changed {
+      background: rgba($warning-color, 0.04);
+      margin: 0 -0.75rem;
+      padding: 0.5rem 0.75rem;
+    }
+  }
+
+  &__diff-label {
+    color: $text-secondary;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  &__diff-values {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  &__diff-current {
+    color: $text-secondary;
+    font-size: 0.85rem;
+    text-decoration: line-through;
+    text-decoration-color: rgba($error-color, 0.4);
+    max-width: 45%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__diff-arrow {
+    color: $primary-color;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  &__diff-new {
+    color: color-mix(in srgb, $success-color, black 15%);
+    font-size: 0.85rem;
+    font-weight: 600;
+    max-width: 45%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__diff-unchanged {
+    padding: 0.75rem;
+    text-align: center;
+    color: $text-secondary;
+    font-size: 0.85rem;
+    font-style: italic;
+  }
+
+  // - cm - Toolbar de mode d'affichage
+  &__preview-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid $border-color;
+    background: $surface-muted;
+    flex-wrap: wrap;
+  }
+
+  &__preview-toolbar-modes {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  &__preview-toolbar-version {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__preview-toolbar-version-label {
+    color: $text-secondary;
+    font-size: 0.82rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  &__preview-version-select,
+  &__diff-view-select {
+    padding: 0.35rem 0.6rem;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-sm;
+    font-size: 0.82rem;
+    color: $text-primary;
+    background: $card-background;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+    }
+  }
+
+  &__preview-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.75rem;
+    border: none;
+    background: transparent;
+    border-radius: $border-radius-sm;
+    color: $text-secondary;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    .material-icons {
+      font-size: 1rem;
+    }
+
+    &:hover {
+      background: rgba($gray-200, 0.5);
+    }
+
+    &.active {
+      background: $card-background;
+      color: $primary-color;
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  // - cm - Vue diff (inline + split)
+  &__diff-view {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__diff-view-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    background: $surface-muted;
+    border-bottom: 1px solid $border-color;
+  }
+
+  &__diff-view-source {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  &__diff-view-date {
+    color: $text-secondary;
+    font-size: 0.72rem;
+  }
+
+  &__diff-view-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: $surface-muted;
+    border-bottom: 1px solid $border-color;
+    flex-wrap: wrap;
+  }
+
+  &__diff-view-selector-label {
+    color: $text-secondary;
+    font-size: 0.82rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  &__diff-view-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+
+    &--old {
+      color: $text-secondary;
+    }
+
+    &--new {
+      color: color-mix(in srgb, $success-color, black 15%);
+    }
+  }
+
+  // - cm - Diff inline (git style)
+  &__diff-inline {
+    font-family: 'Courier New', monospace;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    overflow-x: auto;
+    padding: 0.5rem;
+  }
+
+  &__diff-field {
+    margin-bottom: 1rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__diff-field-label {
+    padding: 0.35rem 0.5rem;
+    background: rgba($primary-color, 0.06);
+    color: $primary-color;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    border-radius: $border-radius-sm;
+    margin-bottom: 0.25rem;
+  }
+
+  &__diff-line {
+    display: flex;
+    padding: 0.15rem 0.5rem;
+    min-height: 1.6em;
+    border-left: 3px solid transparent;
+
+    &--added {
+      background: rgba($success-color, 0.12);
+      border-left-color: color-mix(in srgb, $success-color, black 15%);
+
+      .blog-admin__diff-line-text {
+        color: color-mix(in srgb, $success-color, black 15%);
+      }
+
+      .blog-admin__diff-line-marker {
+        color: color-mix(in srgb, $success-color, black 15%);
+      }
+    }
+
+    &--removed {
+      background: rgba($error-color, 0.12);
+      border-left-color: $error-color;
+
+      .blog-admin__diff-line-text {
+        color: $error-color;
+      }
+
+      .blog-admin__diff-line-marker {
+        color: $error-color;
+      }
+    }
+
+    &--muted {
+      opacity: 0.3;
+    }
+  }
+
+  &__diff-line-marker {
+    flex-shrink: 0;
+    width: 1.5rem;
+    text-align: center;
+    color: $text-secondary;
+    font-weight: 700;
+    user-select: none;
+  }
+
+  &__diff-line-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  // - cm - Diff côte à côte (split)
+  &__diff-split {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  &__diff-split-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    &:first-child {
+      border-right: 1px solid $border-color;
+    }
+  }
+
+  &__diff-split-header {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    border-bottom: 1px solid $border-color;
+
+    .material-icons {
+      font-size: 1rem;
+    }
+
+    &--old {
+      background: rgba($gray-100, 0.5);
+      color: $text-secondary;
+    }
+
+    &--new {
+      background: rgba($success-color, 0.04);
+      color: color-mix(in srgb, $success-color, black 15%);
+    }
+  }
+
+  &__diff-split-date {
+    margin-left: auto;
+    color: $text-secondary;
+    font-size: 0.72rem;
+    font-weight: 400;
+    text-transform: none;
+  }
+
+  &__diff-split-content {
+    flex: 1;
+    overflow-y: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+}

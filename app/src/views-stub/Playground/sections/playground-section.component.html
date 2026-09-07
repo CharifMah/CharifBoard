@@ -1,0 +1,25 @@
+<section [id]="id" class="playground__section">
+  <div class="playground__section-head">
+    <div class="playground__section-title">
+      <h2>{{ title }}</h2>
+      <span class="playground__section-badge" [attr.data-category]="category">{{ category }}</span>
+    </div>
+    <button type="button" class="playground__copy" [class.playground__copy--copied]="Copied()" (click)="CopyCode()">
+      <span class="material-icons">{{ Copied() ? 'check' : 'content_copy' }}</span>
+      <span>{{ Copied() ? 'Copié' : 'Copier le code' }}</span>
+    </button>
+  </div>
+
+  <p class="playground__desc">{{ description }}</p>
+
+  <div class="playground__demo">
+    <ng-content />
+  </div>
+
+  @if (code) {
+    <div class="playground__code-block">
+      <span class="playground__code-label">{{ codeLabel }}</span>
+      <pre class="playground__code"><code>{{ code }}</code></pre>
+    </div>
+  }
+</section>

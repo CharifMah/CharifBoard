@@ -1,0 +1,447 @@
+@use 'sass:color';
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region Layout
+.playground {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-xl $spacing-lg;
+  font-family: $font-family-base;
+  color: $text-primary;
+
+  &__header {
+    margin-bottom: $spacing-xl;
+    text-align: center;
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-sm;
+
+    h1 {
+      font-size: $font-size-2xl;
+      font-weight: $font-weight-bold;
+      margin: 0;
+    }
+  }
+
+  &__icon {
+    font-size: 2.5rem;
+    color: $primary-color;
+  }
+
+  &__subtitle {
+    color: $text-secondary;
+    font-size: $font-size-md;
+    max-width: 600px;
+    margin: 0 auto $spacing-md auto;
+  }
+}
+//#endregion
+
+//#region Mode Switcher
+.playground__mode-switcher {
+  display: flex;
+  justify-content: center;
+  gap: $spacing-xs;
+  margin-top: $spacing-md;
+}
+
+.playground__mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-xs $spacing-md;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+  background: $bg-primary;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  cursor: pointer;
+  transition: background-color $transition-fast, border-color $transition-fast, color $transition-fast;
+
+  .material-icons {
+    font-size: $font-size-md;
+  }
+
+  &:hover {
+    background: $surface-hover;
+    border-color: rgba($primary-color, 0.3);
+  }
+
+  &--active {
+    background: $primary-color;
+    color: $white;
+    border-color: $primary-color;
+
+    &:hover {
+      background: color.adjust($primary-color, $lightness: -8%);
+      border-color: color.adjust($primary-color, $lightness: -8%);
+      color: $white;
+    }
+  }
+}
+//#endregion
+
+//#region Search
+.playground__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: $spacing-xs $spacing-sm;
+  background: $bg-primary;
+  border: 1px solid $border-color;
+  border-radius: $radius-xl;
+  transition: border-color $transition-fast, box-shadow $transition-fast;
+
+  &:focus-within {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.12);
+  }
+
+  &-icon {
+    color: $text-secondary;
+    font-size: $font-size-lg;
+    margin-right: $spacing-sm;
+  }
+
+  &-input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    color: $text-primary;
+    font-size: $font-size-md;
+    outline: none;
+
+    &::placeholder {
+      color: $text-tertiary;
+    }
+  }
+
+  &-clear {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+    margin-left: $spacing-xs;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: $text-secondary;
+    cursor: pointer;
+    transition: background-color $transition-fast, color $transition-fast;
+
+    &:hover {
+      background: $surface-hover;
+      color: $error-color;
+    }
+
+    .material-icons {
+      font-size: $font-size-md;
+    }
+  }
+}
+//#endregion
+
+//#region TOC
+.playground__toc-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: $z-index-cookie-consent - 1;
+  margin-bottom: $spacing-xl;
+  padding: $spacing-sm 0;
+  background: $background-color;
+  border-top: 1px solid $border-color;
+  border-bottom: 1px solid $border-color;
+  overflow: hidden;
+
+  @include mobile {
+    margin-left: -$spacing-lg;
+    margin-right: -$spacing-lg;
+    padding: $spacing-sm $spacing-lg;
+  }
+}
+
+.playground__toc {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: $spacing-sm;
+  padding: $spacing-xs 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $border-color-strong;
+    border-radius: $border-radius;
+  }
+}
+
+.playground__toc-item {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-xs $spacing-sm;
+  color: $primary-color;
+  text-decoration: none;
+  font-size: $font-size-sm;
+  border-radius: $radius-md;
+  border: 1px solid $border-color;
+  background: $bg-primary;
+  transition: background-color $transition-fast, border-color $transition-fast, box-shadow $transition-fast;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    background: $surface-hover;
+    border-color: rgba($primary-color, 0.3);
+    outline: none;
+  }
+}
+
+.playground__toc-icon {
+  font-size: $font-size-md;
+  color: $text-secondary;
+}
+
+.playground__toc-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: $border-radius-sm;
+  font-size: 0.625rem;
+  font-weight: $font-weight-semibold;
+  text-transform: uppercase;
+  background: rgba($primary-color, 0.1);
+  color: $primary-color;
+
+  &[data-category='Base'] {
+    background: rgba($info-color, 0.12);
+    color: $info-color;
+  }
+
+  &[data-category='Data'] {
+    background: rgba($success-color, 0.12);
+    color: $success-color;
+  }
+
+  &[data-category='Navigation'] {
+    background: rgba($warning-color, 0.12);
+    color: $warning-color;
+  }
+
+  &[data-category='Form'] {
+    background: rgba($purple-color, 0.12);
+    color: $purple-color;
+  }
+
+  &[data-category='Overlay'] {
+    background: rgba($error-color, 0.12);
+    color: $error-color;
+  }
+
+  &[data-category='AI'] {
+    background: rgba($accent-color, 0.12);
+    color: $accent-color;
+  }
+
+  &[data-category='Design'] {
+    background: rgba($primary-color, 0.12);
+    color: $primary-color;
+  }
+}
+
+.playground__toc-empty {
+  flex: 1 0 auto;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  margin: 0;
+  text-align: center;
+}
+
+.playground__tab-content {
+  margin-top: $spacing-lg;
+  min-height: 400px;
+}
+//#endregion
+
+//#region Sections
+.playground__section {
+  margin-bottom: $spacing-2xl;
+  padding: $spacing-lg;
+  background: $card-background;
+  border-radius: $radius-lg;
+  border: 1px solid $border-color;
+  scroll-margin-top: 90px;
+  box-shadow: $shadow-light;
+
+  h2 {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $primary-color;
+    margin-top: 0;
+    margin-bottom: $spacing-xs;
+    padding-bottom: $spacing-xs;
+    border-bottom: 2px solid $border-color;
+  }
+
+  p {
+    color: $text-secondary;
+    font-size: $font-size-sm;
+    margin-bottom: $spacing-md;
+  }
+}
+//#endregion
+
+//#region Demo
+.playground__demo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+  background: $surface-muted;
+  border-radius: $radius-md;
+
+  &--grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: $spacing-md;
+    align-items: stretch;
+  }
+
+  &--stack {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: $spacing-sm;
+  }
+
+  &--card {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: $spacing-md;
+  }
+}
+
+.playground__demo-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm;
+  background: $surface-muted;
+  border-radius: $radius-md;
+}
+
+.playground__inline-demo {
+  position: relative;
+  display: inline-block;
+  padding: $spacing-xs $spacing-md;
+  background: $surface-subtle;
+  border-radius: $radius-sm;
+  cursor: help;
+  border: 1px dashed $border-color;
+}
+
+.playground__demo-card {
+  padding: $spacing-md;
+  background: $bg-primary;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+
+  &--label {
+    display: block;
+    font-size: $font-size-xs;
+    color: $text-secondary;
+    margin-bottom: $spacing-xs;
+  }
+}
+
+.playground__toggle-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs $spacing-md;
+  align-items: center;
+  padding: $spacing-sm $spacing-md;
+  margin-bottom: $spacing-md;
+  background: $bg-primary;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+
+  // - cm - app-input type="checkbox" compact se rend en display:inline-flex ; l'alignement
+  // est déjà géré par le composant (check-field). On neutralise label natif résiduel
+  // au cas où un futur ajout en remettrait un.
+  label {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    cursor: pointer;
+  }
+}
+//#endregion
+
+//#region Code
+.playground__code {
+  background: $gray-900;
+  color: $gray-100;
+  padding: $spacing-md;
+  border-radius: $radius-md;
+  overflow-x: auto;
+  font-family: 'Courier New', monospace;
+  font-size: $font-size-xs;
+  line-height: 1.6;
+  margin: 0;
+
+  code {
+    white-space: pre;
+  }
+}
+//#endregion
+
+//#region Footer
+.playground__footer {
+  margin-top: $spacing-2xl;
+  padding-top: $spacing-lg;
+  border-top: 1px solid $border-color;
+  text-align: center;
+
+  p {
+    color: $text-tertiary;
+    font-size: $font-size-sm;
+  }
+}
+//#endregion
+
+//#region Responsive
+@include mobile {
+  .playground {
+    padding: $spacing-md;
+  }
+
+  .playground__title h1 {
+    font-size: $font-size-xl;
+  }
+
+  .playground__search {
+    max-width: 100%;
+  }
+}
+//#endregion

@@ -1,0 +1,164 @@
+@use 'variables' as *;
+
+//#region Candidat mini card
+// - cm - Carte miniature de candidat
+.candidat-mini-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: rgba($primary-color, 0.02);
+  border-radius: $border-radius;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: rgba($primary-color, 0.05);
+
+    .btn-voir {
+      opacity: 1;
+    }
+  }
+
+  .candidat-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba($primary-color, 0.1), rgba($primary-color, 0.05));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .material-icons {
+      font-size: 1.25rem;
+      color: $primary-color;
+      opacity: 0.6;
+    }
+  }
+
+  .candidat-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+
+    .candidat-nom {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: $text-primary;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .candidat-company {
+      font-size: 0.75rem;
+      color: $text-secondary;
+    }
+
+    .candidat-location {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+      font-size: 0.7rem;
+      color: $text-secondary;
+
+      .material-icons {
+        font-size: 0.75rem;
+      }
+    }
+  }
+
+  .candidat-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+
+    .candidat-statut {
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 0.15rem 0.4rem;
+      border-radius: $border-radius-sm;
+      text-transform: uppercase;
+
+      &.statut-actif {
+        background: rgba($success-color, 0.15);
+        color: $success-color;
+      }
+
+      &.statut-premium {
+        background: rgba($primary-color, 0.15);
+        color: $primary-color;
+      }
+
+      &.statut-inactif {
+        background: rgba($error-color, 0.15);
+        color: $error-color;
+      }
+
+      &.statut-attente {
+        background: rgba($warning-color, 0.15);
+        color: $warning-color;
+      }
+    }
+
+    .candidat-date {
+      font-size: 0.65rem;
+      color: rgba(var(--sm-text-secondary-rgb), 0.7);
+    }
+  }
+
+  .btn-voir {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba($primary-color, 0.1);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.5;
+    transition: all $transition-fast;
+
+    .material-icons {
+      font-size: 1rem;
+      color: $primary-color;
+    }
+
+    &:hover {
+      background: rgba($primary-color, 0.2);
+    }
+  }
+}
+
+//#endregion
+
+//#region Empty candidats
+// - cm - État vide des candidats
+.empty-candidats {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  color: $text-secondary;
+
+  .material-icons {
+    font-size: 2rem;
+    opacity: 0.5;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.875rem;
+  }
+}

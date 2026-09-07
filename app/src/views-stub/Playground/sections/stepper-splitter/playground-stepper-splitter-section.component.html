@@ -1,0 +1,36 @@
+<h3>app-stepper (wizard)</h3>
+<app-playground-section
+  id="stepper"
+  title="app-stepper"
+  category="Data"
+  description="Stepper/wizard multi-etapes. Navigation entre les etapes avec condition d'acces (chaque etape doit etre validee pour devenir cliquable), etat complete/en cours/en attente."
+  [code]="StepperCode">
+  <app-stepper [Steps]="StepperSteps" [CurrentStep]="StepperActiveStep" (StepClick)="OnStepperChange($event)" />
+  <div class="playground__demo-inline" style="margin-top:16px; justify-content:center;">
+    <app-button variant="primary" size="sm" (ButtonClick)="OnStepperPrev()" [disabled]="StepperActiveStep === 1">Precedent</app-button>
+    <app-button variant="primary" size="sm" (ButtonClick)="OnStepperNext()" [disabled]="StepperActiveStep >= StepperSteps.length">Suivant</app-button>
+  </div>
+</app-playground-section>
+
+<h3>app-splitter (panneau redimensionnable)</h3>
+<app-playground-section
+  id="splitter"
+  title="app-splitter"
+  category="Data"
+  description="Splitter avec panneaux redimensionnables par drag. Permet de gerer des layouts split (sidebar + content, etc.). Direction horizontal/vertical, gutter configurable, support collapse optionnel."
+  [code]="SplitterCode">
+  <app-splitter Direction="horizontal" [GutterSize]="8" style="height: 200px; border: 1px solid var(--sm-border-color); border-radius: 8px; display: block;">
+    <app-splitter-panel panel1>
+      <div style="padding:16px; background: var(--sm-surface-subtle);">
+        <strong>Panneau gauche</strong>
+        <p>Glisser la barre centrale pour redimensionner.</p>
+      </div>
+    </app-splitter-panel>
+    <app-splitter-panel panel2>
+      <div style="padding:16px;">
+        <strong>Panneau droit</strong>
+        <p>Contenu principal redimensionne dynamiquement.</p>
+      </div>
+    </app-splitter-panel>
+  </app-splitter>
+</app-playground-section>

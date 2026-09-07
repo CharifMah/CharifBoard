@@ -1,0 +1,148 @@
+<section class="estimation-ville">
+  @if (!NotFound)
+  {
+    <!-- Hero -->
+    <div class="hero" appScrollReveal>
+      <div class="hero__container">
+        <div class="hero__badge">
+          <span class="hero__badge-icon">📍</span>
+          <span>{{ VilleNom }}{{ CodePostal ? ' (' + CodePostal + ')' : '' }}</span>
+        </div>
+
+        <h1 class="hero__title">Estimation immobilière à {{ VilleNom }}</h1>
+
+        <p class="hero__subtitle">
+          Estimez gratuitement la valeur de votre bien immobilier à {{ VilleNom }}
+          grâce aux données officielles DVF+. Prix au m², évolution du marché et
+          estimation en 2 minutes, sans inscription.
+        </p>
+
+        @if (PrixM2Moyen != null)
+        {
+          <div class="hero__stats">
+            <div class="hero__stat">
+              <span class="hero__stat-value">{{ PrixM2Moyen.toLocaleString('fr-FR') }} €</span>
+              <span class="hero__stat-label">Prix au m² moyen</span>
+            </div>
+            @if (PrixM2Median != null)
+            {
+              <div class="hero__stat">
+                <span class="hero__stat-value">{{ PrixM2Median.toLocaleString('fr-FR') }} €</span>
+                <span class="hero__stat-label">Prix au m² médian</span>
+              </div>
+            }
+            @if (NbVentes12M != null)
+            {
+              <div class="hero__stat">
+                <span class="hero__stat-value">{{ NbVentes12M.toLocaleString('fr-FR') }}</span>
+                <span class="hero__stat-label">Ventes sur 12 mois</span>
+              </div>
+            }
+          </div>
+        }
+
+        <div class="hero__cta">
+          <app-button
+            variant="primary"
+            size="lg"
+            [routerLink]="this.RouteUtils.GetRoute(this.Routes.OUTILESTIMATION)">
+            Estimer mon bien à {{ VilleNom }}
+          </app-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Évolution des prix -->
+    @if (Longitude != null && Latitude != null)
+    {
+      <div class="evolution" appScrollReveal>
+        <div class="evolution__container">
+          <h2 class="evolution__title">Évolution des prix immobiliers à {{ VilleNom }}</h2>
+          <p class="evolution__description">
+            Graphique de l'évolution mensuelle des prix au m² à {{ VilleNom }}
+            basé sur les transactions DVF+ officielles des 10 dernières années.
+          </p>
+
+          <app-evolution-mensuelle-prix-commune
+            [Longitude]="Longitude"
+            [Latitude]="Latitude"
+            [RayonMetres]="5000"
+            [TypeBien]="'tous'" />
+        </div>
+      </div>
+    }
+
+    <!-- Section SEO texte -->
+    <div class="content" appScrollReveal>
+      <div class="content__container">
+        <h2 class="content__title">Comment estimer un bien immobilier à {{ VilleNom }} ?</h2>
+
+        <div class="content__text">
+          <p>
+            L'estimation immobilière à {{ VilleNom }} repose sur la base de données
+            officielle DVF+ (Demandes de Valeurs Foncières) qui recense toutes les
+            transactions immobilières réalisées en France. SellMatch croise ces
+            données avec les caractéristiques de votre bien pour vous fournir une
+            fourchette de valeur fiable et actualisée.
+          </p>
+
+          <p>
+            Que vous souhaitiez vendre une maison, un appartement ou un terrain à
+            {{ VilleNom }}, notre outil d'estimation gratuit vous donne accès au
+            prix au m² moyen de la commune et à l'évolution du marché local sur
+            les 10 dernières années.
+          </p>
+
+          <h3>Pourquoi estimer votre bien à {{ VilleNom }} avec SellMatch ?</h3>
+
+          <ul>
+            <li>Données officielles DVF+ mises à jour régulièrement</li>
+            <li>Estimation gratuite et sans inscription</li>
+            <li>Prix au m² moyen et médian pour {{ VilleNom }}</li>
+            <li>Évolution des prix sur 10 ans</li>
+            <li>Confidentialité totale de vos données (RGPD)</li>
+          </ul>
+
+          <p>
+            Après votre estimation, vous pouvez créer un dossier vendeur sur SellMatch
+            pour comparer les propositions d'agences et de mandataires immobiliers
+            à {{ VilleNom }}, en restant anonyme jusqu'à votre choix.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA final -->
+    <div class="cta-final" appScrollReveal>
+      <div class="cta-final__container">
+        <h2 class="cta-final__title">Prêt à estimer votre bien à {{ VilleNom }} ?</h2>
+        <p class="cta-final__text">
+          Obtenez votre estimation gratuite en 2 minutes, basée sur les données DVF+.
+        </p>
+        <app-button
+          variant="primary"
+          size="lg"
+          [routerLink]="this.RouteUtils.GetRoute(this.Routes.OUTILESTIMATION)">
+          Commencer l'estimation
+        </app-button>
+      </div>
+    </div>
+  }
+  @else
+  {
+    <!-- Ville non trouvée -->
+    <div class="not-found">
+      <div class="not-found__container">
+        <h1 class="not-found__title">Ville non trouvée</h1>
+        <p class="not-found__text">
+          Nous n'avons pas trouvé de données pour cette ville.
+        </p>
+        <app-button
+          variant="primary"
+          [routerLink]="this.RouteUtils.GetRoute(this.Routes.OUTILESTIMATION)">
+          Accéder à l'outil d'estimation
+        </app-button>
+      </div>
+    </div>
+  }
+</section>

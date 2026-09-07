@@ -1,0 +1,1297 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region Host
+:host {
+  // - cm - Bulle agent IA CRM : fixed en bas à droite, au-dessus du contenu
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: $z-index-popup;
+}
+
+// - cm - Mode embedded : le host est en position relative dans le flux de la page
+:host(.is-embedded) {
+  position: relative;
+  inset: auto;
+  pointer-events: auto;
+  z-index: auto;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+//#endregion
+
+//#region FAB
+// - cm - Le FAB est rendu via app-button (composant generique). On style le conteneur app-button.
+// - cm - Le host :host(.tooltip) elargit la zone de survol : on utilise ::ng-deep pour atteindre le bouton interne app-button app-button rendu
+:host > app-tooltip:first-child ::ng-deep app-button {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: $z-index-popup;
+
+  // - cm - Style du bouton interne rendu par app-button (circle = true)
+  ::ng-deep button {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    // - cm - Meme taille que le FAB tutoriel (52px) pour un look equilibre
+    width: 52px;
+    height: 52px;
+    color: $white;
+    background: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
+    // - cm - Ombre renforcee multi-couches : une teintee pour la profondeur, une neutre pour le detachement
+    box-shadow: 0 8px 24px rgba($primary-color, 0.45), 0 3px 8px rgba(0, 0, 0, 0.2);
+    transition: transform $transition-fast, box-shadow $transition-fast;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+
+    &:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 12px 30px rgba($primary-color, 0.55), 0 4px 10px rgba(0, 0, 0, 0.25);
+    }
+  }
+
+  // - cm - Mode "open" : rotation de l'icone (X de fermeture)
+  &.is-open ::ng-deep button {
+    transform: rotate(90deg);
+
+    &:hover {
+      transform: rotate(90deg) scale(1.05);
+    }
+  }
+}
+
+//#region Legacy FAB selector (conserve pour compat si app-tooltip n'est pas utilise)
+// - cm - Selecteur historique avant l'ajout du tooltip : cible le premier enfant app-button du host
+:host > app-button:first-child {
+  pointer-events: auto;
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: $z-index-popup;
+
+  ::ng-deep button {
+    width: 52px;
+    height: 52px;
+    color: $white;
+    background: linear-gradient(135deg, $primary-color, $accent-color);
+    box-shadow: $shadow-medium;
+    transition: transform $transition-fast, box-shadow $transition-fast;
+
+    &:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: $shadow-heavy;
+    }
+  }
+
+  &.is-open ::ng-deep button {
+    transform: rotate(90deg);
+  }
+}
+//#endregion
+//#endregion
+
+//#region Panel
+.crm-agent-panel {
+  pointer-events: auto;
+  position: fixed;
+  right: 24px;
+  bottom: 96px;
+  display: flex;
+  flex-direction: column;
+  background: $card-background;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-heavy;
+  overflow: hidden;
+  animation: fadeInUp $transition-normal ease both;
+
+  // - cm - Mode plein écran
+  &.is-fullscreen {
+    right: 0;
+    bottom: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  // - cm - Mode embedded : inline dans le flux, pleine largeur/hauteur du conteneur parent
+  &.is-embedded {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100%;
+    max-height: 100%;
+    min-height: 600px;
+    border-radius: $border-radius-lg;
+    box-shadow: $shadow-medium;
+    animation: none;
+  }
+}
+
+//#region Settings panel (provider/model/endpoint/apikey)
+.crm-agent-settings {
+  flex: 0 0 auto;
+  padding: 12px 16px;
+  border-bottom: 1px solid $border-color;
+  background: $surface-subtle;
+
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__ollama {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__ollama-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+
+    app-input {
+      flex: 1;
+    }
+
+    app-button {
+      flex: 0 0 auto;
+    }
+  }
+
+  &__error {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: $border-radius-sm;
+    // - cm - Themable via tokens CSS : fond translucide + couleur d'erreur en light et dark
+    background: rgba(var(--sm-error-rgb), 0.12);
+    color: $error-color;
+    font-size: 12px;
+
+    .material-icons {
+      font-size: 16px;
+    }
+  }
+}
+//#endregion
+
+//#region Resize handle
+.crm-agent-panel__resize-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  cursor: nwse-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  opacity: 0.4;
+  transition: opacity $transition-fast;
+
+  .material-icons {
+    font-size: 18px;
+    color: $white;
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+}
+//#endregion
+
+//#region Panel header
+.crm-agent-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, $primary-color, $accent-color);
+  color: $white;
+}
+
+.crm-agent-panel__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.crm-agent-panel__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba($white, 0.2);
+}
+
+.crm-agent-panel__titletext {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+
+  strong {
+    font-size: 14px;
+  }
+}
+
+.crm-agent-panel__status {
+  font-size: 11px;
+  opacity: 0.9;
+
+  &.is-online {
+    color: $success-light;
+  }
+}
+
+// - cm - Zone d'actions du header (nouvelle conversation, historique, plein écran, fermer)
+.crm-agent-panel__actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+
+  app-button {
+    flex: 0 0 auto;
+
+    ::ng-deep button {
+      color: $white;
+      width: 30px;
+      height: 30px;
+
+      &:hover {
+        background: rgba($white, 0.2);
+      }
+    }
+
+    // - cm - Bouton actif (historique / réglages ouverts)
+    &.is-active ::ng-deep button {
+      background: rgba($white, 0.25);
+    }
+
+    // - cm - Action principale (nouvelle conversation) : style outlined distinct
+    &[variant='secondary'] ::ng-deep button {
+      background: rgba($white, 0.15);
+      border: 1px solid rgba($white, 0.5);
+
+      &:hover {
+        background: rgba($white, 0.25);
+      }
+    }
+  }
+}
+//#endregion
+
+//#region Panel body (messages + historique côte à côte)
+.crm-agent-panel__body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  min-height: 0;
+}
+//#endregion
+
+//#region History sidebar
+.crm-agent-history {
+  flex: 0 0 240px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid $border-color;
+  background: $card-background;
+  overflow: hidden;
+
+  // - cm - Mode embedded / full-page : sidebar plus large pour une meilleure lisibilité
+  :host(.is-embedded) & {
+    flex-basis: 300px;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-bottom: 1px solid $border-color;
+    font-size: 13px;
+
+    strong {
+      color: $text-primary;
+    }
+  }
+
+  &__empty {
+    padding: 16px 12px;
+    text-align: center;
+    font-size: 12px;
+    color: $text-secondary;
+  }
+
+  &__list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px;
+  }
+
+  &__item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 8px 10px;
+    border-radius: $border-radius-sm;
+    cursor: pointer;
+    transition: background $transition-fast;
+
+    &:hover {
+      background: $surface-hover;
+    }
+
+    &.is-active {
+      background: rgba($primary-color, 0.08);
+      border-left: 3px solid $primary-color;
+      padding-left: 7px;
+    }
+  }
+
+  &__item-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__item-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: $text-primary;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__item-date {
+    font-size: 10px;
+    color: $text-secondary;
+  }
+
+  &__item-meta {
+    display: flex;
+    gap: 4px;
+    margin-top: 2px;
+  }
+}
+//#endregion
+
+//#region Panel messages
+.crm-agent-panel__messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: $background-color;
+}
+
+.crm-agent-empty {
+  margin: auto;
+  text-align: center;
+  color: $text-secondary;
+  font-size: 13px;
+  max-width: 280px;
+  line-height: 1.5;
+}
+//#endregion
+
+//#region Bubbles
+.crm-agent-bubble {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: $border-radius-md;
+  font-size: 13px;
+  line-height: 1.45;
+  word-break: break-word;
+  animation: fadeIn $transition-fast ease both;
+
+  p {
+    margin: 0;
+  }
+
+  &--user {
+    align-self: flex-end;
+    background: $primary-color;
+    color: $white;
+    border-bottom-right-radius: 4px;
+  }
+
+  &--assistant {
+    align-self: flex-start;
+    background: $card-background;
+    color: $text-primary;
+    border: 1px solid $border-color;
+    border-bottom-left-radius: 4px;
+    position: relative; // - cm - pour positionner le bouton copier en absolu
+  }
+
+  &--error {
+    align-self: flex-start;
+    // - cm - Utilise --sm-error-rgb pour transparence, s'adapte au theme (light bg clair / dark bg sombre)
+    background: rgba(var(--sm-error-rgb), 0.12);
+    color: $error-color;
+    border: 1px solid rgba(var(--sm-error-rgb), 0.5);
+  }
+
+  // - cm - Contenu markdown rendu (paragraphes, listes, titres, code inline)
+  &__content {
+    p {
+      margin: 0 0 8px;
+      &:last-child { margin-bottom: 0; }
+    }
+
+    h1, h2, h3 {
+      margin: 8px 0 4px;
+      font-size: 14px;
+      font-weight: 700;
+      color: $text-primary;
+      &:first-child { margin-top: 0; }
+    }
+
+    ul {
+      margin: 4px 0 8px;
+      padding-left: 18px;
+      li {
+        margin: 2px 0;
+      }
+    }
+
+    code {
+      font-family: inherit;
+      font-size: 12px;
+      background: $background-color;
+      border: 1px solid $border-color;
+      border-radius: 3px;
+      padding: 1px 5px;
+    }
+
+    strong { font-weight: 700; }
+    em { font-style: italic; }
+  }
+}
+//#endregion
+
+//#region Typing
+.crm-agent-typing {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin: 0;
+}
+
+.crm-agent-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: $text-secondary;
+  animation: pulse 1.2s ease-in-out infinite;
+
+  &:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  &:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+}
+//#endregion
+
+//#region Step cards
+.crm-agent-step {
+  align-self: flex-start;
+  width: 100%;
+  max-width: 90%;
+  font-size: 12px;
+
+  &__call,
+  &__result,
+  &__llm {
+    background: $card-background;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-sm;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__call {
+    border-left: 3px solid $info-color;
+  }
+
+  &__result {
+    border-left: 3px solid $success-color;
+  }
+
+  &__llm {
+    border-left: 3px solid $accent-color;
+
+    p {
+      margin: 0;
+      color: $text-secondary;
+    }
+  }
+
+  &__badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 2px 6px;
+    border-radius: $border-radius-sm;
+    align-self: flex-start;
+
+    &--call {
+      background: $info-color;
+      color: $white;
+    }
+
+    &--result {
+      background: $success-color;
+      color: $white;
+    }
+
+    &--llm {
+      background: $accent-color;
+      color: $white;
+    }
+
+    &--think {
+      background: $info-color;
+      color: $white;
+    }
+  }
+
+  // - cm - Badge d'itération et métadonnée durée
+  &__iter,
+  &__meta {
+    font-size: 10px;
+    color: $text-secondary;
+    align-self: flex-start;
+    margin-left: auto;
+  }
+
+  &__iter {
+    font-weight: 600;
+    text-transform: lowercase;
+  }
+
+  code {
+    font-size: 12px;
+    color: $text-primary;
+    background: rgba($primary-color, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+    align-self: flex-start;
+  }
+
+  &__args,
+  &__result-body {
+    margin: 0;
+    font-family: inherit;
+    font-size: 11px;
+    color: $text-secondary;
+    background: $background-color;
+    border: 1px solid $border-color;
+    border-radius: 4px;
+    padding: 6px 8px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 140px;
+    overflow-y: auto;
+  }
+
+  // - cm - Carte mode think (détails collapsibles)
+  &__think {
+    border-left: 3px solid $info-color;
+    padding: 0;
+
+    &[open] summary {
+      margin-bottom: 6px;
+    }
+  }
+
+  &__think-summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    list-style: none;
+    font-size: 12px;
+    user-select: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  &__think-body {
+    pre {
+      margin: 0;
+      font-family: inherit;
+      font-size: 11px;
+      line-height: 1.5;
+      color: $text-secondary;
+      background: $background-color;
+      border: 1px solid $border-color;
+      border-radius: 4px;
+      padding: 8px 10px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 180px;
+      overflow-y: auto;
+      font-style: italic;
+    }
+  }
+}
+//#endregion
+
+//#region Diff view wrapper (délègue au composant générique app-diff-view)
+.crm-agent-diff-wrapper {
+  margin-top: 8px;
+}
+//#endregion
+
+//#region Grid wrapper (grilles extraites Transactions/Locations affichées depuis le chat)
+.crm-agent-step__grid {
+  margin-top: 10px;
+  // - cm - Limite la largeur de la grille dans le panneau chat (scroll horizontal si débordement)
+  max-width: 100%;
+  overflow-x: auto;
+}
+//#endregion
+
+//#region Tour diffs (section mise en avant, affichage automatique)
+.crm-agent-tour-diffs {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid $success-color;
+  border-radius: $border-radius-sm;
+  background: rgba($success-color, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__count {
+    font-size: 11px;
+    font-weight: 700;
+    color: $success-color;
+    background: rgba($success-color, 0.14);
+    padding: 1px 7px;
+    border-radius: 10px;
+  }
+
+  // - cm - Chaque diff hérite du composant générique mais reste lisible ici
+  app-diff-view {
+    display: block;
+  }
+}
+//#endregion
+
+//#region Usage panel
+.crm-agent-usage {
+  margin-top: auto;
+  padding: 10px 12px;
+  border-top: 1px solid $border-color;
+  background: $card-background;
+  font-size: 11px;
+  color: $text-secondary;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+
+    &--tools {
+      gap: 6px;
+    }
+  }
+
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+
+    strong {
+      color: $primary-color;
+      font-weight: 700;
+    }
+  }
+
+  &__label {
+    font-weight: 600;
+    color: $text-primary;
+  }
+
+  code {
+    font-size: 11px;
+    color: $info-color;
+    background: rgba($info-color, 0.08);
+    padding: 1px 6px;
+    border-radius: 4px;
+    word-break: break-all;
+  }
+}
+//#endregion
+
+//#region Upload zone
+.crm-agent-panel__upload {
+  padding: 8px 12px;
+  border-top: 1px solid $border-color;
+  background: $card-background;
+
+  // - cm - Thème minimal-chip : alignement à gauche au-dessus de la ligne d'input
+  &.theme-minimal-chip {
+    display: flex;
+    justify-content: flex-start;
+    padding-bottom: 4px;
+    border-top: none;
+    background: transparent;
+  }
+}
+//#endregion
+
+//#region File chip
+.crm-agent-panel__file {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 12px;
+  // - cm - Themable : $surface-muted change selon le theme, contrairement a $gray-100 (light only)
+  background: $surface-muted;
+  border-top: 1px solid $border-color;
+  font-size: 12px;
+  color: $text-secondary;
+}
+
+.crm-agent-file__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.crm-agent-file__remove {
+  background: transparent;
+  border: none;
+  color: $text-secondary;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 0 4px;
+  border-radius: 4px;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $danger-color;
+  }
+}
+//#endregion
+
+//#region Panel footer
+.crm-agent-panel__footer {
+  flex: 0 0 auto;
+  padding: $spacing-sm $spacing-md;
+  border-top: 1px solid $border-color;
+  background: $card-background;
+}
+
+// - cm - Conteneur interne centré avec largeur max pour la lisibilité en full-page
+.crm-agent-panel__footer-inner {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+// - cm - Indicateur du modèle LLM courant (chip subtil)
+.crm-agent-panel__model-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  font-size: 11px;
+  color: $text-secondary;
+  // - cm - Themable : $surface-muted au lieu de $gray-100 pour rester lisible en dark
+  background: $surface-muted;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-sm;
+  padding: 2px $spacing-sm;
+}
+
+.crm-agent-panel__model-icon {
+  font-size: 14px;
+  color: $primary-color;
+}
+
+.crm-agent-panel__model-text {
+  font-family: monospace;
+  font-size: 11px;
+}
+
+// - cm - Ligne input + bouton send
+.crm-agent-panel__input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: $spacing-sm;
+
+  // - cm - app-input prend toute la largeur disponible
+  app-input {
+    flex: 1;
+  }
+
+  // - cm - app-button circulaire d'envoi (taille fixe)
+  app-button {
+    flex: 0 0 auto;
+  }
+}
+//#endregion
+
+//#region Responsive
+@media (max-width: $mobile-breakpoint) {
+  .crm-agent-panel {
+    right: 8px;
+    bottom: 80px;
+    width: calc(100vw - 16px);
+    height: calc(100vh - 110px);
+  }
+
+  :host > app-button:first-child {
+    right: 16px;
+    bottom: 16px;
+  }
+
+  // - cm - Sur mobile, l'historique passe en overlay absolu pour ne pas écraser la zone de chat
+  .crm-agent-history {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    flex-basis: 80% !important;
+    max-width: 320px;
+    z-index: $z-index-popup;
+    box-shadow: $shadow-medium;
+  }
+}
+//#endregion
+//#region Diff item (accepter/rejeter)
+// - cm - Diff avec boutons accepter/rejeter
+.crm-agent-diff-item {
+  margin-bottom: 0.5rem;
+  border-radius: $border-radius-sm;
+  overflow: hidden;
+
+  &--accepted {
+    border: 2px solid $success-color;
+    background: rgba($success-color, 0.05);
+  }
+
+  &--rejected {
+    border: 2px solid $danger-color;
+    background: rgba($danger-color, 0.05);
+    opacity: 0.6;
+  }
+}
+
+.crm-agent-diff-actions {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  justify-content: flex-end;
+}
+//#endregion
+
+//#region Approval card (approbation des actions mutantes)
+// - cm - Carte d'approbation requise avant exécution des outils mutants (Create*, Attach*, Link*)
+.crm-agent-approval {
+  align-self: flex-start;
+  width: 100%;
+  max-width: 90%;
+  background: $card-background;
+  border: 1px solid $border-color;
+  border-left: 3px solid $warning-color;
+  border-radius: $border-radius-sm;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  // - cm - Recap agrege : nombre d'actions et de lignes a creer (sous le header)
+  &__summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    padding: 6px 8px;
+    background: $surface-subtle;
+    border-radius: $border-radius-sm;
+    font-size: 11px;
+  }
+
+  &__summary-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: $text-secondary;
+
+    strong {
+      color: $primary-color;
+      font-weight: 700;
+    }
+
+    .material-icons {
+      font-size: 14px;
+      color: $text-secondary;
+    }
+  }
+
+  // - cm - Mini grille preview globale : agregation de toutes les actions
+  &__aggregate {
+    margin-top: 4px;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-sm;
+    overflow: hidden;
+    background: $card-background;
+    max-height: 240px;
+    overflow-y: auto;
+
+    app-grid {
+      display: block;
+    }
+  }
+
+  &__hint {
+    color: $text-secondary;
+    font-size: 11px;
+  }
+
+  &__actions {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__action {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    padding: 6px 8px;
+    background: rgba($warning-color, 0.05);
+    border-radius: $border-radius-sm;
+    cursor: pointer;
+    transition: background 0.15s ease;
+
+    // - cm - Action sélectionnée : fond vert clair
+    &.is-approved {
+      background: rgba($success-color, 0.08);
+    }
+
+    &:hover {
+      background: rgba($warning-color, 0.1);
+    }
+  }
+
+  &__action-main {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+  }
+
+  &__check {
+    font-size: 20px;
+    color: $accent-color;
+    flex-shrink: 0;
+    line-height: 1;
+
+    .is-approved & {
+      color: $success-color;
+    }
+  }
+
+  &__action-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__tool {
+    font-size: 11px;
+    font-weight: 600;
+    color: $accent-color;
+  }
+
+  &__summary {
+    color: $text-secondary;
+    font-size: 12px;
+  }
+
+  &__select-all {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  // - cm - Bouton "Voir les détails" : toggle de la grille d'arguments par action
+  &__details-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px 6px;
+    margin-left: auto;
+    flex: 0 0 auto;
+    background: transparent;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-sm;
+    color: $text-secondary;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background $transition-fast, color $transition-fast, border-color $transition-fast;
+
+    .material-icons {
+      font-size: 14px;
+    }
+
+    &:hover {
+      background: rgba($primary-color, 0.08);
+      color: $primary-color;
+      border-color: rgba($primary-color, 0.3);
+    }
+  }
+
+  &__details-toggle-label {
+    font-size: 11px;
+  }
+
+  // - cm - Grille d'arguments (visible quand l'action est dépliée)
+  // - cm - Themable : $surface-muted au lieu de $gray-100 pour rester lisible en dark
+  &__args {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 10px;
+    background: $surface-muted;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-sm;
+    animation: crm-agent-fadeIn $transition-fast ease both;
+  }
+
+  &__args-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: $text-secondary;
+
+    .material-icons {
+      font-size: 14px;
+      color: $primary-color;
+    }
+  }
+
+  // - cm - Liste de paires cle/valeur (definition list stylisee)
+  &__args-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+  }
+
+  &__args-row {
+    display: grid;
+    grid-template-columns: minmax(80px, 35%) 1fr;
+    gap: 8px;
+    padding: 4px 6px;
+    background: $card-background;
+    border: 1px solid $border-color;
+    border-radius: 4px;
+    font-size: 11px;
+
+    dt {
+      margin: 0;
+      font-weight: 600;
+      color: $text-secondary;
+      word-break: break-word;
+    }
+
+    dd {
+      margin: 0;
+      color: $text-primary;
+      word-break: break-word;
+      font-family: 'Courier New', monospace;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+
+  &__status {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  // - cm - États décidés (approuvé / refusé) : bordure colorée + fond léger
+  &--approved {
+    border-left-color: $success-color;
+    background: rgba($success-color, 0.05);
+  }
+
+  &--rejected {
+    border-left-color: $danger-color;
+    background: rgba($danger-color, 0.05);
+    opacity: 0.7;
+  }
+
+  // - cm - Champ de feedback de refus (motif optionnel)
+  &__feedback {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 10px;
+    border: 1px solid $border-color;
+    border-top: 1px solid $border-color;
+    border-radius: $border-radius-sm;
+    background: $surface-subtle;
+  }
+
+  &__feedback-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    margin-top: 4px;
+  }
+
+  &__settings-footer-actions,
+  &__feedback-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+}
+//#endregion
+
+//#region Bubble copy button (bouton copier le message assistant)
+// - cm - Bouton copier positionné en haut à droite de la bulle assistant
+.crm-agent-bubble__copy {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+
+  // - cm - Visible au hover de la bulle ou après copie
+  .crm-agent-bubble--assistant:hover &,
+  &.is-copied {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  &.is-copied {
+    color: $success-color;
+  }
+}
+//#endregion
+
+//#region Suggestions interactives (boutons de réponse rapide sous le message)
+// - cm - Boutons cliquables proposés par l'agent pour répondre à une question
+.crm-agent-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid $border-color;
+}
+//#endregion
+
+//#region Pending approval alert (header)
+// - cm - Alerte d'approbation en attente dans l'header (pulse subtil)
+.crm-agent-panel__header.is-pending-approval {
+  border-bottom: 2px solid $warning-color;
+}
+
+.crm-agent-panel__approval-alert {
+  display: inline-flex;
+  margin-left: 6px;
+  animation: crm-agent-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes crm-agent-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+//#endregion
+
+//#region Status reconnect (header hors ligne)
+.crm-agent-panel__status--reconnect {
+  display: inline-flex;
+  cursor: pointer;
+}
+//#endregion
+
+//#region Usage actions (bouton régénérer)
+.crm-agent-usage__actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  padding-top: 6px;
+  border-top: 1px solid $border-color;
+}
+//#endregion

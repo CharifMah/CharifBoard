@@ -1,0 +1,111 @@
+<app-popup [title]="'Guide d\'intégration des avis Immodvisor'"
+  [subtitle]="'Simple • Rapide • Impact immédiat sur votre crédibilité'" [size]="'large'" [showHeader]="true"
+  [showFooter]="true" [cancelText]="'Fermer'" [showConfirmButton]="false" [type]="'info'" [icon]="'help_outline'"
+  [iconClass]="'immodvisor-icon'" [(isOpen)]="this.isOpen" (isOpenChange)="this.isOpenChange.emit($event);">
+
+  <div class="immodvisor-guide">
+    <div class="guide-section">
+      <h3 class="guide-step">Étape 1 : Accéder à l'onglet "Communiquer"</h3>
+      <p>Connectez-vous à votre espace professionnel Immodvisor.</p>
+      <p>Dans le menu principal situé en haut de la page, cliquez sur l'onglet "Communiquer".</p>
+      <p>Cet espace vous permet d'accéder à tous les outils de diffusion de vos avis clients, notamment les visuels,
+        widgets et supports à intégrer sur votre page SellMatch.</p>
+      <app-image src="assets/images/screen_1.webp" alt="Accéder à l'onglet Communiquer" class="guide-img"
+        [isWebp]="true" loading="lazy">
+      </app-image>
+    </div>
+
+    <div class="guide-section">
+      <h3 class="guide-step">Étape 2 : Accéder à la section "Widgets"</h3>
+      <p>Une fois dans l'onglet "Communiquer", cliquez sur "Widgets" dans le menu secondaire.</p>
+      <p>Cette section vous permet d'accéder aux différents formats d'affichage de vos avis clients (notes,
+        recommandations, avis détaillés...) que vous pourrez intégrer sur votre page SellMatch.</p>
+      <app-image src="assets/images/screen_2.webp" alt="Accéder à la section Widgets" class="guide-img" [isWebp]="true"
+        loading="lazy">
+      </app-image>
+    </div>
+
+    <div class="guide-section">
+      <h3 class="guide-step">Étape 3 : Sélectionner le widget "Pied de page"</h3>
+      <p>Dans la liste des widgets disponibles, repérez le widget "Pied de page".</p>
+      <p>Cliquez ensuite sur le bouton "J'installe le widget" afin de sélectionner ce format.</p>
+      <p>Ce widget est idéal pour afficher votre note, vos étoiles et le nombre d'avis de manière claire et rassurante
+        sur votre page SellMatch.</p>
+      <app-image src="assets/images/screen_3.webp" alt="Sélectionner le widget Pied de page" class="guide-img"
+        [isWebp]="true" loading="lazy">
+      </app-image>
+    </div>
+
+    <div class="guide-section">
+      <h3 class="guide-step">Étape 4 : Récupérer l'identifiant Immodvisor</h3>
+      <p>Une fois le widget ouvert, repérez le champ "Lien du bouton Immodvisor" dans la partie droite.</p>
+      <p>Vous y trouverez une URL similaire à celle-ci :</p>
+      <div class="code-block">https://www.immodvisor.com/pro/iad-france-karim-mahmoud-sete-34200-81133.html</div>
+      <p>Votre objectif est de récupérer les 5 derniers chiffres de ce lien.</p>
+      <p>Dans cet exemple : <strong>81133</strong></p>
+      <p>Cet identifiant est essentiel pour connecter correctement vos avis à votre page SellMatch.</p>
+      <app-image src="assets/images/screen_4_5.webp" alt="Récupérer l'identifiant Immodvisor" class="guide-img"
+        [isWebp]="true" loading="lazy">
+      </app-image>
+    </div>
+
+    <div class="guide-section">
+      <h3 class="guide-step">Étape 5 : Installer le widget</h3>
+      <p>Une fois l'identifiant récupéré, cliquez sur le bouton "J'installe le widget" en bas à droite de l'écran.</p>
+      <p>Cette action permet de générer le widget et de finaliser sa configuration côté Immodvisor.</p>
+      <app-image src="assets/images/screen_4_5.webp" alt="Installer le widget" class="guide-img" [isWebp]="true"
+        loading="lazy">
+      </app-image>
+    </div>
+
+    <div class="guide-section">
+      <h3 class="guide-step">Étape 6 : Récupérer la clé Widget</h3>
+      <p>Après avoir cliqué sur "J'installe le widget", une fenêtre s'ouvre avec le code d'intégration.</p>
+      <p>Repérez la ligne :</p>
+      <div class="code-block">"Votre clé Widget"</div>
+      <p>Elle se présente sous forme d'un code (lettres + chiffres), par exemple :</p>
+      <div class="code-block">W9T1-SUPIO-IDGR-03NJK-JYMV6B</div>
+      <p>Copiez cette clé, elle sera nécessaire pour connecter vos avis à votre page SellMatch.</p>
+      <app-image src="assets/images/screen_6.webp" alt="Récupérer la clé Widget" class="guide-img" [isWebp]="true"
+        loading="lazy">
+      </app-image>
+    </div>
+
+    <div class="guide-section">
+      <h3 class="guide-step">Étape 7 : Accéder à la modification de votre profil SellMatch</h3>
+      <p>Connectez-vous à votre espace sur SellMatch.</p>
+      <p>Dans le menu à gauche, cliquez sur "Profil", puis sur le bouton "Modifier" situé en haut à droite de la page.
+      </p>
+      <p>Cela vous permet d'accéder aux paramètres de votre profil afin d'y intégrer vos avis Immodvisor.</p>
+      <app-image src="assets/images/screen_7.webp" alt="Accéder à la modification du profil" class="guide-img"
+        [isWebp]="true" loading="lazy">
+      </app-image>
+    </div>
+
+    <div class="guide-section">
+      <h3 class="guide-step">Étape 8 : Intégrer vos informations Immodvisor</h3>
+      <p>Dans la page de modification de votre profil, descendez légèrement.</p>
+      <p>Vous pouvez maintenant renseigner :</p>
+      <ul>
+        <li>Votre identifiant Immodvisor (5 chiffres) dans le champ "Identifiant entreprise Immodvisor"</li>
+        <li>Votre clé Widget (API) dans le champ "Clé API Immodvisor"</li>
+      </ul>
+      <p>Une fois les informations renseignées :</p>
+      <ol>
+        <li>Cliquez sur Enregistrer</li>
+        <li>Rechargez la page</li>
+      </ol>
+      <app-image src="assets/images/screen_8.webp" alt="Intégrer les informations Immodvisor" class="guide-img"
+        [isWebp]="true" loading="lazy">
+      </app-image>
+    </div>
+
+    <div class="guide-conclusion">
+      <h3>Félicitations !</h3>
+      <p>Vos avis Immodvisor sont désormais automatiquement affichés sur votre profil SellMatch et visibles par les
+        vendeurs lors de vos candidatures.</p>
+      <p>Votre profil est maintenant optimisé pour convertir davantage de vendeurs grâce à la preuve sociale de vos avis
+        clients.</p>
+    </div>
+  </div>
+</app-popup>

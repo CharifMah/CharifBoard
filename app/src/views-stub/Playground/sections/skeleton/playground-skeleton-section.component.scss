@@ -1,0 +1,167 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region Skeleton demo
+// - cm - Section dediee aux demos skeletons : app-skeleton, app-grid-skeleton,
+//        app-card-skeleton et le fix de positionnement .grid__cell-saving.
+// - cm - Styles scopes au composant playground-skeleton-section.
+.skeleton-demo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: $spacing-lg;
+  margin-block: $spacing-md;
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__label {
+    font-size: $font-size-xs;
+    color: var(--sm-text-secondary);
+    font-weight: $font-weight-semibold;
+    text-transform: uppercase;
+    letter-spacing: $letter-spacing-wide;
+  }
+
+  &__controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: $spacing-md;
+    padding: $spacing-md;
+    margin-block: $spacing-md;
+    background: var(--sm-surface-subtle);
+    border: 1px solid var(--sm-border-color);
+    border-radius: $border-radius-md;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-block: $spacing-sm;
+  }
+
+  &__grid-wrapper {
+    overflow-x: auto;
+    border: 1px solid var(--sm-border-color);
+    border-radius: $border-radius-md;
+    margin-block: $spacing-md;
+    background: var(--sm-bg-color);
+  }
+
+  &__cards {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    margin-block: $spacing-md;
+  }
+
+  &__cells-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: $spacing-sm;
+    margin-block: $spacing-md;
+    padding: $spacing-md;
+    background: var(--sm-surface-subtle);
+    border: 1px dashed var(--sm-border-color);
+    border-radius: $border-radius-md;
+  }
+
+  &__cell-toggle {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-sm;
+    background: var(--sm-bg-color);
+    border-radius: $border-radius-sm;
+
+    app-button.is-active {
+      --btn-ghost-bg: rgba(var(--sm-primary-rgb), 0.12);
+      --btn-ghost-border: var(--sm-primary);
+      border-color: var(--sm-primary);
+    }
+  }
+
+  &__cell-label {
+    font-weight: $font-weight-semibold;
+    color: var(--sm-text-primary);
+    margin-right: $spacing-xs;
+  }
+
+  &__hint {
+    margin-block: $spacing-md;
+    padding: $spacing-md;
+    background: rgba(var(--sm-info-rgb), 0.08);
+    border-left: 3px solid var(--sm-info);
+    border-radius: $border-radius-sm;
+    color: var(--sm-text-primary);
+    font-size: $font-size-sm;
+    line-height: $line-height-relaxed;
+  }
+}
+//#endregion
+
+//#region Local grid table (for cell-saving demo)
+// - cm - Reproduction locale d'un mini-grid pour la demo cellule-skeleton.
+//        Reprend les classes .grid* de grid.component.scss mais en local,
+//        pour ne pas dependre du composant app-grid dans cette section specifique.
+.grid {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: $font-size-sm;
+
+  // - cm - En-tete de la grille de demo locale (mini-grid pour la cellule-skeleton).
+  &__thead {
+    background: var(--sm-surface-muted);
+
+    .grid__th {
+      padding: $spacing-md $spacing-md;
+      font-weight: $font-weight-semibold;
+      color: var(--sm-text-secondary);
+      text-align: left;
+      border-bottom: 1px solid var(--sm-border-color);
+      white-space: nowrap;
+    }
+  }
+
+  // - cm - Stagger des shimmers pour les cellules en mode saving.
+  //        Chaque ligne demarre son shimmer un peu apres la precedente.
+  //        Les app-skeleton enfants heritent du delai via custom property.
+  &__tbody {
+    .grid__row:hover {
+      background: var(--sm-surface-hover);
+    }
+
+    .grid__row + .grid__row .grid__td {
+      border-top: 1px solid var(--sm-border-color);
+    }
+  }
+
+  &__td {
+    padding: $spacing-md $spacing-md;
+    color: var(--sm-text-primary);
+    vertical-align: middle;
+    height: 44px;
+    box-sizing: border-box;
+
+    // - cm - Fix du bug : cellule en mode saving necessite position:relative
+    //        pour que .grid__cell-saving (absolute) reste confine a la cellule.
+    &.is-cell-saving {
+      pointer-events: none;
+      position: relative;
+
+      > :not(.grid__cell-saving) {
+        visibility: hidden;
+      }
+
+      .grid__cell-saving {
+        position: absolute;
+        inset: 8px;
+        display: block;
+      }
+    }
+  }
+}
+//#endregion

@@ -1,0 +1,45 @@
+<!-- popup-support.component.html -->
+<app-popup [(isOpen)]="isOpen"
+           title="Contacter le support"
+           subtitle="Notre équipe vous répond sous 24h"
+           icon="support_agent"
+           size="medium"
+           type="info"
+           confirmText="Envoyer"
+           cancelText="Annuler"
+           [showFooter]="true"
+           [showConfirmButton]="true"
+           [confirmLoading]="IsSending"
+           [confirmDisabled]="!IsFormValid"
+           (confirmed)="OnSend()"
+           (cancelled)="OnCancel()"
+           (closed)="OnClose()">
+
+    <div class="support-form">
+        <div class="form-group">
+            <label for="supportSubject">Sujet *</label>
+            <select id="supportSubject" [(ngModel)]="SupportMessage.subject">
+                <option value="">Choisissez un sujet</option>
+                <option value="question">Question générale</option>
+                <option value="technique">Problème technique</option>
+                <option value="dossier">Question sur un dossier</option>
+                <option value="facturation">Facturation</option>
+                <option value="autre">Autre</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="supportMessageText">Votre message *</label>
+            <textarea id="supportMessageText"
+                      [(ngModel)]="SupportMessage.message"
+                      placeholder="Décrivez votre demande..."
+                      rows="5">
+      </textarea>
+        </div>
+
+        <div class="support-info">
+            <span class="material-icons">schedule</span>
+            <span>Temps de réponse moyen : 4 heures</span>
+        </div>
+    </div>
+</app-popup>

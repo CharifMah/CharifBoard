@@ -1,0 +1,355 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region Empty state
+// - cm - �tat vide
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  background: rgba($white, 0.8);
+  border-radius: $border-radius-md;
+  margin: 20px 0;
+  border: 1px dashed rgba($primary-color, 0.2);
+  transition: all $transition-normal;
+
+  &:hover {
+    background: rgba($white, 0.9);
+    border-color: rgba($primary-color, 0.3);
+  }
+
+  .material-icons {
+    font-size: 64px;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #f8bbd9, $accent-color);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  p {
+    font-size: 16px;
+    margin: 0 0 10px 0;
+    color: $text-secondary;
+    font-weight: 500;
+  }
+
+  &.small {
+    padding: 40px 15px;
+    margin: 15px 0;
+
+    .material-icons {
+      font-size: 48px;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #fce4ec, #f8bbd9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    p {
+      font-size: 15px;
+      margin: 0;
+      color: $text-secondary;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+  }
+}
+
+//#endregion
+
+//#region Messages list
+// - cm - Liste des messages
+.messages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+//#endregion
+
+//#region Message card
+// - cm - Carte de message
+.message-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  background: $card-background;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  transition: all $transition-normal;
+  border: 1px solid $border-color;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(#fce4ec, 0.1), rgba(#f8bbd9, 0.1));
+    opacity: 0;
+    transition: opacity $transition-normal;
+    z-index: 0;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-color: color-mix(in srgb, $primary-color, white 20%);
+
+    &::before {
+      opacity: 1;
+    }
+
+    .message-avatar img,
+    .image-placeholder-mini {
+      transform: scale(1.05);
+    }
+  }
+
+  &.unread {
+    background: rgba(#fce4ec, 0.7);
+    border-left: 4px solid $primary-color;
+    padding-left: 12px;
+
+    &::before {
+      background: linear-gradient(135deg, rgba(#f8bbd9, 0.15), rgba(#fce4ec, 0.15));
+      opacity: 0.5;
+    }
+
+    &:hover {
+      background: rgba(#fce4ec, 0.9);
+      border-left-color: color-mix(in srgb, $primary-color, black 10%);
+    }
+
+    .sender {
+      color: color-mix(in srgb, $primary-color, black 10%);
+      font-weight: 600;
+    }
+
+    .subject {
+      color: $text-primary;
+    }
+  }
+}
+
+//#endregion
+
+//#region Message avatar
+// - cm - Avatar du message
+.message-avatar {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  z-index: 1;
+
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    background: $surface-muted;
+    border: 2px solid $card-background;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform $transition-normal;
+  }
+
+  .image-placeholder-mini {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, $primary-color, $accent-color);
+    border: 2px solid $card-background;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform $transition-normal;
+
+    &.agent {
+      background: linear-gradient(135deg, color-mix(in srgb, $primary-color, black 10%), #7b1fa2);
+    }
+
+    &.vendeur {
+      background: linear-gradient(135deg, $accent-color, #d81b60);
+    }
+
+    .material-icons {
+      font-size: 20px;
+      color: $white;
+    }
+  }
+
+  .message-type-dot {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid $white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+    &.type-vendeur {
+      background: $accent-color;
+    }
+
+    &.type-acheteur {
+      background: $primary-color;
+    }
+
+    &.type-agence {
+      background: $primary-color;
+    }
+
+    &.type-system {
+      background: $success-color;
+    }
+
+    &.type-admin {
+      background: $warning-color;
+    }
+  }
+}
+
+//#endregion
+
+//#region Message content
+// - cm - Contenu du message
+.message-content {
+  flex: 1;
+  min-width: 0;
+  z-index: 1;
+
+  .message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 6px;
+
+    .sender {
+      font-size: 14px;
+      font-weight: 600;
+      color: $text-primary;
+      margin: 0;
+      line-height: 1.3;
+    }
+
+    .time {
+      font-size: 12px;
+      color: $text-secondary;
+      font-weight: 400;
+      white-space: nowrap;
+      margin-left: 10px;
+    }
+  }
+
+  .subject {
+    font-size: 13px;
+    font-weight: 500;
+    color: $text-primary;
+    margin: 0 0 4px 0;
+    line-height: 1.4;
+  }
+
+  .preview {
+    font-size: 12px;
+    color: $text-secondary;
+    margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+//#endregion
+
+//#region Unread dot
+// - cm - Point non lu
+.unread-dot {
+  width: 10px;
+  height: 10px;
+  background: $primary-color;
+  border-radius: 50%;
+  margin-top: 17px;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+  animation: pulse 2s infinite;
+  z-index: 1;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba($primary-color, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 6px rgba($primary-color, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba($primary-color, 0);
+  }
+}
+
+//#endregion
+
+//#region Responsive
+// - cm - Responsive
+@include mobile {
+  .empty-state {
+    padding: 40px 15px;
+
+    &.small {
+      padding: 30px 10px;
+    }
+  }
+
+  .message-card {
+    padding: 14px 12px;
+    gap: 12px;
+
+    .message-avatar {
+      width: 40px;
+      height: 40px;
+    }
+
+    .message-content {
+      .message-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+
+        .time {
+          margin-left: 0;
+          font-size: 11px;
+        }
+      }
+    }
+  }
+}

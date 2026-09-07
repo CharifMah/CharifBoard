@@ -1,0 +1,37 @@
+<!-- dashboardvendeur -->
+<app-dashboard-layout [extraMenuItems]="MenuItems"
+                      [activeView]="View"
+                      [stats]="State.GetStats()"
+                      (viewChanged)="Go($event)"
+                      (supportClicked)="ShowSupport = true">
+
+    <!-- Bouton custom pour la sidebar -->
+    <ng-template #sidebarButton>
+        <app-button variant="primary"
+                    [fullWidth]="true"
+                    icon="add"
+                    (ButtonClick)="this.State.ShowNewDossier = true">
+            NOUVELLE VENTE
+        </app-button>
+    </ng-template>
+
+    <main class="main-content">
+        @switch (View) {
+        @case ('dashboard') { <div class="view-enter"><app-home-vendeur /></div> }
+        @case ('dossiers') { <div class="view-enter"><app-dossiers/></div> }
+        @case ('historique') { <div class="view-enter"><app-dossiers [ShowHistorique]="true" /></div> }
+        @case ('candidats') { <div class="view-enter"><app-candidats /></div> }
+        @case ('profil') { <div class="view-enter"><app-profil /></div> }
+        @case ('messages') { <div class="view-enter"><app-message></app-message></div> }
+        }
+    </main>
+
+</app-dashboard-layout>
+
+<app-nouvelle-vente-popup [(isOpen)]="this.State.ShowNewDossier"
+                          (dossierCreated)="OnDossierCreated($event)" />
+
+<app-popup-support [(isOpen)]="ShowSupport" />
+
+<!-- - cm - Lanceur du tutoriel Dashboard Vendeur (FAB "?" en bas a droite, visible uniquement quand le tutoriel n'est pas actif) -->
+<app-crm-tutorial-launcher [Steps]="VendeurTutorialSteps" [DoneStorageKey]="VendeurTutorialDoneKey" [Title]="'Tutoriel Dashboard Vendeur'" [Icon]="'school'" [CurrentView]="View" />

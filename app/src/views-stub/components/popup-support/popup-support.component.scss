@@ -1,0 +1,80 @@
+// popup-support.component.scss
+@use 'variables' as *;
+
+//#region Support form
+// - cm - Formulaire de support
+.support-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: $text-primary;
+    }
+
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid $border-color;
+      border-radius: $border-radius-sm;
+      font-size: 0.875rem;
+      font-family: inherit;
+      color: $text-primary;
+      background-color: $card-background;
+      transition: border-color $transition-fast, box-shadow $transition-fast;
+
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+      }
+
+      &::placeholder {
+        color: $text-secondary;
+      }
+    }
+
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23757575' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+
+      option {
+        padding: 0.5rem;
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+      line-height: 1.5;
+    }
+  }
+
+  .support-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background-color: $info-light;
+    border-radius: $border-radius-sm;
+    color: $info-color;
+    font-size: 0.813rem;
+
+    .material-icons {
+      font-size: 1.125rem;
+    }
+  }
+}
+//#endregion

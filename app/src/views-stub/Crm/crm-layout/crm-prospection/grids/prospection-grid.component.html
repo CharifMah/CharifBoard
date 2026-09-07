@@ -1,0 +1,111 @@
+<app-grid #prospectionGrid
+          [Data]="EffectiveData()"
+          [Loading]="EffectiveLoading()"
+          [Error]="EffectiveError()"
+          [TrackBy]="TrackByProspection"
+          [Filterable]="Filterable"
+          [FilterFields]="ProspectionFilterFields()"
+          [Editable]="!ReadOnly"
+                    [EditActionLabelCle]="'grid.actions.edit'"
+                    [DeleteActionLabelCle]="'grid.actions.delete'"
+                    (CellEdited)="OnCellEdited($event)"
+          (ActionClicked)="OnActionClicked($event)"
+          [AutoAddRow]="false"
+          [NewRowFactory]="CreateNewProspection"
+          [AllowAddRow]="!ReadOnly"
+          (RowAdded)="OnRowAdded($event)"
+          [AllowExport]="true"
+          ExportFilenamePrefix="'prospection'"
+          [ExportApiPath]="'/api/Prospections/ExportXlsx'"
+          [ExportFormat]="'both'"
+          [StorageKey]="StorageKey"
+          [EmptyTextCle]="'crm-prospection.empty'"
+          [ServerSide]="ServerSide"
+          [Selectable]="Selectable"
+          (SelectionChanged)="OnSelectionChanged($event)">
+
+  <div gridBulkActions>
+    <app-button variant="danger" size="sm" [icon]="'delete'"
+      (ButtonClick)="OnAskBulkDelete()">
+      Supprimer la sélection
+    </app-button>
+  </div>
+
+  <app-grid-column Key="dateAction" LabelCle="crm-prospection.date"
+    [Sortable]="true" Width="160px" [Editable]="!ReadOnly" EditorType="date" [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="action" LabelCle="crm-prospection.action"
+    [Sortable]="true" Width="130px" [Editable]="!ReadOnly" EditorType="text" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="crm-prospection.actionPlaceholder"/>
+
+  <app-grid-column Key="typeProspectionId" LabelCle="crm-prospection.type"
+    [Sortable]="false" Width="120px" [Editable]="!ReadOnly" EditorType="select"
+    [EditorOptions]="TypeProspectionOptions()" [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="adresse" LabelCle="crm-prospection.adresse"
+    [Sortable]="true" Width="180px" [Editable]="!ReadOnly" EditorType="address" [ShowEditor]="!ReadOnly">
+    <ng-template #cell let-row="row">
+      <app-address-map-tooltip
+        [Address]="row.adresse"
+        [Label]="row.adresse?.city ?? ''"
+        Position="bottom"
+        Variant="light"
+        [MaxWidth]="380"
+        [MapHeight]="220"
+        [MapZoom]="15"
+        [ShowStyleSelector]="true"
+        [MarkerType]="'prospection'" />
+    </ng-template>
+  </app-grid-column>
+
+  <app-grid-column Key="quantite" LabelCle="crm-prospection.quantite"
+    [Sortable]="false" Width="100px" [Editable]="!ReadOnly" EditorType="number" [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="tempsPasseMinutes" LabelCle="crm-prospection.tempsPasseMinutes"
+    [Sortable]="false" Width="120px" [Editable]="!ReadOnly" EditorType="number" [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="nbContacts" LabelCle="crm-prospection.nbContacts"
+    [Sortable]="false" Width="100px" [Editable]="!ReadOnly" EditorType="number" [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="nbRendezVous" LabelCle="crm-prospection.nbRendezVous"
+    [Sortable]="false" Width="80px" [Editable]="!ReadOnly" EditorType="number" [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="nbEstimations" LabelCle="crm-prospection.nbEstimations"
+    [Sortable]="false" Width="110px" [Editable]="!ReadOnly" EditorType="number" [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="nbMandats" LabelCle="crm-prospection.nbMandats"
+    [Sortable]="false" Width="90px" [Editable]="!ReadOnly" EditorType="number" [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="caGenere" LabelCle="crm-prospection.caGenere"
+    [Sortable]="false" Width="120px" [Editable]="!ReadOnly" EditorType="number" [ShowEditor]="!ReadOnly"/>
+</app-grid>
+
+<app-popup [(isOpen)]="ShowDeletePopup"
+  title="Supprimer cette prospection ?"
+  subtitle="Cette action est irréversible."
+  icon="delete" type="error" size="small"
+  [showFooter]="true"
+  confirmText="Supprimer"
+  cancelText="Annuler"
+  [confirmLoading]="Deleting()"
+  (confirmed)="OnConfirmDelete()"
+  (cancelled)="OnCancelDelete()"
+  (closed)="OnCancelDelete()">
+  @if (RowToDelete()) {
+    <p>Confirmer la suppression de la prospection sélectionnée ?</p>
+  }
+</app-popup>
+
+<app-popup [(isOpen)]="ShowBulkDeletePopup"
+  title="Supprimer la sélection"
+  [subtitle]="'Confirmer la suppression de ' + SelectedRows().length + ' prospection(s) ?'"
+  icon="delete" type="error" size="small"
+  [showFooter]="true"
+  confirmText="Supprimer"
+  cancelText="Annuler"
+  [confirmLoading]="Deleting()"
+  (confirmed)="OnConfirmBulkDelete()"
+  (cancelled)="OnCancelBulkDelete()"
+  (closed)="OnCancelBulkDelete()">
+  <p>Cette action est irréversible et supprimera toutes les prospections cochées.</p>
+</app-popup>

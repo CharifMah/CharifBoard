@@ -1,0 +1,111 @@
+<div class="step-content">
+    <h3 class="step-title">
+        <span class="material-icons">payments</span>
+        Définissez vos honoraires
+    </h3>
+    <p class="step-description">
+        Proposez votre taux de commission ou un montant fixe pour ce mandat.
+    </p>
+
+    <!-- Alerte dossier Premium -->
+    @if (opportunite?.isPrio && currentFeeCap) {
+    <div class="fee-cap-alert">
+        <span class="material-icons">info</span>
+        <div class="alert-content">
+            <strong>Dossier Premium</strong>
+            <p>
+                Les honoraires sont plafonnés pour ce dossier.
+                @if (feeType === EFeeType.POURCENTAGE && maxPercentage) {
+                Maximum : <strong>{{ maxPercentage }}%</strong>
+                }
+                @if (feeType === EFeeType.FIXE && maxFixedAmount) {
+                Maximum : <strong>{{ FormatPrice(maxFixedAmount) }}</strong>
+                }
+            </p>
+        </div>
+    </div>
+    }
+
+    <!-- Type d'honoraires -->
+    <div class="form-group">
+        <label>Type d'honoraires *</label>
+        <div class="fee-type-options">
+            <label class="fee-option" [class.selected]="feeType === EFeeType.POURCENTAGE">
+                <input type="radio" name="feeType" [value]="EFeeType.POURCENTAGE"
+                    [checked]="feeType === EFeeType.POURCENTAGE" (change)="onFeeTypeChange(EFeeType.POURCENTAGE)">
+                <span class="option-content">
+                    <span class="material-icons">percent</span>
+                    <span class="option-label">Pourcentage</span>
+                    <span class="option-hint">% du prix de vente</span>
+                </span>
+            </label>
+            <label class="fee-option" [class.selected]="feeType === EFeeType.FIXE">
+                <input type="radio" name="feeType" [value]="EFeeType.FIXE" [checked]="feeType === EFeeType.FIXE"
+                    (change)="onFeeTypeChange(EFeeType.FIXE)">
+                <span class="option-content">
+                    <span class="material-icons">euro</span>
+                    <span class="option-label">Montant fixe</span>
+                    <span class="option-hint">Montant en euros</span>
+                </span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Pourcentage -->
+    @if (feeType === EFeeType.POURCENTAGE) {
+    <div class="form-group">
+        <app-input type="number" (valueChange)="onFeePercentageChange($event)" id="feePercentage"
+            [(value)]="feePercentage" [min]="0" [max]="opportunite?.isPrio && maxPercentage ? maxPercentage : 10"
+            [step]="0.1" placeholder="4.0" [suffix]="'%'" label="Taux de commission" [required]="true" [maxLength]="4"
+            [hint]="opportunite?.isPrio && maxPercentage
+                   ? 'Maximum autorisé : ' + maxPercentage + '%'
+                   : 'Taux habituel : 3% à 5%'"
+            [iconLeft]="opportunite?.isPrio && maxPercentage ? 'priority_high' : ''">
+        </app-input>
+    </div>
+    }
+
+    <!-- Montant fixe -->
+    @if (feeType === EFeeType.FIXE) {
+    <div class="form-group">
+        <app-input type="number" id="feeFixed" [(value)]="feeFixedAmount" (valueChange)="onFeeFixedAmountChange($event)"
+            [min]="0" [max]="opportunite?.isPrio && maxFixedAmount ? maxFixedAmount : ''" [step]="100"
+            placeholder="5000" [suffix]="'€'" label="Montant fixe" [required]="true" [hint]="opportunite?.isPrio && maxFixedAmount
+                   ? 'Maximum autorisé : ' + FormatPrice(maxFixedAmount)
+                   : ''" [iconLeft]="opportunite?.isPrio && maxFixedAmount ? 'priority_high' : ''">
+        </app-input>
+    </div>
+    }
+
+    <!-- Aperçu commission -->
+    <div class="commission-preview" [class.priority]="opportunite?.isPrio">
+        <div class="preview-header">
+            <span class="material-icons">calculate</span>
+            <span>Estimation de vos honoraires</span>
+            @if (opportunite?.isPrio) {
+            <span class="priority-badge">
+                <span class="material-icons">star</span>
+                Premium
+            </span>
+            }
+        </div>
+        <div class="preview-content">
+            <div class="preview-row">
+                <span>Prix estimé du bien</span>
+                <span class="value">{{ FormatPrice(propertyPrice) }}</span>
+            </div>
+            @if (opportunite?.isPrio && currentFeeCap) {
+            <div class="preview-row cap-row">
+                <span>Plafond honoraires</span>
+                <span class="value cap">{{ getMaxCommissionDisplay() }}</span>
+            </div>
+            }
+            <div class="preview-row">
+                <span>Vos honoraires</span>
+                <span class="value highlight" [class.over-cap]="isOverMaxPercentage() || isOverMaxFixedAmount()">
+                    {{ FormatPrice(getCommissionEstimee()) }}
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

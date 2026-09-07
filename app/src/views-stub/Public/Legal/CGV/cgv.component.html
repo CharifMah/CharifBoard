@@ -1,0 +1,262 @@
+<div class="cgv-legales">
+  <div class="cgv-container">
+
+    <div class="cgv-header">
+      <h1>CONDITIONS GÉNÉRALES DE VENTE (CGV)</h1>
+      <div class="header-divider"></div>
+    </div>
+
+    <!-- SYSTÈME D'ONGLETS -->
+    <div class="cgv-tabs">
+      <button class="tab-button"
+        [class.active]="activeTab === 'pro'"
+        (click)="setActiveTab('pro')">
+        Professionnels
+      </button>
+      <button class="tab-button"
+        [class.active]="activeTab === 'vendeur'"
+        (click)="setActiveTab('vendeur')">
+        Vendeurs
+      </button>
+    </div>
+
+    <!-- ============================================ -->
+    <!--           CGV PROFESSIONNELS                 -->
+    <!-- ============================================ -->
+    @if (activeTab === 'pro') {
+      <div class="cgv-content">
+        <div class="cgv-card">
+          <h2 class="section-title">
+            <span class="title-icon">📜</span> Article 1 – Objet
+          </h2>
+          <div class="section-content">
+            <p>Les présentes CGV encadrent les abonnements proposés aux professionnels de l’immobilier sur la plateforme SellMatch.</p>
+          </div>
+        </div>
+        <div class="cgv-card">
+          <h2 class="section-title">
+            <span class="title-icon">💰</span> Article 2 – Tarification
+          </h2>
+          <div class="section-content">
+            <p>Les tarifs sont affichés sur la plateforme.</p>
+            <p>SellMatch se réserve le droit de modifier ses tarifs à tout moment.</p>
+          </div>
+        </div>
+        <div class="cgv-card">
+          <h2 class="section-title">
+            <span class="title-icon">💳</span> Article 3 – Paiement
+          </h2>
+          <div class="section-content">
+            <p>Les paiements sont réalisés via Stripe.</p>
+            <p>Le professionnel autorise la reconduction automatique de son abonnement.</p>
+          </div>
+        </div>
+        <div class="cgv-card">
+          <h2 class="section-title">
+            <span class="title-icon">🚫</span> Article 4 – Résiliation
+          </h2>
+          <div class="section-content">
+            <p>Le professionnel peut résilier son abonnement à tout moment depuis son espace utilisateur.</p>
+            <p>La résiliation prendra effet à l’issue de la période mensuelle en cours.</p>
+          </div>
+        </div>
+        <div class="cgv-card">
+          <h2 class="section-title">
+            <span class="title-icon">🔄</span> Article 5 – Absence de remboursement
+          </h2>
+          <div class="section-content">
+            <p>Aucun remboursement ne pourra être exigé pour une période déjà entamée.</p>
+          </div>
+        </div>
+        <div class="cgv-card accent-card">
+          <h2 class="section-title">
+            <span class="title-icon">⚠️</span> Article 6 – Suspension
+          </h2>
+          <div class="section-content">
+            <p>SellMatch se réserve le droit de suspendre immédiatement un compte professionnel en cas :</p>
+            <ul class="info-list">
+              <li>De fraude</li>
+              <li>De faux avis</li>
+              <li>De comportement abusif</li>
+              <li>De non-respect des CGU</li>
+              <li>De tentative de contournement de la plateforme</li>
+            </ul>
+          </div>
+        </div>
+        <div class="cgv-card">
+          <h2 class="section-title">
+            <span class="title-icon">⚖️</span> Article 7 – Responsabilité
+          </h2>
+          <div class="section-content">
+            <p>SellMatch ne garantit aucun volume de prospects, chiffre d’affaires ou résultat commercial.</p>
+            <p>Les professionnels demeurent seuls responsables de leurs prestations et obligations réglementaires.</p>
+          </div>
+        </div>
+        <div class="cgv-card">
+          <h2 class="section-title">
+            <span class="title-icon">🏛️</span> Article 8 – Droit applicable
+          </h2>
+          <div class="section-content">
+            <p>Les présentes CGV sont soumises au droit français.</p>
+            <p>Tout litige relèvera de la compétence des tribunaux de Paris.</p>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ============================================ -->
+    <!--              CGV VENDEURS                    -->
+    <!-- ============================================ -->
+    @if (activeTab === 'vendeur') {
+      <div class="cgv-content">
+        <div class="cgv-card">
+          <h2 class="section-title">
+            <span class="title-icon">📜</span> Article 1 – Objet
+          </h2>
+          <div class="section-content">
+            <p>Le service SellMatch est entièrement gratuit pour les vendeurs particuliers.</p>
+            <p>Les vendeurs peuvent librement :</p>
+            <ul class="info-list">
+              <li>Déposer un bien immobilier</li>
+              <li>Recevoir des candidatures</li>
+              <li>Comparer les professionnels</li>
+              <li>Échanger avec les professionnels sélectionnés</li>
+              <li>Choisir librement le professionnel de leur choix</li>
+            </ul>
+            <p>SellMatch propose également une option Premium payante accessible aux vendeurs souhaitant bénéficier de fonctionnalités supplémentaires.</p>
+            <p>Sur un dossier standard, les professionnels restent libres de proposer les honoraires qu’ils souhaitent dans leurs candidatures.</p>
+            <p>Avec l’option Premium, le système SellMatch peut automatiquement limiter ou bloquer certaines candidatures dépassant un seuil d’honoraires défini par la plateforme afin de favoriser des propositions plus compétitives.</p>
+            <p>L’objectif de cette option est notamment :</p>
+            <ul class="info-list">
+              <li>D’encourager des candidatures avec des honoraires plus attractifs</li>
+              <li>De valoriser les vendeurs démontrant une réelle intention de vendre</li>
+              <li>D’inciter les professionnels à proposer des conditions tarifaires plus compétitives</li>
+            </ul>
+            <p class="highlight-text">Le vendeur reste entièrement libre d’accepter ou refuser les candidatures reçues.</p>
+            <p>Les présentes Conditions Générales de Vente encadrent l’ensemble des options payantes accessibles aux vendeurs particuliers sur la plateforme SellMatch.</p>
+          </div>
+        </div>
+        <div class="cgv-card">
+          <h2 class="section-title">
+            <span class="title-icon">🛒</span> Article 2 – Commande
+          </h2>
+          <div class="section-content">
+            <p>Toute souscription à une option payante implique l’acceptation pleine et entière des présentes CGV.</p>
+            <p>Le vendeur reconnaît avoir pris connaissance des caractéristiques de l’offre avant validation du paiement.</p>
+          </div>
+        </div>
+        <div class="cgv-card">
+          <h2 class="section-title">
+            <span class="title-icon">💰</span> Article 3 – Tarifs
+          </h2>
+          <div class="section-content">
+            <p>Les prix des options payantes sont affichés sur la plateforme au moment de la commande.</p>
+            <p>SellMatch se réserve le droit de modifier ses tarifs à tout moment.</p>
+            <p>Les options déjà souscrites demeurent facturées au tarif en vigueur lors de l’achat.</p>
+          </div>
+        </div>
+        <div class="cgv-card">
+          <h2 class="section-title">
+            <span class="title-icon">💳</span> Article 4 – Paiement
+          </h2>
+          <div class="section-content">
+            <p>Les paiements sont réalisés de manière sécurisée via Stripe.</p>
+            <p>SellMatch ne stocke aucune donnée bancaire.</p>
+            <p>Le paiement est exigible immédiatement lors de la commande.</p>
+          </div>
+        </div>
+        <div class="cgv-card">
+          <h2 class="section-title">
+            <span class="title-icon">🚀</span> Article 5 – Activation du service
+          </h2>
+          <div class="section-content">
+            <p>Les options payantes sont activées immédiatement après validation du paiement.</p>
+            <p>Le vendeur reconnaît expressément que l’exécution du service commence immédiatement après achat.</p>
+          </div>
+        </div>
+        <div class="cgv-card accent-card">
+          <h2 class="section-title">
+            <span class="title-icon">⚠️</span> Article 6 – Droit de rétractation
+          </h2>
+          <div class="section-content">
+            <p>Conformément à l’article L221-28 du Code de la consommation, le vendeur reconnaît et accepte expressément que le service numérique commence immédiatement après paiement.</p>
+            <p class="highlight-text">En conséquence, le vendeur renonce expressément à son droit de rétractation dès l’activation du service.</p>
+          </div>
+        </div>
+        <div class="cgv-card">
+          <h2 class="section-title">
+            <span class="title-icon">🛡️</span> Article 7 – Absence de garantie
+          </h2>
+          <div class="section-content">
+            <p>L’option Premium a pour objectif de favoriser des candidatures proposant des honoraires plus compétitifs grâce au système de limitation automatique mis en place par SellMatch.</p>
+            <p>Toutefois, SellMatch ne garantit pas :</p>
+            <ul class="info-list">
+              <li>Un montant précis d’honoraires</li>
+              <li>Une économie minimale</li>
+              <li>Un nombre de candidatures</li>
+              <li>Un délai de vente</li>
+              <li>Ni la réalisation d’une transaction immobilière</li>
+            </ul>
+            <p>Le vendeur demeure entièrement libre d’accepter ou refuser les candidatures reçues.</p>
+            <p>SellMatch agit uniquement comme plateforme de mise en relation et ne participe pas aux négociations ou transactions immobilières réalisées entre utilisateurs.</p>
+          </div>
+        </div>
+        <div class="cgv-card">
+          <h2 class="section-title">
+            <span class="title-icon">🔄</span> Article 8 – Remboursement
+          </h2>
+          <div class="section-content">
+            <p>Aucun remboursement ne pourra être demandé après activation d’une option payante.</p>
+          </div>
+        </div>
+        <div class="cgv-card">
+          <h2 class="section-title">
+            <span class="title-icon">🚫</span> Article 9 – Suspension
+          </h2>
+          <div class="section-content">
+            <p>SellMatch se réserve le droit de suspendre ou supprimer un dossier vendeur en cas :</p>
+            <ul class="info-list">
+              <li>De fraude</li>
+              <li>De faux dossier</li>
+              <li>D’informations mensongères</li>
+              <li>De comportement abusif</li>
+              <li>De violation des présentes CGU ou CGV</li>
+            </ul>
+          </div>
+        </div>
+        <div class="cgv-card">
+          <h2 class="section-title">
+            <span class="title-icon">⚖️</span> Article 10 – Responsabilité
+          </h2>
+          <div class="section-content">
+            <p>SellMatch agit uniquement comme plateforme de mise en relation.</p>
+            <p>SellMatch ne peut être tenu responsable :</p>
+            <ul class="info-list">
+              <li>De l’absence de candidatures</li>
+              <li>Du comportement des professionnels</li>
+              <li>D’un échec de vente</li>
+              <li>D’une estimation erronée</li>
+              <li>Des échanges réalisés entre utilisateurs</li>
+            </ul>
+          </div>
+        </div>
+        <div class="cgv-card">
+          <h2 class="section-title">
+            <span class="title-icon">🏛️</span> Article 11 – Droit applicable
+          </h2>
+          <div class="section-content">
+            <p>Les présentes CGV sont soumises au droit français.</p>
+            <p>En cas de litige, une résolution amiable sera privilégiée avant toute action judiciaire.</p>
+            <p>À défaut d’accord amiable, les tribunaux compétents de Paris seront seuls compétents.</p>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- FOOTER -->
+    <div class="cgv-footer">
+      <p>Dernière mise à jour : 22 Mai 2026</p>
+    </div>
+
+  </div>
+</div>

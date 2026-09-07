@@ -1,0 +1,26 @@
+<section appTranslate [ns]="'crm-recrutement'">
+  <app-dashboard-header
+    [title]="'title' | tkey"
+    [subtitle]="'subtitle' | tkey">
+  </app-dashboard-header>
+
+  <section class="crm-page">
+
+    @if (ContactsEmpty()) {
+      <div class="crm-page__notice crm-page__notice--warning">
+        <span class="material-icons">contact_page</span>
+        <div class="crm-page__notice-body">
+          <p>Aucun contact en base</p>
+          <p class="crm-page__notice-hint">Créez d'abord un contact pour pouvoir l'associer à un recrutement.</p>
+        </div>
+        <button type="button" class="crm-page__notice-cta" (click)="GoToContacts()">
+          <span class="material-icons">person_add</span>
+          Créer un contact
+        </button>
+      </div>
+    }
+
+    <app-recrutement-grid></app-recrutement-grid>
+
+  </section>
+</section>

@@ -1,0 +1,120 @@
+@use 'variables' as *;
+
+//#region Host
+:host {
+  display: block;
+  width: 100%;
+}
+//#endregion
+
+//#region Page
+.crm-page {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  width: 100%;
+}
+
+.crm-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 $spacing-sm 0;
+}
+
+.crm-page__title {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+
+  h2 {
+    margin: 0;
+    // - cm - Typo compacte/moderne (h2 herite de la normalisation globale
+    // - cm - font-weight 600, line-height 1.2, letter-spacing -0.01em)
+    font-size: $font-size-xl;  // 1.25rem (20px)
+    color: $text-primary;
+  }
+}
+
+.crm-page__icon {
+  font-size: 28px;
+  color: $primary-color;
+}
+
+.crm-page__error {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-md;
+  background: $error-light;
+  color: $error-color;
+  font-size: 14px;
+}
+//#endregion
+
+//#region Tabs
+app-tabs {
+  display: block;
+  width: 100%;
+}
+//#endregion
+
+//#region Map
+app-map-card {
+  display: block;
+  width: 100%;
+}
+
+.crm-biens__map-title {
+  h3 {
+    margin: 0;
+    // - cm - Typo compacte/moderne (h3 herite de la normalisation globale)
+    font-size: $font-size-title;  // 0.92rem
+    color: $text-primary;
+  }
+}
+//#endregion
+
+//#region Placeholder
+.crm-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 24px;
+}
+
+.crm-placeholder__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  padding: 40px;
+  background: $card-background;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-light;
+  max-width: 420px;
+}
+
+.crm-placeholder__icon {
+  font-size: 48px;
+  color: $primary-color;
+}
+
+.crm-placeholder__title {
+  margin: 0;
+  // - cm - Typo compacte/moderne (titre de placeholder, meme registre que
+  // - cm - .crm-page__title h2)
+  font-size: $font-size-xl;  // 1.25rem (20px)
+  color: $text-primary;
+}
+
+.crm-placeholder__text {
+  margin: 0;
+  font-size: 14px;
+  color: $text-secondary;
+}
+//#endregion

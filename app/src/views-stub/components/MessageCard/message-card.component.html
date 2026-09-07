@@ -1,0 +1,28 @@
+@if (Messages.length === 0) {
+<div class="empty-state small">
+    <span class="material-icons">mail_outline</span>
+    <p>Aucun message</p>
+</div>
+    } @else {
+<div class="messages-list">
+    @for (msg of Messages; track msg.Id) {
+    <div class="message-card" [class.unread]="!msg.Lu">
+        <div class="message-avatar">
+            <div class="image-placeholder-mini agent">
+                <span class="material-icons">person</span>
+            </div>
+            <span class="message-type-dot" [ngClass]="'type-' + msg.Type"></span>
+        </div>
+        <div class="message-content">
+            <div class="message-header">
+                <span class="sender">{{ msg.Expediteur }}</span>
+                <span class="time">{{ GetTimeAgo(msg.Date) }}</span>
+            </div>
+            <p class="subject">{{ msg.Sujet }}</p>
+            <p class="preview">{{ msg.Apercu }}</p>
+        </div>
+        @if (!msg.Lu) { <span class="unread-dot"></span> }
+    </div>
+    }
+</div>
+    }

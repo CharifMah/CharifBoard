@@ -1,0 +1,229 @@
+<div class="home-container">
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero__bg-image"></div>
+        <div class="hero__content">
+            <h1 class="hero__title" appScrollReveal [Animation]="'word'" [Threshold]="0.3">
+                {{ 'home.hero.title' | translate }}
+                <span class="hero__title-highlight">{{ 'home.hero.titleHighlight' | translate }}</span>
+            </h1>
+
+            <p class="hero__subtitle" appScrollReveal [Animation]="'word'" [StaggerDelay]="40">
+                {{ 'home.hero.subtitle' | translate }}
+            </p>
+
+            <p class="hero__description" appScrollReveal [Animation]="'word'" [StaggerDelay]="30">
+                {{ 'home.hero.description' | translate }}
+            </p>
+
+            <div class="hero__actions" id="hero-actions">
+                <app-button variant="primary" size="lg" [routerLink]="this.RouteUtils.GetRoute(this.Routes.INSCRIPTION_VENDEUR)"
+                    icon="arrow_forward" iconPosition="right" [rounded]="true" [animDelay]="200">
+                    {{ 'home.hero.ctaSell' | translate }}
+                </app-button>
+                <app-button variant="ghost" size="lg" [routerLink]="this.RouteUtils.GetRoute(this.Routes.OUTILESTIMATION)"
+                    icon="calculate" iconPosition="left" [rounded]="true" [animDelay]="200">
+                    {{ 'home.hero.ctaEstimate' | translate }}
+                </app-button>
+                <app-button variant="ghost" size="lg" [routerLink]="this.RouteUtils.GetRoute(this.Routes.INSCRIPTION_PRO)"
+                    [animDelay]="200" [rounded]="true">
+                    {{ 'home.hero.ctaPro' | translate }}
+                </app-button>
+            </div>
+
+            <app-scroll-indicator [label]="'home.hero.scrollIndicator' | translate" targetId="steps-section"></app-scroll-indicator>
+
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="steps" id="steps-section">
+        <div class="steps__halo" aria-hidden="true"></div>
+        <div class="container">
+            <div class="section-header" appScrollReveal [Animation]="'fade'">
+                <span class="section-header__eyebrow">
+                    {{ 'home.steps.eyebrow' | translate }}
+                </span>
+                <h2 class="section-header__title" appScrollReveal [Animation]="'fade'" [Threshold]="0.3">
+                    {{ 'home.steps.title' | translate }}
+                    <span class="text-gradient">{{ 'home.steps.titleHighlight' | translate }}</span>
+                </h2>
+            </div>
+
+            <div class="steps__timeline">
+                <div class="steps__rail" aria-hidden="true"></div>
+
+                <div class="step-card" appScrollReveal [Animation]="'fade'">
+                    <div class="step-card__badge">
+                        <span class="step-card__badge-inner">{{ 'home.steps.step1.number' | translate }}</span>
+                    </div>
+                    <div class="step-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                            <path
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <h3 class="step-card__title">{{ 'home.steps.step1.title' | translate }}</h3>
+                    <p class="step-card__text">
+                        {{ 'home.steps.step1.text' | translate }}
+                    </p>
+                </div>
+
+                <div class="step-card" appScrollReveal [Animation]="'fade'">
+                    <div class="step-card__badge">
+                        <span class="step-card__badge-inner">{{ 'home.steps.step2.number' | translate }}</span>
+                    </div>
+                    <div class="step-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                            <path
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="step-card__title">{{ 'home.steps.step2.title' | translate }}</h3>
+                    <p class="step-card__text">
+                        {{ 'home.steps.step2.text' | translate }}
+                    </p>
+                </div>
+
+                <div class="step-card" appScrollReveal [Animation]="'fade'">
+                    <div class="step-card__badge">
+                        <span class="step-card__badge-inner">{{ 'home.steps.step3.number' | translate }}</span>
+                    </div>
+                    <div class="step-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="step-card__title">{{ 'home.steps.step3.title' | translate }}</h3>
+                    <p class="step-card__text">
+                        {{ 'home.steps.step3.text' | translate }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="steps__footer">
+                <app-badge type="info" variant="soft" size="lg" icon="bolt" [label]="'home.steps.badge' | translate"></app-badge>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits">
+        <div class="container">
+            <div class="benefits__layout">
+
+                <div class="benefits__content" appScrollReveal [Animation]="'fade'">
+                    <div class="section-header section-header--left">
+                        <span class="section-header__eyebrow" appScrollReveal [Animation]="'word'"
+                            [Threshold]="0.3">{{ 'home.benefits.eyebrow' | translate }}</span>
+                        <h2 class="section-header__title" appScrollReveal [Animation]="'word'" [Threshold]="0.3">
+                            {{ 'home.benefits.title' | translate }}
+                            <span class="text-gradient">{{ 'home.benefits.titleHighlight' | translate }}</span>
+                        </h2>
+                        <p class="section-header__description">
+                            {{ 'home.benefits.description' | translate }}
+                        </p>
+                    </div>
+
+                    <ul class="benefits__list">
+                        <li class="benefit">
+                            <div class="benefit__icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </div>
+                            <div class="benefit__content">
+                                <h4 class="benefit__title">{{ 'home.benefits.item1.title' | translate }}</h4>
+                                <p class="benefit__text">{{ 'home.benefits.item1.text' | translate }}</p>
+                            </div>
+                        </li>
+                        <li class="benefit">
+                            <div class="benefit__icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div class="benefit__content">
+                                <h4 class="benefit__title">{{ 'home.benefits.item2.title' | translate }}</h4>
+                                <p class="benefit__text">{{ 'home.benefits.item2.text' | translate }}</p>
+                            </div>
+                        </li>
+                        <li class="benefit">
+                            <div class="benefit__icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                </svg>
+                            </div>
+                            <div class="benefit__content">
+                                <h4 class="benefit__title">{{ 'home.benefits.item3.title' | translate }}</h4>
+                                <p class="benefit__text">{{ 'home.benefits.item3.text' | translate }}</p>
+                            </div>
+                        </li>
+                        <li class="benefit">
+                            <div class="benefit__icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                            </div>
+                            <div class="benefit__content">
+                                <h4 class="benefit__title">{{ 'home.benefits.item4.title' | translate }}</h4>
+                                <p class="benefit__text">{{ 'home.benefits.item4.text' | translate }}</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- - cm - Pricing summary : grille des 4 plans (Pro/CRM/Premium/ÉcoMandat).
+                 Lit SubscriptionPlansController.GetAll (override [AllowAnonymous]).
+                 Purement informatif : aucun CTA checkout embarqué, l'utilisateur
+                 navigue vers /pricing pour payer. -->
+            <app-pricing-summary></app-pricing-summary>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="cta__background">
+            <div class="cta__pattern"></div>
+        </div>
+        <div class="container">
+            <div class="cta__content">
+                <h2 class="cta__title">
+                    {{ 'home.cta.title' | translate }}
+                    <span class="text-gradient">{{ 'home.cta.titleHighlight' | translate }}</span>
+                </h2>
+                <p class="cta__description">
+                    {{ 'home.cta.description' | translate }}
+                </p>
+                <div class="cta__actions">
+                    <app-button variant="primary" size="xl"
+                        [routerLink]="this.RouteUtils.GetRoute(this.Routes.INSCRIPTION_VENDEUR)" icon="arrow_forward"
+                        iconPosition="right" animTrigger="scroll" [animDelay]="300">
+                        {{ 'home.cta.button' | translate }}
+                    </app-button>
+                </div>
+                <div class="cta__trust">
+                    <div class="trust-item">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                        </svg>
+                        <span>{{ 'home.cta.trust1' | translate }}</span>
+                    </div>
+                    <div class="trust-item">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                        </svg>
+                        <span>{{ 'home.cta.trust2' | translate }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

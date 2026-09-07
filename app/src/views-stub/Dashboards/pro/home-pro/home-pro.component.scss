@@ -1,0 +1,683 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region Dashboard home
+.dashboard-home {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+
+  @media (max-width: #{$mobile-breakpoint}) {
+    padding: 0 6px; // - cm - Padding horizontal réduit sur mobile pour maximiser la largeur
+  }
+}
+//#endregion
+
+//#region Columns
+// - cm - Colonnes gauche/droite
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+//#endregion
+
+//#region Empty State
+// - cm - État vide
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  text-align: center;
+
+  &.small {
+    padding: 24px;
+
+    .material-icons {
+      font-size: 32px;
+    }
+
+    p {
+      font-size: 13px;
+    }
+  }
+
+  .material-icons {
+    font-size: 48px;
+    color: $text-secondary;
+    opacity: 0.5;
+    margin-bottom: 12px;
+  }
+
+  p {
+    color: $text-secondary;
+    margin: 0;
+  }
+}
+//#endregion
+
+//#region Mandats
+// - cm - Liste des mandats
+.mandats-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.mandat-card {
+  background: $surface-subtle; // - cm - Fond harmonisé via token (réagit au dark theme)
+  border-radius: $border-radius-md;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all $transition-normal;
+  border: 1px solid rgba($blue-300, 0.08);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba($blue-300, 0.15);
+  }
+
+  .mandat-image {
+    position: relative;
+    height: 130px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .statut-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+
+      &.statut-actif {
+        background: rgba($success-color, 0.9);
+        color: $white;
+      }
+
+      &.statut-en-negociation {
+        background: rgba($warning-color, 0.9);
+        color: $white;
+      }
+
+      &.statut-vendu {
+        background: rgba($info-color, 0.9);
+        color: $white;
+      }
+    }
+  }
+
+  .mandat-content {
+    padding: 14px;
+
+    h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: $text-primary;
+      margin: 0 0 4px 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .location {
+      font-size: 12px;
+      color: $text-secondary;
+      margin: 0 0 10px 0;
+    }
+
+    .mandat-stats {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 10px;
+
+      .stat {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        color: $text-secondary;
+
+        .material-icons {
+          font-size: 16px;
+          color: $primary-light;
+        }
+      }
+    }
+
+    .mandat-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+
+      .prix {
+        font-size: 16px;
+        font-weight: 700;
+        color: $primary-color;
+      }
+
+      .commission {
+        font-size: 13px;
+        font-weight: 600;
+        color: $success-color;
+        background: rgba($success-color, 0.1);
+        padding: 2px 8px;
+        border-radius: 4px;
+      }
+    }
+
+    .expiration {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: $text-secondary;
+
+      .material-icons {
+        font-size: 14px;
+      }
+
+      &.urgent {
+        color: $warning-color;
+
+        .material-icons {
+          color: $warning-color;
+        }
+      }
+    }
+  }
+
+  .vendeur-mini {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: rgba($blue-300, 0.05);
+    border-top: 1px solid rgba($blue-300, 0.08);
+
+    img {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    span {
+      font-size: 12px;
+      color: $text-secondary;
+    }
+  }
+}
+//#endregion
+
+//#region Performance
+// - cm - Grille de performance
+.performance-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.perf-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: $surface-subtle; // - cm - Fond harmonisé via token (réagit au dark theme)
+  border-radius: $border-radius-sm;
+
+  .perf-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: $border-radius-sm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .material-icons {
+      font-size: 22px;
+      color: $white;
+    }
+
+    &.blue {
+      background: linear-gradient(135deg, $primary-color, $primary-light);
+    }
+
+    &.green {
+      background: linear-gradient(135deg, $success-color, $success-light);
+    }
+
+    &.purple {
+      background: linear-gradient(135deg, $purple-color, $purple-300);
+    }
+
+    &.orange {
+      background: linear-gradient(135deg, $warning-color, $warning-light);
+    }
+  }
+
+  .perf-info {
+    .perf-value {
+      display: block;
+      font-size: 22px;
+      font-weight: 700;
+      color: $text-primary;
+    }
+
+    .perf-label {
+      font-size: 11px;
+      color: $text-secondary;
+    }
+  }
+}
+
+.empty-state-small {
+  text-align: center;
+  padding: 32px;
+  color: $text-secondary;
+
+  .material-icons {
+    font-size: 48px;
+    color: $primary-light;
+    margin-bottom: 12px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+//#endregion
+
+//#region Modal
+// - cm - Modal
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: $z-index-popup;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: $card-background;
+  border-radius: $border-radius;
+  width: 90%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba($blue-300, 0.1);
+
+    h2 {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 18px;
+      color: $primary-dark;
+      margin: 0;
+
+      .material-icons {
+        color: $primary-color;
+      }
+    }
+
+    .btn-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: $text-secondary;
+      padding: 8px;
+      border-radius: 50%;
+      transition: all $transition-normal;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.05);
+        color: $text-primary;
+      }
+    }
+  }
+
+  .modal-body {
+    padding: 24px;
+
+    .property-summary {
+      display: flex;
+      gap: 16px;
+      padding: 16px;
+      background: rgba($blue-300, 0.05);
+      border-radius: $border-radius-md;
+      margin-bottom: 20px;
+
+      img {
+        width: 100px;
+        height: 75px;
+        border-radius: $border-radius-sm;
+        object-fit: cover;
+      }
+
+      .summary-info {
+        h4 {
+          font-size: 15px;
+          font-weight: 600;
+          color: $text-primary;
+          margin: 0 0 4px 0;
+        }
+
+        p {
+          font-size: 12px;
+          color: $text-secondary;
+          margin: 0 0 8px 0;
+        }
+
+        .price {
+          font-size: 16px;
+          font-weight: 700;
+          color: $primary-color;
+        }
+      }
+    }
+
+    .commission-preview {
+      display: flex;
+      justify-content: space-between;
+      padding: 16px;
+      background: rgba($success-color, 0.08);
+      border-radius: $border-radius-sm;
+      margin-bottom: 20px;
+
+      .label {
+        font-size: 13px;
+        color: $text-secondary;
+      }
+
+      .value {
+        font-size: 18px;
+        font-weight: 700;
+        color: $success-color;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+
+      label {
+        display: block;
+        font-size: 13px;
+        font-weight: 500;
+        color: $text-primary;
+        margin-bottom: 8px;
+      }
+
+      .input-suffix {
+        display: flex;
+        align-items: center;
+      background: $surface-muted;
+        input {
+          flex: 1;
+          padding: 12px 16px;
+          border: none;
+          background: transparent;
+          font-size: 16px;
+
+          &:focus {
+            outline: none;
+          }
+        }
+
+        span {
+          padding: 0 16px;
+          font-weight: 600;
+          color: $text-secondary;
+        }
+      }
+
+      textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid $border-color;
+        border-radius: $border-radius-sm;
+        font-size: 14px;
+        resize: vertical;
+        min-height: 100px;
+
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+        }
+      }
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 24px;
+
+      .btn-secondary {
+        padding: 12px 24px;
+        background: $surface-muted;
+        border: none;
+        border-radius: $border-radius-sm;
+        font-weight: 500;
+        cursor: pointer;
+        color: $text-primary;
+
+        &:hover {
+          background: $surface-hover;
+        }
+      }
+
+      .btn-primary {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: linear-gradient(135deg, $primary-color, $accent-color);
+        color: $white;
+        border: none;
+        border-radius: $border-radius-sm;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all $transition-normal;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 15px rgba($blue-300, 0.4);
+        }
+      }
+    }
+  }
+}
+//#endregion
+
+//#region Responsive — Tablet
+// - cm - Adaptations tablette
+@include between($mobile-breakpoint, $tablet-breakpoint) {
+  .mandats-list {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+
+  .performance-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .perf-item {
+    padding: 10px;
+
+    .perf-icon {
+      width: 38px;
+      height: 38px;
+
+      .material-icons {
+        font-size: 18px;
+      }
+    }
+
+    .perf-info {
+      .perf-value {
+        font-size: 18px;
+      }
+    }
+  }
+}
+//#endregion
+
+//#region Responsive — Mobile
+// - cm - Adaptations mobile
+@include mobile {
+  .dashboard-home {
+    gap: 12px;
+  }
+
+  .left-column,
+  .right-column {
+    gap: 12px;
+  }
+
+  .mandats-list {
+    grid-template-columns: 1fr;
+  }
+
+  .mandat-card {
+    .mandat-image {
+      height: 140px;
+    }
+
+    .mandat-content {
+      padding: 10px;
+
+      h4 {
+        font-size: 13px;
+      }
+
+      .location {
+        font-size: 11px;
+      }
+
+      .mandat-stats {
+        gap: 8px;
+
+        .stat {
+          font-size: 11px;
+        }
+      }
+
+      .mandat-footer {
+        .prix {
+          font-size: 14px;
+        }
+
+        .commission {
+          font-size: 12px;
+        }
+      }
+    }
+
+    .vendeur-mini {
+      padding: 8px 10px;
+
+      span {
+        font-size: 11px;
+      }
+    }
+  }
+
+  .performance-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .perf-item {
+    padding: 10px;
+
+    .perf-icon {
+      width: 36px;
+      height: 36px;
+
+      .material-icons {
+        font-size: 18px;
+      }
+    }
+
+    .perf-info {
+      .perf-value {
+        font-size: 18px;
+      }
+
+      .perf-label {
+        font-size: 10px;
+      }
+    }
+  }
+
+  .modal-content {
+    width: 95%;
+    max-height: 85vh;
+
+    .modal-header {
+      padding: 16px;
+
+      h2 {
+        font-size: 16px;
+      }
+    }
+
+    .modal-body {
+      padding: 16px;
+
+      .property-summary {
+        flex-direction: column;
+
+        img {
+          width: 100%;
+          height: 120px;
+        }
+      }
+
+      .modal-actions {
+        flex-direction: column;
+
+        .btn-secondary,
+        .btn-primary {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    }
+  }
+}
+//#endregion
+

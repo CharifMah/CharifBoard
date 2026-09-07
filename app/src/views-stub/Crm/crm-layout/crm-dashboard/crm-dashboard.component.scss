@@ -1,0 +1,431 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+@use 'animations' as *;
+
+//#region Host
+:host {
+  display: block;
+  width: 100%;
+}
+//#endregion
+
+//#region Header
+.crm-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+  padding-bottom: $spacing-md;
+}
+
+.crm-dashboard__header {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.crm-dashboard__title-group {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.crm-dashboard__icon {
+  font-size: 28px;
+  color: $primary-color;
+}
+
+.crm-dashboard__title {
+  margin: 0;
+  // - cm - Titre principal du dashboard, legere hierarchie au-dessus
+  // - cm - des titres de sections ($font-size-xl = 1.25rem). Herite de
+  // - cm - la normalisation globale (font-weight 600, line-height 1.2,
+  // - cm - letter-spacing -0.01em).
+  font-size: $font-size-2xl;  // 1.5rem (24px)
+  color: $text-primary;
+}
+
+.crm-dashboard__subtitle {
+  margin: 0;
+  font-size: $font-size-md;
+  color: $text-secondary;
+}
+//#endregion
+
+//#region KPI cards
+.crm-dashboard__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: $spacing-md;
+}
+//#endregion
+
+//#region Sections layout
+.crm-dashboard__sections {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 1fr;
+  gap: $spacing-md;
+  align-items: stretch;
+
+  app-section-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+
+    ::ng-deep .section-card {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      height: 100%;
+    }
+  }
+
+  app-map-card {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+.crm-dashboard__sections--full {
+  grid-template-columns: 1fr;
+  grid-auto-rows: auto;
+}
+
+// - cm - Variante avec separateur visuel au centre (ex: carte / anniversaire du jour).
+// - cm - Insere une colonne de 1px entre les deux cartes pour un splitter statique.
+.crm-dashboard__sections--with-divider {
+  grid-template-columns: 1fr 1px 1fr;
+}
+
+// - cm - Ligne de separation : verticale en desktop, horizontale en mobile (cartes empilees).
+.crm-dashboard__divider {
+  width: 1px;
+  height: 100%;
+  align-self: stretch;
+  background: $border-color;
+  border-radius: $border-radius-xl;
+  transition: background $transition-fast;
+
+  @media (max-width: $mobile-breakpoint) {
+    width: 100%;
+    height: 1px;
+  }
+}
+
+.crm-dashboard__empty {
+  margin: 0;
+  padding: $spacing-lg;
+  text-align: center;
+  color: $text-secondary;
+  font-size: $font-size-md;
+}
+
+//#region Block skeleton
+.crm-dashboard__block-skeleton {
+  height: 200px;
+  width: 100%;
+  border-radius: $border-radius-md;
+  background: linear-gradient(90deg,
+      rgba(var(--sm-primary-rgb), 0.06) 25%,
+      rgba(var(--sm-primary-rgb), 0.14) 50%,
+      rgba(var(--sm-primary-rgb), 0.06) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crm-dashboard__block-skeleton {
+    animation: none;
+  }
+}
+//#endregion
+//#endregion
+
+//#region Lists
+.crm-dashboard__list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.crm-dashboard__list-item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  background: $card-background;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-sm;
+  transition: background $transition-fast, border-color $transition-fast;
+
+  &:hover {
+    background: $surface-hover;
+    border-color: $border-color-strong;
+  }
+}
+
+.crm-dashboard__list-icon {
+  font-size: 20px;
+  color: $primary-color;
+}
+
+.crm-dashboard__list-label {
+  flex: 1;
+  font-size: $font-size-md;
+  color: $text-primary;
+}
+//#endregion
+
+//#region Annual objective gauge
+.crm-dashboard__gauge {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.crm-dashboard__gauge-bar {
+  width: 100%;
+  height: 14px;
+  background: $surface-muted;
+  border-radius: $border-radius-xl;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px $border-color;
+}
+
+.crm-dashboard__gauge-fill {
+  height: 100%;
+  background: linear-gradient(90deg, $success-color, $accent-color);
+  border-radius: $border-radius-xl;
+  transition: width $transition-fast;
+}
+
+.crm-dashboard__gauge-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-md;
+}
+
+.crm-dashboard__gauge-stat {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.crm-dashboard__gauge-label {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+}
+
+.crm-dashboard__gauge-value {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $text-primary;
+}
+
+// - cm - Warning affiché dans la jauge de l'objectif annuel.
+// - cm - Bouton cliquable (cursor pointer) pour ouvrir la grille transactions.
+.crm-dashboard__warning {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  background: rgba(var(--sm-warning-rgb, 245, 158, 11), 0.08);
+  border: 1px solid rgba(var(--sm-warning-rgb, 245, 158, 11), 0.32);
+  border-left: 4px solid $warning-color;
+  border-radius: $border-radius-sm;
+  // - cm - Reset des styles natifs button pour ne pas casser l'apparence warning.
+  background-clip: padding-box;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  transition: background $transition-fast, border-color $transition-fast;
+
+  &:hover {
+    background: rgba(var(--sm-warning-rgb, 245, 158, 11), 0.14);
+    border-color: rgba(var(--sm-warning-rgb, 245, 158, 11), 0.5);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $warning-color;
+    outline-offset: 2px;
+  }
+}
+
+.crm-dashboard__warning-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  font-size: $font-size-sm;
+  color: $text-primary;
+  line-height: 1.4;
+}
+
+.crm-dashboard__warning-detail {
+  font-size: $font-size-xs;
+  color: $text-secondary;
+}
+//#endregion
+
+//#region CA filters & amount
+.crm-dashboard__ca-filters {
+  display: flex;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-md;
+  flex-wrap: wrap;
+}
+
+// - cm - Warning affiché en tête de la section "CA encaissé" si des affaires
+// - cm - VENDU/LOUE sont exclues du calcul car sans date de signature.
+// - cm - Alerte jaune sticky en haut, sous le titre de la section.
+.crm-dashboard__ca-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  margin-bottom: $spacing-md;
+  background: rgba(var(--sm-warning-rgb, 245, 158, 11), 0.08);
+  border: 1px solid rgba(var(--sm-warning-rgb, 245, 158, 11), 0.32);
+  border-left: 4px solid $warning-color;
+  border-radius: $border-radius-sm;
+}
+
+.crm-dashboard__ca-warning-text {
+  flex: 1;
+  font-size: $font-size-sm;
+  color: $text-primary;
+  line-height: 1.4;
+}
+
+.crm-dashboard__ca-warning-link {
+  // - cm - Reset button styles pour réutiliser la classe bouton-lien dans un texte.
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: $spacing-xs;
+  font: inherit;
+  color: $primary-color;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color $transition-fast;
+
+  &:hover {
+    // - cm - Le commit 47ed49d7 référençait $primary-color-dark qui n'existe pas.
+    //      La variable SCSS définie est $primary-dark (#7b1fa2) — on l'utilise ici.
+    color: $primary-dark;
+  }
+}
+
+.crm-dashboard__ca-periode {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-md;
+  margin-bottom: $spacing-md;
+}
+
+.crm-dashboard__ca-amount {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  padding: $spacing-md;
+  background: $surface-muted;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+}
+
+.crm-dashboard__ca-amount-label {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+}
+
+.crm-dashboard__ca-amount-value {
+  font-size: 24px;
+  font-weight: $font-weight-bold;
+  color: $success-color;
+}
+
+.crm-dashboard__chart {
+  width: 100%;
+  height: 320px;
+  min-height: 260px;
+  margin-top: $spacing-md;
+
+  app-chart {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+//#endregion
+
+//#region Tasks
+.crm-dashboard__taches {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.crm-dashboard__taches-group {
+  padding: $spacing-md;
+  border-left: 4px solid $border-color;
+  border-radius: $border-radius-sm;
+  background: $card-background;
+  box-shadow: $shadow-light;
+
+  &--danger { border-left-color: $danger-color; }
+  &--warning { border-left-color: $warning-color; }
+  &--info { border-left-color: $info-color; }
+}
+
+.crm-dashboard__taches-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-sm;
+}
+
+.crm-dashboard__taches-title {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
+}
+//#endregion
+
+//#region Responsive
+@media (max-width: $mobile-breakpoint) {
+  .crm-dashboard {
+    gap: $spacing-lg;
+  }
+
+  .crm-dashboard__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .crm-dashboard__sections {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+  }
+
+  // - cm - En mobile, les cartes s'empilent et le splitter devient une ligne pleine largeur.
+  .crm-dashboard__sections--with-divider {
+    grid-template-columns: 1fr;
+  }
+
+  .crm-dashboard__gauge-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .crm-dashboard__ca-periode {
+    grid-template-columns: 1fr;
+  }
+
+  .crm-dashboard__chart {
+    height: 260px;
+  }
+}
+//#endregion

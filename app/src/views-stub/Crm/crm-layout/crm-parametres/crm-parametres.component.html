@@ -1,0 +1,115 @@
+    <!-- - cm - Directive appTranslate : déclare le namespace i18n 'crm-parametres' pour toute la page.
+                Les pipes `tkey` enfants lisent ce namespace automatiquement (sans argument).
+                Permet de supprimer les getters TitleI18n/SubtitleI18n du TS pour le header. -->
+<section appTranslate [ns]="'crm-parametres'">
+  <app-dashboard-header
+    [title]="'title' | tkey"
+    [subtitle]="'subtitle' | tkey">
+  </app-dashboard-header>
+
+<!--#region Feedback global (succes apres fermeture popup) -->
+@if (SuccessMessage(); as lSuccess) {
+<app-message-display [message]="lSuccess" icon="check_circle" type="success"
+    additionalClasses="crm-parametres__feedback" />
+}
+@if (ErrorMessage() && !ShowParametresPopup()) {
+<app-message-display [message]="ErrorMessage()!" icon="error_outline" type="error"
+    additionalClasses="crm-parametres__feedback" />
+}
+<!--#endregion-->
+
+<!--#region Grid des sections -->
+<section class="crm-parametres__grid">
+    @for (lSection of Sections; track lSection.Event) {
+    <article class="crm-parametres__card" (click)="OnSectionClick(lSection.Event)" tabindex="0"
+        (keydown.enter)="OnSectionClick(lSection.Event)" role="button" [attr.aria-label]="lSection.Action">
+        <header class="crm-parametres__card-head">
+            <span class="crm-parametres__icon material-icons">{{ lSection.Icon }}</span>
+            <h3>{{ lSection.Title }}</h3>
+        </header>
+        <p class="crm-parametres__desc">{{ lSection.Description }}</p>
+        <app-button variant="primary" [outline]="true" size="sm" animTrigger="none"
+            (ButtonClick)="OnSectionClick(lSection.Event); $event.stopPropagation()">{{ lSection.Action }}</app-button>
+    </article>
+    }
+</section>
+<!--#endregion-->
+
+<!--#region Popup edition ParametresDTO -->
+<app-popup [isOpen]="ShowParametresPopup()" [title]="PopupTitle"
+    [subtitle]="PopupSubtitle"
+    icon="tune" type="info" size="form"
+    [showFooter]="true" [confirmText]="PopupConfirm" [cancelText]="PopupCancel"
+    [confirmLoading]="Saving()" [confirmDisabled]="Loading() || Saving()"
+    (confirmed)="Save()" (cancelled)="CloseParametresPopup()" (closed)="CloseParametresPopup()">
+
+    @if (Loading()) {
+    <p class="settings-empty">{{ PopupLoading }}</p>
+    }
+    @else {
+    @if (ErrorMessage(); as lError) {
+    <app-message-display [message]="lError" icon="error_outline" type="error" />
+    }
+
+    <form class="settings-form" (ngSubmit)="Save(); $event.preventDefault()" autocomplete="off">
+        <h4 class="settings-section-title">{{ SectionCommercialObjectives }}</h4>
+
+        <div class="settings-form__row">
+            <label class="settings-field">
+                <span class="settings-field__label">
+                    {{ LabelObjectifAnnuelCa }}
+                    <app-tooltip [Text]="TooltipObjectifAnnuelCa" Position="top" Variant="dark" [MaxWidth]="280"
+                        [AriaLabel]="'tooltipAriaLabel' | tkey">
+                        <span class="material-icons settings-field__info" tabindex="0">info</span>
+                    </app-tooltip>
+                </span>
+                <input class="settings-field__input" type="number" min="0" step="1000"
+                    name="objectifAnnuelCa"
+                    [ngModel]="Form().objectifAnnuelCa ?? null"
+                    (ngModelChange)="UpdateField('objectifAnnuelCa', ToNumberOrUndefined($event))"
+                    [placeholder]="PlaceholderObjectifAnnuelCa" />
+            </label>
+
+            <label class="settings-field">
+                <span class="settings-field__label">
+                    {{ LabelPartReseauPct }}
+                    <app-tooltip [Text]="TooltipPartReseauPct" Position="top" Variant="dark" [MaxWidth]="280"
+                        [AriaLabel]="'tooltipAriaLabel' | tkey">
+                        <span class="material-icons settings-field__info" tabindex="0">info</span>
+                    </app-tooltip>
+                </span>
+                <input class="settings-field__input" type="number" min="0" max="100" step="0.5"
+                    name="partReseauPct"
+                    [ngModel]="Form().partReseauPct ?? null"
+                    (ngModelChange)="UpdateField('partReseauPct', ToNumberOrUndefined($event))"
+                    [placeholder]="PlaceholderPartReseauPct" />
+            </label>
+        </div>
+
+        <h4 class="settings-section-title">{{ SectionFiscalite }}</h4>
+
+        <label class="settings-field">
+            <span class="settings-field__label">
+                {{ LabelTypeTvaId }}
+                <app-tooltip [Text]="TooltipTypeTvaId" Position="top" Variant="dark" [MaxWidth]="280"
+                    [AriaLabel]="'tooltipAriaLabel' | tkey">
+                    <span class="material-icons settings-field__info" tabindex="0">info</span>
+                </app-tooltip>
+            </span>
+            <select class="settings-field__input settings-field__select"
+                name="typeTvaId"
+                [ngModel]="Form().typeTvaId ?? null"
+                (ngModelChange)="UpdateField('typeTvaId', ToNumberOrUndefined($event))">
+                <option [ngValue]="null">— {{ OptionAucunTypeTva }} —</option>
+                @for (lTva of TypeTvaOptions(); track lTva.id) {
+                <option [ngValue]="lTva.id">{{ lTva.libelle || lTva.code || (TypeTvaFallbackPrefix + lTva.id) }}</option>
+                }
+            </select>
+        </label>
+
+        <input type="submit" hidden />
+    </form>
+    }
+</app-popup>
+<!--#endregion-->
+</section>

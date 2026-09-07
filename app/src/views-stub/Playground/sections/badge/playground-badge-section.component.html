@@ -1,0 +1,22 @@
+<app-playground-section
+  id="badge"
+  title="app-badge"
+  category="Data"
+  description="Badge/notification avec variants, compteur, icone, animation pulse, shape, removable."
+  [code]="BadgeCode">
+  <div class="playground__demo-inline">
+    <app-badge type="default" label="Default" />
+    <app-badge type="success" label="Succes" icon="check" />
+    <app-badge type="error" label="Erreur" icon="error" />
+    <app-badge type="warning" label="Attention" icon="warning" />
+    <app-badge type="info" label="Info" icon="info" />
+    <app-badge type="default" [count]="5" label="Messages" />
+    <app-badge type="error" [count]="99" [maxCount]="99" label="Alertes" [pulse]="true" />
+    <app-badge type="success" label="En ligne" [shape]="'circle'" />
+    <app-badge type="info" label="Pill" [shape]="'pill'" />
+    <app-badge type="default" label="Outline" [variant]="'outline'" />
+    <app-badge type="hot" label="Hot" />
+    <app-badge type="new" label="Nouveau" [variant]="'soft'" />
+    <app-badge type="default" label="Supprimable" [removable]="true" />
+  </div>
+</app-playground-section>

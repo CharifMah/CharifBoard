@@ -1,0 +1,12 @@
+@use 'variables' as *;
+
+//#region Host (padding géré ici, content-wrapper n'a plus de padding)
+:host {
+  display: block;
+  box-sizing: border-box;
+}
+//#endregion
+
+.mandats {
+  
+}

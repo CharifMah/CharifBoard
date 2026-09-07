@@ -1,0 +1,246 @@
+//#region Palette
+// - cm - Section dediee "app-palette" : variables.scss parse en grille + gradients animes.
+// - cm - Pas de dependance externe : tout est inline pour rester autonome.
+
+.pg-palette-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  > app-input {
+    flex: 1 1 240px;
+    min-width: 200px;
+  }
+
+  > app-button {
+    flex: 0 0 auto;
+  }
+}
+
+.pg-palette-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex: 1 1 auto;
+
+  .pg-palette-chip {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--sm-border-color, rgba(124, 77, 255, 0.18));
+    background: var(--sm-surface-soft, rgba(124, 77, 255, 0.04));
+    color: var(--sm-text-secondary);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+
+    &:hover {
+      background: rgba(124, 77, 255, 0.12);
+      color: var(--sm-text-primary);
+    }
+
+    &--active {
+      background: var(--sm-primary, #9c27b0);
+      color: #fff;
+      border-color: var(--sm-primary, #9c27b0);
+    }
+  }
+}
+
+.pg-palette-status {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--sm-surface-soft, rgba(124, 77, 255, 0.06));
+  color: var(--sm-text-secondary);
+  font-size: 0.85rem;
+
+  &--error {
+    background: rgba(244, 67, 54, 0.1);
+    color: #b71c1c;
+  }
+}
+
+.pg-palette-count {
+  margin: 4px 0 12px;
+  font-size: 0.8rem;
+  color: var(--sm-text-secondary);
+  font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
+}
+
+.pg-palette-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.pg-palette-swatch {
+  position: relative;
+  min-height: 110px;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--sm-border-color, rgba(124, 77, 255, 0.15));
+  overflow: hidden;
+  cursor: copy;
+  transition: transform 160ms ease, box-shadow 180ms ease;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+  }
+
+  &--no-color {
+    cursor: default;
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(124, 77, 255, 0.04),
+      rgba(124, 77, 255, 0.04) 8px,
+      rgba(124, 77, 255, 0.08) 8px,
+      rgba(124, 77, 255, 0.08) 16px
+    ) !important;
+
+    &:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+
+  .pg-palette-category {
+    align-self: flex-start;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    // - cm - Fond semi-transparent qui s'adapte a la couleur du swatch (clair ou fonce).
+    background: rgba(255, 255, 255, 0.18);
+    color: inherit;
+  }
+
+  .pg-palette-name,
+  .pg-palette-value {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    // - cm - Fond leger qui laisse passer la couleur du swatch, couleur heritee du parent.
+    background: rgba(255, 255, 255, 0.12);
+    color: inherit;
+  }
+
+  .pg-palette-name {
+    align-self: flex-start;
+  }
+
+  .pg-palette-value {
+    margin-top: auto;
+    font-weight: 500;
+    opacity: 0.85;
+    word-break: break-all;
+    line-height: 1.3;
+  }
+}
+
+.pg-palette-raw {
+  margin-top: 24px;
+  border: 1px solid var(--sm-border-color, rgba(124, 77, 255, 0.15));
+  border-radius: 10px;
+  overflow: hidden;
+
+  summary {
+    cursor: pointer;
+    padding: 10px 14px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--sm-text-secondary);
+    background: var(--sm-surface-soft, rgba(124, 77, 255, 0.04));
+    user-select: none;
+
+    &:hover {
+      color: var(--sm-text-primary);
+    }
+  }
+
+  .pg-palette-raw-content {
+    margin: 0;
+    padding: 14px;
+    max-height: 480px;
+    overflow: auto;
+    background: #1e1e2e;
+    color: #cdd6f4;
+    font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    white-space: pre;
+  }
+}
+
+.pg-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+//#region Apercu plein ecran des gradients animes
+// - cm - Bandes de 120px qui reutilisent les $gradient-* de variables.scss.
+// - cm - Animation keyframe dupliquee depuis button.component.scss (scope .btn,
+// - cm - donc inaccessible ici). Meme duree 6s ease-in-out infinite.
+
+@keyframes pg-gradient-shift
+{
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.pg-gradient-stripes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.pg-gradient-stripe {
+  height: 120px;
+  border-radius: 10px;
+  border: 1px solid var(--sm-border-color, rgba(124, 77, 255, 0.15));
+  cursor: copy;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  transition: transform 160ms ease, box-shadow 180ms ease;
+
+  // - cm - Taille du background 2x la largeur pour permettre l'animation sans voir la couture.
+  background-size: 200% 100%;
+  animation: pg-gradient-shift 6s ease-in-out infinite;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
+  }
+
+  // - cm - 5 bandes : un fond par palette. Couleurs hex inline pour matcher
+  // - cm - exactement $gradient-*-stop-* de variables.scss.
+  &--default { background-image: linear-gradient(135deg, #a78bfa 0%, #f472b6 50%, #38bdf8 100%); }
+  &--sunset  { background-image: linear-gradient(135deg, #fb923c 0%, #f43f5e 50%, #d946ef 100%); }
+  &--ocean   { background-image: linear-gradient(135deg, #22d3ee 0%, #3b82f6 50%, #6366f1 100%); }
+  &--neon    { background-image: linear-gradient(135deg, #84cc16 0%, #06b6d4 50%, #8b5cf6 100%); }
+  &--aurora  { background-image: linear-gradient(135deg, #34d399 33%, #60a5fa 66%, #c084fc 100%, #f0abfc 100%); }
+}
+//#endregion
+//#endregion

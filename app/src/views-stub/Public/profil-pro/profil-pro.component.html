@@ -1,0 +1,116 @@
+<!-- profil-pro.component.html -->
+
+<!-- Schema.org JSON-LD pour les données structurées -->
+@if (User) {
+  <script type="application/ld+json" [innerHTML]="getSchemaOrgData()"></script>
+}
+
+<div class="profile-page">
+  <div class="profile-container">
+    <!-- Loader -->
+    @if (isLoading) {
+      <div class="loader-container">
+        <div class="loader"></div>
+        <p>Chargement du profil...</p>
+      </div>
+    }
+
+    <!-- Message d'erreur -->
+    @if (error && !isLoading) {
+      <div class="error-container">
+        <span class="material-icons">error</span>
+        <p>{{ error }}</p>
+        <app-button variant="primary" routerLink="/">Retour à l'accueil</app-button>
+      </div>
+    }
+
+    <!-- Contenu du profil -->
+    @if (!isLoading && !error && User) {
+      <div class="profile-content">
+        <!-- En-tête du profil -->
+        <div class="profile-header" appScrollReveal [Animation]="'fade'" [Threshold]="0.01">
+          <app-avatar [avatarUrl]="this.ApiBaseUrl + this.User.avatarUrl" [alt]="this.getFullName(User)"
+            size="2xl" [border]="true" borderColor="primary">
+          </app-avatar>
+          <div class="profile-title">
+            <h1>
+              {{ User.firstName }} {{ User.lastName }}
+              @if (User.companyName) {
+                <span class="company-name">{{ User.companyName }}</span>
+              }
+            </h1>
+          </div>
+        </div>
+        <!-- Contenu principal -->
+        <div class="profile-body">
+          <!-- Informations de contact -->
+          <section class="profile-section" appScrollReveal [Animation]="'fade'">
+            <h2 class="section-title" appScrollReveal [Animation]="'word'" [StaggerDelay]="40">
+              <span class="material-icons">contact_mail</span>
+              Coordonnées
+            </h2>
+            <div class="contact-info">
+              <div class="info-row">
+                <span class="info-label">Email</span>
+                <span class="info-value">{{ User.email }}</span>
+              </div>
+              @if (User.phone) {
+                <div class="info-row">
+                  <span class="info-label">Téléphone</span>
+                  <span class="info-value">{{ User.phone }}</span>
+                </div>
+              }
+              @if (User.address) {
+                <div class="info-row">
+                  <span class="info-label">Adresse</span>
+                  <span class="info-value">
+                    {{ User.address }}
+                    @if (User.address.postcode || User.address.city) {
+                      , {{ User.address.postcode }} {{ User.address.city }}
+                    }
+                    @if (User.address.country) {
+                      , {{ User.address.country }}
+                    }
+                  </span>
+                </div>
+              }
+              @if (User.siret) {
+                <div class="info-row">
+                  <span class="info-label">SIRET</span>
+                  <span class="info-value">{{ User.siret }}</span>
+                </div>
+              }
+            </div>
+          </section>
+          <!-- Biographie -->
+          @if (User.bio) {
+            <section class="profile-section" appScrollReveal [Animation]="'fade'">
+              <h2 class="section-title" appScrollReveal [Animation]="'word'" [StaggerDelay]="40">
+                <span class="material-icons">person</span>
+                Présentation
+              </h2>
+              <div class="bio-content">
+                {{ User.bio }}
+              </div>
+            </section>
+          }
+          <!-- Widget Immodvisor si disponible -->
+          @if (User.immodvisorCid && User.immodvisorApiKey) {
+            <section class="profile-section" appScrollReveal [Animation]="'fade'">
+              <h2 class="section-title" appScrollReveal [Animation]="'word'" [StaggerDelay]="40">
+                <span class="material-icons">star</span>
+                Avis clients
+              </h2>
+              <div class="immodvisor-widget-container">
+                <div class="imdw-widget" data-type="horizontal" [attr.data-cid]="User.immodvisorCid"
+                  [attr.data-hash]="User.immodvisorApiKey" data-ctype="company" data-title="false"
+                  data-max="5">
+                </div>
+              </div>
+            </section>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

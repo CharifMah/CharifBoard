@@ -1,0 +1,226 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region Blog page
+.blog-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+//#endregion
+
+//#region Hero
+.blog-hero {
+  text-align: center;
+  margin-bottom: 3rem;
+
+  &__eyebrow {
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: $border-radius-xl;
+    background: rgba($primary-color, 0.08);
+    color: $primary-color;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__title {
+    margin: 0 0 0.75rem;
+    color: $text-primary;
+    font-size: 2.25rem;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  &__subtitle {
+    margin: 0 auto;
+    max-width: 600px;
+    color: $text-secondary;
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+
+  &__admin {
+    margin-top: 1.25rem;
+  }
+}
+//#endregion
+
+//#region Grille d'articles
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.blog-card {
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  overflow: hidden;
+  background: $card-background;
+  transition: box-shadow $transition-normal, transform $transition-normal;
+  position: relative;
+
+  &:hover {
+    box-shadow: $shadow-medium;
+    transform: translateY(-2px);
+  }
+
+  &--featured {
+    border-color: rgba($warning-color, 0.3);
+    box-shadow: 0 4px 16px rgba($warning-color, 0.08);
+
+    &:hover {
+      box-shadow: 0 8px 24px rgba($warning-color, 0.12);
+    }
+  }
+
+  &__image-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  &__featured-badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 2;
+  }
+
+  &__link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  &__image {
+    width: 100%;
+    height: 180px;
+    background-size: cover;
+    background-position: center;
+    background-color: $surface-muted;
+
+    &--placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba($primary-color, 0.05) 0%, rgba($primary-color, 0.12) 100%);
+
+      .material-icons {
+        font-size: 3rem;
+        color: rgba($primary-color, 0.3);
+      }
+    }
+  }
+
+  &__body {
+    padding: 1.25rem;
+  }
+
+  &__category {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: $border-radius-xl;
+    background: rgba($primary-color, 0.06);
+    color: $primary-color;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: capitalize;
+  }
+
+  &__title {
+    margin: 0 0 0.5rem;
+    color: $text-primary;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  &__excerpt {
+    margin: 0 0 0.75rem;
+    color: $text-secondary;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  &__meta {
+    display: flex;
+    gap: 1rem;
+    color: $text-secondary;
+    font-size: 0.8rem;
+
+    &__date,
+    &__reading {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+  }
+}
+//#endregion
+
+//#region États
+.blog-loading,
+.blog-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 3rem 1rem;
+  color: $text-secondary;
+  font-size: 0.95rem;
+
+  .material-icons {
+    font-size: 2.5rem;
+    color: $text-secondary;
+  }
+}
+//#endregion
+
+//#region CTA estimation
+.blog-cta {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  border-radius: $border-radius-md;
+  background: linear-gradient(135deg, rgba($primary-color, 0.04) 0%, rgba($primary-color, 0.08) 100%);
+
+  &__title {
+    margin: 0 0 0.5rem;
+    color: $text-primary;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  &__text {
+    margin: 0 0 1.25rem;
+    color: $text-secondary;
+    font-size: 0.95rem;
+  }
+}
+//#endregion
+
+//#region Responsive
+@include mobile {
+  .blog-page {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .blog-hero__title {
+    font-size: 1.75rem;
+  }
+
+  .blog-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+//#endregion

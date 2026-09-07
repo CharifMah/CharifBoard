@@ -1,0 +1,80 @@
+<!-- - cm - Page de confirmation de paiement Stripe -->
+<section class="payment-confirmation">
+
+  @switch (Status()) {
+    @case ('loading') {
+      <div class="payment-confirmation__card payment-confirmation__card--loading">
+        <div class="payment-confirmation__spinner"></div>
+        <p class="payment-confirmation__message">{{ Message() }}</p>
+      </div>
+    }
+
+    @case ('success') {
+      <div class="payment-confirmation__card payment-confirmation__card--success">
+        <span class="material-icons payment-confirmation__icon">check_circle</span>
+        <h1 class="payment-confirmation__title">Paiement confirmé</h1>
+        <p class="payment-confirmation__message">{{ Message() }}</p>
+
+        @if (IsCreatingOpportunity()) {
+          <p class="payment-confirmation__hint">
+            <span class="material-icons">hourglass_empty</span>
+            Création du dossier en cours…
+          </p>
+        }
+
+        <div class="payment-confirmation__actions">
+          <app-button variant="primary" size="md" icon="dashboard"
+            (ButtonClick)="GoToDashboard()">
+            Mon tableau de bord
+          </app-button>
+          <app-button variant="light" [outline]="true" size="md" icon="receipt_long"
+            (ButtonClick)="GoToSubscription()">
+            Mes paiements
+          </app-button>
+        </div>
+      </div>
+    }
+
+    @case ('pending') {
+      <div class="payment-confirmation__card payment-confirmation__card--pending">
+        <span class="material-icons payment-confirmation__icon">hourglass_empty</span>
+        <h1 class="payment-confirmation__title">Paiement en cours</h1>
+        <p class="payment-confirmation__message">{{ Message() }}</p>
+        <p class="payment-confirmation__hint">
+          <span class="material-icons">info</span>
+          Vous recevrez un email de confirmation dès que le paiement sera validé.
+        </p>
+      </div>
+    }
+
+    @case ('failure') {
+      <div class="payment-confirmation__card payment-confirmation__card--failure">
+        <span class="material-icons payment-confirmation__icon">error</span>
+        <h1 class="payment-confirmation__title">Échec du paiement</h1>
+        <p class="payment-confirmation__message">{{ Message() }}</p>
+        @if (ShowRetryCta()) {
+          <div class="payment-confirmation__actions">
+            <app-button variant="primary" size="md" icon="refresh"
+              (ButtonClick)="GoToPricing()">
+              Réessayer
+            </app-button>
+          </div>
+        }
+      </div>
+    }
+
+    @default {
+      <div class="payment-confirmation__card payment-confirmation__card--unknown">
+        <span class="material-icons payment-confirmation__icon">help</span>
+        <h1 class="payment-confirmation__title">Statut indéterminé</h1>
+        <p class="payment-confirmation__message">{{ Message() }}</p>
+        <div class="payment-confirmation__actions">
+          <app-button variant="primary" size="md" icon="support"
+            (ButtonClick)="GoToSubscription()">
+            Contacter le support
+          </app-button>
+        </div>
+      </div>
+    }
+  }
+</section>

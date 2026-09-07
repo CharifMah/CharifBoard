@@ -1,0 +1,12 @@
+@if (!Tutorial.IsActive()) {
+<!-- - cm - FAB "?" en bas a droite, enveloppe par app-tooltip pour afficher un libelle au survol (position left pour rester dans l'ecran) -->
+<app-tooltip [Text]="'Relancer le tutoriel : ' + Title()" [Position]="'left'" [Variant]="'light'" [MaxWidth]="220">
+  <button class="crm-tutorial-launcher"
+          type="button"
+          ariaLabel="Demarrer le tutoriel CRM"
+          (click)="OnLaunch()">
+    <span class="material-icons crm-tutorial-launcher__icon">help_outline</span>
+    <span class="crm-tutorial-launcher__halo" aria-hidden="true"></span>
+  </button>
+</app-tooltip>
+}

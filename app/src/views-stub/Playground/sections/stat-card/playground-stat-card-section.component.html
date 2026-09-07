@@ -1,0 +1,40 @@
+<app-playground-section
+  id="stat-card"
+  title="app-stat-card"
+  category="Base"
+  [description]="'playground.statCard.description' | translate"
+  [code]="StatCardCode">
+
+  <!-- - cm - Sélecteur global de variante : modifie le service, donc TOUTES les app-stat-card de l'app -->
+  <div class="playground-stat-card__switcher">
+    <span class="playground-stat-card__switcher-label">{{ 'playground.statCard.switcherLabel' | translate }}</span>
+    <div class="playground-stat-card__variant-group" role="radiogroup" [attr.aria-label]="'playground.statCard.switcherLabel' | translate">
+      @for (lVariant of Variants; track lVariant) {
+        <button
+          type="button"
+          role="radio"
+          [attr.aria-checked]="VariantService.Variant() === lVariant"
+          class="playground-stat-card__variant-btn"
+          [class]="ActiveClass(lVariant)"
+          (click)="OnVariantChange(lVariant)">
+          {{ ('playground.statCard.variants.' + lVariant) | translate }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- - cm - Grille des 6 démos : chaque carte suit la variante globale du service (pas de variant explicite). -->
+  <div class="playground-stat-card__grid">
+    @for (lDemo of Demos; track lDemo.Key) {
+      <app-stat-card
+        [label]="('playground.statCard.demos.' + lDemo.Key + '.label') | translate"
+        [value]="lDemo.Value"
+        [icon]="lDemo.Icon"
+        [hint]="('playground.statCard.demos.' + lDemo.Key + '.hint') | translate"
+        [accent]="lDemo.Accent" />
+    }
+  </div>
+
+  <p class="playground-stat-card__note" [innerHTML]="'playground.statCard.note' | translate">
+  </p>
+</app-playground-section>

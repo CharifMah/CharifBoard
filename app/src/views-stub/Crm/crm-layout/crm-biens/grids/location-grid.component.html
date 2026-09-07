@@ -1,0 +1,76 @@
+<app-grid #locationGrid [Data]="EffectiveData()" [Loading]="EffectiveLoading()" [Error]="EffectiveError()"
+          [TrackBy]="TrackByLocation"
+          [Filterable]="Filterable" [FilterFields]="LocationFilterFields()"
+          [Editable]="!ReadOnly"
+          EmptyTextCle="grid.empty"
+          (CellEdited)="OnCellEdited($event)" (ActionClicked)="ActionClicked.emit($event)"
+          [AllowAddRow]="!ReadOnly" [AutoAddRow]="false" [NewRowFactory]="CreateNewLocation"
+          [ValidateRows]="!ReadOnly" [RequireAllFields]="!ReadOnly"
+          (RowAdded)="OnRowAdded($event)" (RowValidated)="RowValidated.emit($event)"
+          [AllowExport]="true" ExportFilenamePrefix="'locations'"
+          [ExportApiPath]="'/api/Locations/ExportXlsx'" [ExportFormat]="'both'"
+          [StorageKey]="StorageKey"
+          [ServerSide]="ServerSide"
+          [Selectable]="Selectable"
+          (SelectionChanged)="SelectionChanged.emit($event)">
+  <ng-content select="[gridBulkActions]"></ng-content>
+  <app-grid-column Key="reference" LabelCle="locations.reference" [Sortable]="true" [Editable]="true"
+                   EditorType="text"
+                   [EditorValidator]="GetFieldValidator('reference')" [EditorMaxLength]="GetFieldMaxLength('reference')"
+                   [ShowEditor]="!ReadOnly"
+                   EditorPlaceholderCle="locations.referencePlaceholder"/>
+  <app-grid-column Key="propertyId" LabelCle="locations.property_id" [Sortable]="true" Width="220px" [Editable]="true"
+                   EditorType="select"
+                   [EditorOptions]="PropertyOptions()" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="adresse" LabelCle="locations.adresse_id" [Sortable]="true" [Editable]="true"
+                   EditorType="address" [ShowEditor]="!ReadOnly">
+    <ng-template #cell let-row="row">
+      <app-address-map-tooltip
+        [Address]="row.adresse"
+        [Label]="row.adresse?.city ?? ''"
+        Position="bottom"
+        Variant="light"
+        [MaxWidth]="380"
+        [MapHeight]="220"
+        [MapZoom]="15"
+        [ShowStyleSelector]="true"
+        [MarkerType]="'location'"/>
+    </ng-template>
+  </app-grid-column>
+  <app-grid-column Key="natureAffaireId" LabelCle="locations.nature_affaire_id" [Sortable]="true"
+                   [Editable]="true" EditorType="select"
+                   [EditorOptions]="NatureAffaireOptions()" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="surface" LabelCle="locations.surface" [Sortable]="true" Width="120px" [Editable]="true"
+                   EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="statutId" LabelCle="locations.statut_id" [Sortable]="true" [Editable]="true"
+                   EditorType="select"
+                   [EditorOptions]="StatutOptions()" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="etatCommercialId" LabelCle="locations.etat_commercial_id" [Sortable]="true"
+                   [Editable]="true" EditorType="select"
+                   [EditorOptions]="EtatCommercialOptions()" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="motifBlocageId" LabelCle="locations.motif_blocage_id" [Sortable]="true"
+                   [Editable]="true" EditorType="select"
+                   [EditorOptions]="MotifBlocageOptions()" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="clientId" LabelCle="locations.client_id" [Sortable]="true" [Editable]="true"
+                   EditorType="select"
+                   [EditorOptions]="ContactOptions()" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="loyerHc" LabelCle="locations.loyer_hc" [Sortable]="true" [Editable]="true"
+                   EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="honorairesLocationEncaisses" LabelCle="locations.honoraires_location_encaisses"
+                   [Sortable]="true" [Editable]="true" EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="revenuVariable" LabelCle="locations.revenu_variable" [Sortable]="true"
+                   [Editable]="true" EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="revenuTotalEncaisse" LabelCle="locations.revenu_total_encaisse" [Sortable]="true"
+                   [Editable]="false" EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="locatairePotentiel" LabelCle="locations.locataire_potentiel" [Sortable]="true"
+                   [Editable]="true" EditorType="text" [ShowEditor]="!ReadOnly"
+                   EditorPlaceholderCle="locations.locataire_potentielPlaceholder"/>
+  <app-grid-column Key="dateEstimation" LabelCle="locations.date_estimation" [Sortable]="true"
+                   [Editable]="true" EditorType="date" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="datePriseMandat" LabelCle="locations.date_prise_mandat" [Sortable]="true"
+                   [Editable]="true" EditorType="date" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="dateCommercialisation" LabelCle="locations.date_commercialisation" [Sortable]="true"
+                   [Editable]="true" EditorType="date" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="dateSignatureBailEntree" LabelCle="locations.date_signature_bail_entree" [Sortable]="true"
+                   Width="200px" [Editable]="true" EditorType="date" [ShowEditor]="!ReadOnly"/>
+</app-grid>

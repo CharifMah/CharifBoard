@@ -1,0 +1,458 @@
+<div class="blog-admin">
+    <!-- - cm - En-tête -->
+    <header class="blog-admin__header">
+        <div class="blog-admin__header-info">
+            <h1 class="blog-admin__title">Gestion du blog</h1>
+            <span class="blog-admin__count">{{ Articles.length }} article{{ Articles.length > 1 ? 's' : '' }}</span>
+        </div>
+        <app-button variant="primary" icon="add" iconPosition="left" (ButtonClick)="OpenCreateEditor()">
+            Nouvel article
+        </app-button>
+    </header>
+
+    @if (Articles.length === 0) {
+        <div class="blog-admin__empty">
+            <span class="material-icons" aria-hidden="true">article</span>
+            <p>Aucun article. Créez votre premier article.</p>
+        </div>
+    }
+
+    @if (Articles.length > 0) {
+        <div class="blog-admin__list">
+            @for (lArticle of Articles; track lArticle.id) {
+                <div class="blog-admin__item" [class.blog-admin__item--featured]="lArticle.isFeatured">
+                    <div class="blog-admin__item-main">
+                        <div class="blog-admin__item-thumb">
+                            @if (lArticle.coverImage) {
+                                <app-image [src]="ApiBaseUrl + lArticle.coverImage" [alt]="lArticle.title || ''" [isWebp]="true" objectFit="cover"></app-image>
+                            } @else {
+                                <span class="material-icons" aria-hidden="true">article</span>
+                            }
+                        </div>
+                        <div class="blog-admin__item-info">
+                            <strong class="blog-admin__item-title">{{ lArticle.title }}</strong>
+                            <span class="blog-admin__item-slug">/{{ lArticle.slug }}</span>
+                            <div class="blog-admin__item-meta">
+                                @if (lArticle.category) {
+                                    <app-badge [label]="lArticle.category" type="info" variant="soft" size="xs"></app-badge>
+                                }
+                                <span class="blog-admin__item-date">{{ FormatDate(lArticle.publishedAt) || FormatDate(lArticle.createdAt) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="blog-admin__item-controls">
+                        <div class="blog-admin__item-status">
+                            <button class="blog-admin__badge blog-admin__badge--toggle" [class.blog-admin__badge--published]="lArticle.isPublished" [class.blog-admin__badge--draft]="!lArticle.isPublished" (click)="TogglePublish(lArticle)" title="Publier/Dépublier">
+                                {{ lArticle.isPublished ? 'Publié' : 'Brouillon' }}
+                            </button>
+                            <button class="blog-admin__badge blog-admin__badge--toggle" [class.blog-admin__badge--featured]="lArticle.isFeatured" [class.blog-admin__badge--inactive]="!lArticle.isFeatured" (click)="ToggleFeatured(lArticle)" title="À la une">
+                                {{ lArticle.isFeatured ? 'À la une' : 'Normal' }}
+                            </button>
+                        </div>
+                        <div class="blog-admin__actions">
+                            <app-button class="blog-admin__btn-action blog-admin__btn-history" variant="ghost" [circle]="true" size="sm"
+                              icon="history" ariaLabel="Historique" animTrigger="none"
+                              (ButtonClick)="OpenHistory(lArticle)" />
+                            <app-button class="blog-admin__btn-action blog-admin__btn-edit" variant="ghost" [circle]="true" size="sm"
+                              icon="edit" ariaLabel="Modifier" animTrigger="none"
+                              (ButtonClick)="OpenEditEditor(lArticle)" />
+                            <app-button class="blog-admin__btn-action blog-admin__btn-delete" variant="ghost" [circle]="true" size="sm"
+                              icon="delete" ariaLabel="Supprimer" animTrigger="none"
+                              (ButtonClick)="DeleteArticle(lArticle)" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- - cm - Popup Éditeur d'article -->
+    <app-popup
+        [isOpen]="ShowEditor"
+        (isOpenChange)="OnEditorClosed($event)"
+        [title]="EditingArticle ? EditorTitle : 'Nouvel article'"
+        size="large"
+        [resizable]="true"
+        [draggable]="true"
+        [showFooter]="false"
+        [closeOnOverlay]="true">
+        <form class="blog-admin__form" (ngSubmit)="SaveArticle()">
+            <div class="blog-admin__field">
+                <label for="title">Titre <span class="required">*</span></label>
+                <app-input id="title" type="text" [(ngModel)]="FormTitle" name="title"
+                    (valueChange)="GenerateSlug()" placeholder="Titre de l'article" [required]="true"></app-input>
+            </div>
+
+            <div class="blog-admin__field">
+                <label for="slug">Slug (URL) <span class="required">*</span></label>
+                <app-input id="slug" type="text" [(ngModel)]="FormSlug" name="slug"
+                    placeholder="mon-article-en-kebab-case" [required]="true"></app-input>
+            </div>
+
+            <div class="blog-admin__field">
+                <label for="metaDescription">Meta description (max 160 car.)</label>
+                <app-input id="metaDescription" type="text" [(ngModel)]="FormMetaDescription" name="metaDescription"
+                    [maxLength]="160" placeholder="Description SEO de l'article"></app-input>
+                <span class="blog-admin__char-count">{{ FormMetaDescription.length }}/160</span>
+            </div>
+
+            <div class="blog-admin__field">
+                <label for="excerpt">Résumé court</label>
+                <textarea id="excerpt" [(ngModel)]="FormExcerpt" name="excerpt" rows="2"
+                    placeholder="Résumé affiché dans la liste des articles"></textarea>
+            </div>
+
+            <div class="blog-admin__field">
+                <label for="content">Contenu HTML</label>
+                <textarea id="content" [(ngModel)]="FormContent" name="content" rows="12"
+                    placeholder="<h2>Titre</h2><p>Contenu de l'article...</p>"></textarea>
+            </div>
+
+            <div class="blog-admin__row">
+                <div class="blog-admin__field">
+                    <label for="category">Catégorie</label>
+                    <select id="category" [(ngModel)]="FormCategory" name="category">
+                        <option value="estimation">Estimation</option>
+                        <option value="marche">Marché immobilier</option>
+                        <option value="dvf">DVF+</option>
+                        <option value="conseils">Conseils de vente</option>
+                        <option value="actualites">Actualités</option>
+                    </select>
+                </div>
+
+                <div class="blog-admin__field">
+                    <label for="readingTime">Temps de lecture (min)</label>
+                    <app-input id="readingTime" type="number" [(ngModel)]="FormReadingTimeMinutes" name="readingTime"
+                        min="1" placeholder="5"></app-input>
+                </div>
+            </div>
+
+            <div class="blog-admin__field">
+                <label for="tags">Mots-clés (séparés par virgules)</label>
+                <app-input id="tags" type="text" [(ngModel)]="FormTags" name="tags"
+                    placeholder="estimation, dvf, prix au m²"></app-input>
+            </div>
+
+            <div class="blog-admin__field">
+                <label for="coverImage">Image de couverture</label>
+                @if (FormCoverImage) {
+                    <div class="blog-admin__cover-preview">
+                        <app-image [src]="ApiBaseUrl + FormCoverImage" alt="Aperçu couverture" [isWebp]="true" objectFit="cover" class="blog-admin__cover-img"></app-image>
+                        <app-button class="blog-admin__cover-remove btn-close" variant="ghost" size="sm"
+                          icon="close" ariaLabel="Retirer l'image" animTrigger="none"
+                          (ButtonClick)="FormCoverImage = ''" />
+                    </div>
+                }
+                <app-upload-file
+                    label="Télécharger une image de couverture"
+                    [accept]="'.jpg,.jpeg,.png,.webp'"
+                    [showPreview]="true"
+                    [imageProcessing]="{ convertToWebp: true, resize: { width: 1200, height: 630, maintainAspectRatio: true }, crop: { enabled: false } }"
+                    (uploadSuccess)="OnCoverUploaded($event)">
+                </app-upload-file>
+            </div>
+
+            <div class="blog-admin__editor-actions">
+                <app-button variant="light" (ButtonClick)="CloseEditor()">Annuler</app-button>
+                <app-button variant="ghost" icon="visibility" iconPosition="left" (ButtonClick)="OpenPreview()">Aperçu</app-button>
+                <app-button variant="primary" [disabled]="IsSaving" (ButtonClick)="SaveArticle()">
+                    {{ IsSaving ? 'Sauvegarde...' : 'Enregistrer' }}
+                </app-button>
+            </div>
+        </form>
+    </app-popup>
+
+    <!-- - cm - Popup Preview -->
+    <app-popup
+        [isOpen]="ShowPreview"
+        (isOpenChange)="ShowPreview = $event"
+        title="Aperçu de l'article"
+        size="large"
+        [resizable]="true"
+        [draggable]="true"
+        [showFooter]="false"
+        [closeOnOverlay]="true">
+        <div class="blog-admin__preview-body">
+            @if (FormCoverImage) {
+                <app-image [src]="ApiBaseUrl + FormCoverImage" alt="Aperçu couverture" [isWebp]="true" objectFit="cover" class="blog-admin__preview-cover"></app-image>
+            }
+            @if (FormCategory) {
+                <app-badge [label]="FormCategory" type="info" variant="soft"></app-badge>
+            }
+            <h1 class="blog-admin__preview-title">{{ FormTitle || 'Sans titre' }}</h1>
+            @if (FormExcerpt) {
+                <p class="blog-admin__preview-excerpt">{{ FormExcerpt }}</p>
+            }
+            @if (FormReadingTimeMinutes) {
+                <span class="blog-admin__preview-reading">{{ FormReadingTimeMinutes }} min de lecture</span>
+            }
+            <article class="blog-admin__preview-content" [innerHTML]="FormContent"></article>
+        </div>
+        <div class="blog-admin__editor-actions">
+            <app-button variant="light" (ButtonClick)="ClosePreview()">Fermer l'aperçu</app-button>
+            <app-button variant="primary" [disabled]="IsSaving" (ButtonClick)="SaveArticle()">
+                {{ IsSaving ? 'Sauvegarde...' : 'Valider et enregistrer' }}
+            </app-button>
+        </div>
+    </app-popup>
+
+    <!-- - cm - Popup Historique -->
+    <app-popup
+        [isOpen]="ShowHistory"
+        (isOpenChange)="OnHistoryClosed($event)"
+        [title]="HistoryTitle"
+        size="large"
+        [resizable]="true"
+        [draggable]="true"
+        [showFooter]="false"
+        [closeOnOverlay]="true">
+
+        @if (Versions.length === 0) {
+            <div class="blog-admin__empty">
+                <span class="material-icons" aria-hidden="true">history</span>
+                <p>Aucune version antérieure. L'historique se crée automatiquement à chaque modification.</p>
+            </div>
+        }
+
+        @if (Versions.length > 0) {
+            <div class="blog-admin__versions">
+                @for (lVersion of Versions; track lVersion.id) {
+                    <div class="blog-admin__version" [class.blog-admin__version--expanded]="IsDiffExpanded(lVersion)">
+                        <div class="blog-admin__version-header">
+                            <div class="blog-admin__version-info">
+                                <strong>Version {{ lVersion.versionNumber }}</strong>
+                                <span class="blog-admin__version-date">{{ FormatDateTime(lVersion.createdAt) }}</span>
+                                @if (lVersion.isPublished) {
+                                    <span class="blog-admin__badge blog-admin__badge--published">Publié</span>
+                                } @else {
+                                    <span class="blog-admin__badge blog-admin__badge--draft">Brouillon</span>
+                                }
+                            </div>
+                            <div class="blog-admin__version-actions">
+                                <app-button variant="ghost" size="sm" icon="compare_arrows" iconPosition="left"
+                                    (ButtonClick)="ToggleDiff(lVersion)">Diff</app-button>
+                                <app-button variant="ghost" size="sm" icon="visibility" iconPosition="left"
+                                    (ButtonClick)="PreviewVersion(lVersion)">Aperçu</app-button>
+                                <app-button variant="primary" size="sm" icon="restore" iconPosition="left"
+                                    (ButtonClick)="RevertVersion(lVersion)">Restaurer</app-button>
+                            </div>
+                        </div>
+                        <div class="blog-admin__version-title">{{ lVersion.title }}</div>
+                        @if (lVersion.excerpt) {
+                            <p class="blog-admin__version-excerpt">{{ lVersion.excerpt }}</p>
+                        }
+
+                        @if (IsDiffExpanded(lVersion)) {
+                            <div class="blog-admin__diff">
+                                <div class="blog-admin__diff-header">
+                                    <span class="blog-admin__diff-col blog-admin__diff-col--current">Actuel</span>
+                                    <span class="blog-admin__diff-col blog-admin__diff-col--version">Version {{ lVersion.versionNumber }}</span>
+                                </div>
+                                @for (lField of DiffFields; track lField.key) {
+                                    @if (HasChanged(lVersion, lField.key)) {
+                                        <div class="blog-admin__diff-row blog-admin__diff-row--changed">
+                                            <span class="blog-admin__diff-label">{{ lField.label }}</span>
+                                            <div class="blog-admin__diff-values">
+                                                <span class="blog-admin__diff-current">{{ GetCurrent(lField.key) }}</span>
+                                                <span class="blog-admin__diff-arrow">→</span>
+                                                <span class="blog-admin__diff-new">{{ GetVersionValue(lVersion, lField.key) }}</span>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                @if (HasNoChanges(lVersion)) {
+                                    <div class="blog-admin__diff-unchanged">Aucune différence détectée</div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </app-popup>
+
+    <!-- - cm - Popup Preview Version -->
+    <app-popup
+        [isOpen]="ShowVersionPreview"
+        (isOpenChange)="ShowVersionPreview = $event"
+        [title]="VersionPreviewTitle"
+        size="large"
+        [resizable]="true"
+        [draggable]="true"
+        [showFooter]="false"
+        [closeOnOverlay]="true">
+        <!-- - cm - Barre de mode d'affichage + sélection version -->
+        <div class="blog-admin__preview-toolbar">
+            <div class="blog-admin__preview-toolbar-modes">
+                <button class="blog-admin__preview-tab" [class.active]="PreviewMode === 'normal'" (click)="PreviewMode = 'normal'">
+                    <span class="material-icons" aria-hidden="true">visibility</span> Aperçu
+                </button>
+                <button class="blog-admin__preview-tab" [class.active]="PreviewMode === 'inline'" (click)="PreviewMode = 'inline'">
+                    <span class="material-icons" aria-hidden="true">format_align_left</span> Diff inline
+                </button>
+                <button class="blog-admin__preview-tab" [class.active]="PreviewMode === 'split'" (click)="PreviewMode = 'split'">
+                    <span class="material-icons" aria-hidden="true">view_column</span> Diff côte à côte
+                </button>
+            </div>
+            <div class="blog-admin__preview-toolbar-version">
+                <span class="blog-admin__preview-toolbar-version-label">Version :</span>
+                <select class="blog-admin__preview-version-select" (change)="OnVersionSelectChange($event)">
+                    @for (lVersion of Versions; track lVersion.id) {
+                        <option [value]="lVersion.id" [selected]="lVersion.id === PreviewingVersion?.id">
+                            Version {{ lVersion.versionNumber }} — {{ FormatDateTime(lVersion.createdAt) }}
+                        </option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <!-- - cm - Mode normal : rendu HTML -->
+        @if (PreviewMode === 'normal') {
+            <div class="blog-admin__preview-body">
+                @if (PreviewingVersion?.coverImage) {
+                <app-image [src]="ApiBaseUrl + PreviewingVersion!.coverImage" [alt]="PreviewingVersion!.title || ''" [isWebp]="true" objectFit="cover" class="blog-admin__preview-cover"></app-image>
+                }
+                @if (PreviewingVersion?.category) {
+                    <app-badge [label]="PreviewingVersion!.category" type="info" variant="soft"></app-badge>
+                }
+                <h1 class="blog-admin__preview-title">{{ PreviewingVersion?.title }}</h1>
+                @if (PreviewingVersion?.excerpt) {
+                    <p class="blog-admin__preview-excerpt">{{ PreviewingVersion?.excerpt }}</p>
+                }
+                <article class="blog-admin__preview-content" [innerHTML]="PreviewingVersion?.content || ''"></article>
+            </div>
+        }
+
+        <!-- - cm - Mode diff inline (git style) -->
+        @if (PreviewMode === 'inline') {
+            <div class="blog-admin__diff-view">
+                <div class="blog-admin__diff-view-header">
+                    <div class="blog-admin__diff-view-source">
+                        <span class="blog-admin__diff-view-label blog-admin__diff-view-label--old">{{ DiffSourceLabel }}</span>
+                        <span class="blog-admin__diff-view-date">{{ DiffSourceDate }}</span>
+                    </div>
+                    <div class="blog-admin__diff-view-source">
+                        <span class="blog-admin__diff-view-label blog-admin__diff-view-label--new">Version {{ PreviewingVersion?.versionNumber }}</span>
+                        <span class="blog-admin__diff-view-date">{{ PreviewVersionDate }}</span>
+                    </div>
+                </div>
+                <div class="blog-admin__diff-view-selector">
+                    <span class="blog-admin__diff-view-selector-label">Comparer avec :</span>
+                    <select class="blog-admin__diff-view-select" [(ngModel)]="DiffCompareTarget" name="diffCompareTarget">
+                        <option value="current">Article actuel</option>
+                        <option value="version">Une autre version</option>
+                    </select>
+                    @if (DiffCompareTarget === 'version') {
+                        <select class="blog-admin__diff-view-select" [(ngModel)]="DiffCompareVersionId" name="diffCompareVersionId">
+                            @for (lVersion of Versions; track lVersion.id) {
+                                @if (lVersion.id !== PreviewingVersion?.id) {
+                                    <option [value]="lVersion.id">Version {{ lVersion.versionNumber }} — {{ FormatDateTime(lVersion.createdAt) }}</option>
+                                }
+                            }
+                        </select>
+                    }
+                </div>
+                <div class="blog-admin__diff-inline">
+                    @if (ChangedFields.length === 0) {
+                        <div class="blog-admin__diff-unchanged">Aucune différence détectée</div>
+                    }
+                    @for (lField of ChangedFields; track lField.key) {
+                        <div class="blog-admin__diff-field">
+                            <div class="blog-admin__diff-field-label">{{ lField.label }}</div>
+                            @for (lLine of GetFieldDiff(lField.key); track $index) {
+                                <div class="blog-admin__diff-line" [class.blog-admin__diff-line--added]="lLine.type === 'added'" [class.blog-admin__diff-line--removed]="lLine.type === 'removed'">
+                                    <span class="blog-admin__diff-line-marker">{{ lLine.type === 'added' ? '+' : lLine.type === 'removed' ? '-' : ' ' }}</span>
+                                    <span class="blog-admin__diff-line-text">{{ lLine.text }}</span>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- - cm - Mode diff côte à côte -->
+        @if (PreviewMode === 'split') {
+            <div class="blog-admin__diff-view">
+                <div class="blog-admin__diff-view-selector">
+                    <span class="blog-admin__diff-view-selector-label">Comparer avec :</span>
+                    <select class="blog-admin__diff-view-select" [(ngModel)]="DiffCompareTarget" name="diffCompareTargetSplit">
+                        <option value="current">Article actuel</option>
+                        <option value="version">Une autre version</option>
+                    </select>
+                    @if (DiffCompareTarget === 'version') {
+                        <select class="blog-admin__diff-view-select" [(ngModel)]="DiffCompareVersionId" name="diffCompareVersionIdSplit">
+                            @for (lVersion of Versions; track lVersion.id) {
+                                @if (lVersion.id !== PreviewingVersion?.id) {
+                                    <option [value]="lVersion.id">Version {{ lVersion.versionNumber }} — {{ FormatDateTime(lVersion.createdAt) }}</option>
+                                }
+                            }
+                        </select>
+                    }
+                </div>
+                <div class="blog-admin__diff-split">
+                    <div class="blog-admin__diff-split-col">
+                        <div class="blog-admin__diff-split-header blog-admin__diff-split-header--old">
+                            <span class="material-icons" aria-hidden="true">history</span> {{ DiffSourceLabel }}
+                            <span class="blog-admin__diff-split-date">{{ DiffSourceDate }}</span>
+                        </div>
+                        <div class="blog-admin__diff-split-content">
+                            @if (ChangedFields.length === 0) {
+                                <div class="blog-admin__diff-unchanged">Aucune différence</div>
+                            }
+                            @for (lField of ChangedFields; track lField.key) {
+                                <div class="blog-admin__diff-field-label">{{ lField.label }}</div>
+                                @for (lLine of GetFieldDiff(lField.key); track $index) {
+                                    <div class="blog-admin__diff-line" [class.blog-admin__diff-line--removed]="lLine.type === 'removed'" [class.blog-admin__diff-line--muted]="lLine.type === 'added'">
+                                        <span class="blog-admin__diff-line-marker">{{ lLine.type === 'removed' ? '-' : ' ' }}</span>
+                                        <span class="blog-admin__diff-line-text">{{ lLine.type === 'added' ? '' : lLine.text }}</span>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="blog-admin__diff-split-col">
+                        <div class="blog-admin__diff-split-header blog-admin__diff-split-header--new">
+                            <span class="material-icons" aria-hidden="true">update</span> Version {{ PreviewingVersion?.versionNumber }}
+                            <span class="blog-admin__diff-split-date">{{ PreviewVersionDate }}</span>
+                        </div>
+                        <div class="blog-admin__diff-split-content">
+                            @if (ChangedFields.length === 0) {
+                                <div class="blog-admin__diff-unchanged">Aucune différence</div>
+                            }
+                            @for (lField of ChangedFields; track lField.key) {
+                                <div class="blog-admin__diff-field-label">{{ lField.label }}</div>
+                                @for (lLine of GetFieldDiff(lField.key); track $index) {
+                                    <div class="blog-admin__diff-line" [class.blog-admin__diff-line--added]="lLine.type === 'added'" [class.blog-admin__diff-line--muted]="lLine.type === 'removed'">
+                                        <span class="blog-admin__diff-line-marker">{{ lLine.type === 'added' ? '+' : ' ' }}</span>
+                                        <span class="blog-admin__diff-line-text">{{ lLine.type === 'removed' ? '' : lLine.text }}</span>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="blog-admin__editor-actions">
+            <app-button variant="light" (ButtonClick)="CloseVersionPreview()">Fermer</app-button>
+            <app-button variant="primary" icon="restore" iconPosition="left"
+                (ButtonClick)="RevertVersion(PreviewingVersion!)">Restaurer cette version</app-button>
+        </div>
+    </app-popup>
+
+    <!-- - cm - Popup d'alerte générique (remplace alert()) -->
+    <app-popup [(isOpen)]="ShowAlert" [title]="AlertTitle" [type]="AlertType" size="small"
+        [showConfirmButton]="true" [showFooter]="true" [showCancelButton]="false"
+        confirmText="OK" (confirmed)="CloseAlert()" (closed)="CloseAlert()">
+        <p class="blog-admin__alert-message">{{ AlertMessage }}</p>
+    </app-popup>
+
+    <!-- - cm - Popup de confirmation générique (remplace confirm()) -->
+    <app-popup [(isOpen)]="ShowConfirm" [title]="ConfirmTitle" type="warning" size="small"
+        [showConfirmButton]="true" [showFooter]="true" confirmText="Confirmer" cancelText="Annuler"
+        (confirmed)="ConfirmAction()" (cancelled)="CloseConfirm()" (closed)="CloseConfirm()">
+        <p class="blog-admin__alert-message">{{ ConfirmMessage }}</p>
+    </app-popup>
+</div>

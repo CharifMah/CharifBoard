@@ -1,0 +1,392 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region Démos Tabs du playground
+// - cm - Style des sous-sections de démo à l'intérieur d'une playground-section.
+// Chaque démo est cadrée, séparée visuellement, avec un titre et une description.
+
+.tabs-demo {
+  margin: 24px 0;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &__title {
+    margin: 0 0 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: $text-primary;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .material-icons {
+      font-size: 18px;
+      color: $primary-color;
+    }
+
+    code {
+      background: $surface-muted;
+      color: $primary-color;
+      padding: 2px 6px;
+      border-radius: $border-radius-sm;
+      font-family: 'Fira Code', 'Courier New', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+  }
+
+  &__desc {
+    margin: 0 0 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: $text-secondary;
+
+    code {
+      background: $surface-muted;
+      color: $primary-color;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-family: 'Fira Code', 'Courier New', monospace;
+      font-size: 12px;
+    }
+  }
+
+  // - cm - Une petite séparation visuelle entre plusieurs démos empilées (tailles, positions d'icône).
+  & + & {
+    padding-top: 20px;
+    border-top: 1px dashed $border-color;
+  }
+}
+//#endregion
+
+//#region Vitrine Navbar
+
+.tabs-demo--navbar {
+  padding: 0;
+  margin: 24px 0;
+}
+
+//#region Switcher de viewport
+.navbar-viewport-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 12px;
+  padding: 10px 12px;
+  background: $surface-muted;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid $border-color;
+    border-radius: $radius-md;
+    background: $bg-primary;
+    color: $text-secondary;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color $transition-fast, border-color $transition-fast, color $transition-fast;
+
+    .material-icons {
+      font-size: 16px;
+    }
+
+    &:hover {
+      background: $surface-hover;
+      border-color: rgba($primary-color, 0.4);
+      color: $primary-color;
+    }
+
+    &--active {
+      background: $primary-color;
+      color: $white;
+      border-color: $primary-color;
+
+      &:hover {
+        background: $primary-color;
+        color: $white;
+      }
+    }
+  }
+
+  &__size {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 11px;
+    opacity: 0.7;
+    margin-left: 2px;
+  }
+}
+//#endregion
+
+//#region Controles navbar
+.navbar-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  background: $surface-muted;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid $border-color;
+    border-radius: $radius-md;
+    background: $bg-primary;
+    color: $text-secondary;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color $transition-fast, border-color $transition-fast, color $transition-fast;
+
+    .material-icons {
+      font-size: 16px;
+    }
+
+    &:hover {
+      background: $surface-hover;
+      border-color: rgba($primary-color, 0.4);
+      color: $primary-color;
+    }
+
+    &--active {
+      background: $primary-color;
+      color: $white;
+      border-color: $primary-color;
+
+      &:hover {
+        background: $primary-color;
+        color: $white;
+      }
+    }
+  }
+}
+//#endregion
+
+//#region Cadre responsive
+// - cm - Approche STRICTEMENT non-intrusive : on ne touche PAS au style de la
+// navbar. On lui donne juste un cadre dimensionne pour visualiser comment elle
+// se comporte selon la taille simulee. La navbar garde son `position: sticky`
+// natif et son menu hamburger en `position: fixed` : c'est le comportement
+// reel de l'app, on le reproduit a l'identique.
+
+// - cm - Conteneur scrollable horizontalement : si le cadre simule un viewport
+// plus large que le playground, on scrolle dans ce wrapper (pas sur le body).
+.navbar-viewport-frame-scroller {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 0 0 16px;
+  padding: 4px;
+  background: $surface-muted;
+  border: 1px dashed $border-color;
+  border-radius: $radius-md;
+
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $border-color-strong;
+    border-radius: 3px;
+  }
+}
+
+// - cm - Cadre responsive : on laisse la navbar vivre normalement. On
+// dimensionne juste le cadre, et on lui donne un contexte de stacking isole
+// (`isolation: isolate`) pour que ses z-index ne fuitent pas dans le reste
+// du playground.
+.navbar-viewport-frame {
+  position: relative;
+  margin: 0;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+  background: $card-background;
+  box-shadow: $shadow-light;
+  // - cm - On NE met PAS overflow: hidden ici : le menu mobile utilise
+  // position: fixed et doit pouvoir s'ouvrir par-dessus le contenu (comme
+  // dans l'app reelle).
+  isolation: isolate;
+  transition: width 250ms ease-in-out, height 250ms ease-in-out;
+
+  &__inner {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+
+  &__content {
+    flex: 1;
+    padding: 16px;
+    background: $bg-primary;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  &__caption {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin: 0;
+    padding: 8px 12px;
+    background: $surface-muted;
+    border: 1px dashed $border-color;
+    border-radius: $radius-sm;
+    color: $text-secondary;
+    font-size: 12px;
+    line-height: 1.4;
+
+    .material-icons {
+      font-size: 16px;
+      color: $info-color;
+    }
+
+    strong {
+      color: $primary-color;
+      font-weight: 600;
+    }
+  }
+}
+
+// - cm - AUCUN override direct de la navbar ailleurs. Pour confiner le menu
+// mobile dans le cadre playground, on utilise un attribut data-attribute sur
+// l'element host <app-navbar> + ::ng-deep qui ne traverse la frontiere
+// d'encapsulation QUE pour les descendants du cadre.
+// Note : la navbar reelle utilise `position: fixed` sous 1024px, ce qui
+// ferait sortir le menu du cadre. On le neutralise uniquement dans le scope
+// du cadre en utilisant ::ng-deep (qui desactive l'encapsulation emulated
+// d'Angular) sur un selecteur qui matche UNIQUEMENT la navbar du cadre.
+// La navbar globale (dans app.component) n'a PAS l'attribut
+// `data-navbar-playground`, donc elle reste intacte.
+:host ::ng-deep .navbar-viewport-frame app-navbar[data-navbar-playground] {
+  // - cm - Permet a ::ng-deep de traverser dans la navbar du cadre.
+  display: block;
+}
+
+// - cm - Hamburger dans le cadre : forcer l'affichage meme sur grand viewport
+// simule (l'utilisateur peut choisir Desktop 1100 mais quand meme voir le
+// hamburger grace au bouton "Forcer le hamburger"). Sans cette regle, la
+// media query de la navbar repond a window.innerWidth (780px ici), donc le
+// hamburger serait deja visible — pas besoin d'override en pratique. Mais
+// on garde la regle pour le cas ou le browser MCP est en grand ecran.
+:host ::ng-deep .navbar-viewport-frame[data-force-hamburger='true'] app-navbar[data-navbar-playground] ::ng-deep .hamburger {
+  display: flex !important;
+}
+
+// - cm - Dans le cadre playground, on neutralise `position: sticky` du <nav>
+// et on le force a 100% de hauteur du cadre. Cela permet au menu absolute
+// `.nav-menu.open` de remonter jusqu'au cadre (qui est position: relative).
+// Sans ce hack, le menu est confine au <nav> qui ne fait que ~72px.
+:host ::ng-deep .navbar-viewport-frame app-navbar[data-navbar-playground] ::ng-deep .navbar {
+  position: static !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .navbar-viewport-frame app-navbar[data-navbar-playground] ::ng-deep .navbar-container {
+  max-width: 100% !important;
+}
+
+// - cm - Le menu hamburger confine au cadre : transformer `position: fixed` en
+// `position: absolute` et l'ancrer au cadre (qui est position: relative).
+// On neutralise SEULEMENT la navbar du cadre (via data-navbar-playground).
+:host ::ng-deep .navbar-viewport-frame[data-show-menu='true'] app-navbar[data-navbar-playground] ::ng-deep .nav-menu.open {
+  position: absolute !important;
+  top: 0 !important;
+  left: auto !important;
+  right: 0 !important;
+  bottom: auto !important;
+  width: 280px !important;
+  max-width: 80% !important;
+  max-height: 100% !important;
+  height: 100% !important;
+  overflow-y: auto !important;
+  z-index: 1001 !important;
+  background: var(--sm-card-background, #fff) !important;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15) !important;
+  transform: translateX(0) !important;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: flex-end !important;
+}
+
+:host ::ng-deep .navbar-viewport-frame[data-show-menu='true'] app-navbar[data-navbar-playground] ::ng-deep .nav-menu.open .nav-content {
+  min-height: 100% !important;
+  height: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  transform: none !important;
+  background: var(--sm-card-background, #fff) !important;
+  padding: 4.5rem 1.5rem 2rem !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+}
+
+// - cm - En mode "force hamburger", le menu doit toujours etre en colonne,
+// meme en desktop (pour qu'on puisse l'ouvrir et voir tous les liens).
+:host ::ng-deep .navbar-viewport-frame[data-force-hamburger='true'] app-navbar[data-navbar-playground] ::ng-deep .nav-menu {
+  position: absolute !important;
+  top: 0 !important;
+  left: auto !important;
+  right: 0 !important;
+  bottom: auto !important;
+  width: 280px !important;
+  max-width: 80% !important;
+  max-height: 100% !important;
+  overflow-y: auto !important;
+  z-index: 1001 !important;
+  background: var(--sm-card-background, #fff) !important;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: flex-end !important;
+}
+
+:host ::ng-deep .navbar-viewport-frame[data-force-hamburger='true'] app-navbar[data-navbar-playground] ::ng-deep .nav-menu .nav-content {
+  flex-direction: column !important;
+  align-items: stretch !important;
+}
+
+:host ::ng-deep .navbar-viewport-frame[data-force-hamburger='true'] app-navbar[data-navbar-playground] ::ng-deep .nav-links {
+  flex-direction: column !important;
+  align-items: stretch !important;
+}
+
+// - cm - Backdrop noir : uniquement quand le menu est ouvert et le hamburger
+// pertinent. On l'applique sur le cadre lui-meme (pas sur .nav-menu).
+.navbar-viewport-frame[data-show-menu='true']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1;
+  pointer-events: none;
+}
+//#endregion

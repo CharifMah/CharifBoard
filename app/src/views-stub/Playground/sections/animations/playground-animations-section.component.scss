@@ -1,0 +1,776 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region Shared demo controls
+// - cm - Controles partages (bouton replay, label, hint) pour toutes les sous-sections.
+.anim-demo {
+  &__controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: $spacing-md;
+    padding: $spacing-md;
+    margin-block: $spacing-md;
+    background: var(--sm-surface-subtle);
+    border: 1px solid var(--sm-border-color);
+    border-radius: $border-radius-md;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+    margin-top: $spacing-md;
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: $spacing-sm $spacing-md;
+    background: var(--sm-surface-muted);
+    border: 1px solid var(--sm-border-color);
+    border-radius: $border-radius-md;
+    color: var(--sm-text-primary);
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    cursor: pointer;
+    transition: background 160ms ease, transform 160ms ease, border-color 160ms ease;
+
+    .material-icons {
+      font-size: 18px;
+    }
+
+    &:hover {
+      background: var(--sm-surface-hover);
+      border-color: var(--sm-primary);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &__hint {
+    margin-top: $spacing-sm;
+    color: var(--sm-text-secondary);
+    font-size: $font-size-sm;
+    font-style: italic;
+  }
+}
+//#endregion
+
+//#region Text gradient
+// - cm - Animation de texte avec degrade anime en boucle.
+//        Reprend le pattern hero global (styles.scss ligne 25).
+.anim-text-gradient {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: $font-weight-bold;
+  // - cm - On utilise background-image directement (pas le shorthand background)
+  //        car l'optimizer CSS d'Angular perd la valeur du linear-gradient
+  //        quand on utilise le shorthand avec var(...).
+  // - cm - On utilise les variables SCSS ($primary-color, $accent-color) au lieu des
+  //        variables CSS (var(--sm-primary)) car Angular préfixe var(...) par %NS%
+  //        dans le bundle des composants scopes, ce qui les rend invalides au runtime.
+  background-image: linear-gradient(90deg,
+    $primary-color 0%,
+    $accent-color 50%,
+    $primary-color 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-shift 4s ease-in-out infinite;
+
+  &--demo {
+    margin-block: $spacing-md;
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+//#endregion
+
+//#region Typewriter
+// - cm - Texte qui apparait caractere par caractere avec un caret qui clignote.
+.anim-typewriter {
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+  font-size: 1.5rem;
+  color: var(--sm-text-primary);
+  margin-block: $spacing-md;
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+
+  &__text {
+    white-space: pre;
+  }
+
+  &__caret {
+    display: inline-block;
+    margin-left: 2px;
+    color: var(--sm-primary);
+    animation: caret-blink 1s steps(2) infinite;
+
+    &.is-hidden {
+      opacity: 0;
+    }
+  }
+}
+
+@keyframes caret-blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  50.01%, 100% {
+    opacity: 0;
+  }
+}
+//#endregion
+
+//#region Word fade
+// - cm - Apparition d'une phrase mot par mot avec decalage progressif.
+.anim-word-fade {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: $font-weight-semibold;
+  color: var(--sm-text-primary);
+  line-height: $line-height-relaxed;
+
+  &__word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(8px);
+    animation: word-fade-in 0.5s ease-out forwards;
+    animation-delay: calc(var(--i) * 80ms);
+    transition: color 240ms ease, transform 240ms ease;
+
+    &.is-highlighted {
+      color: var(--sm-primary);
+      transform: translateY(-4px) scale(1.08);
+    }
+  }
+}
+
+// - cm - Re-declenchement en bumant un attribut data-replay (le re-render
+//        Angular ne suffit pas a relancer une animation one-shot CSS, on
+//        change donc le data-attribute pour forcer un nouveau calcul d'animation).
+@keyframes word-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+//#endregion
+
+//#region Stagger list
+// - cm - Liste en cascade (slideUp progressif) avec bullet animee.
+// - cm - On utilise un *ngIf gate sur data-replay pour re-creer les elements
+//        quand l'utilisateur clique "Rejouer" : un simple changement de CSS
+//        animation-name ne suffit pas pour une animation "forwards" deja terminee.
+// - cm - Duree 0.7s + translateY 40px + delay 150ms pour bien voir la cascade.
+//        L'animation est au mount initial de la section, donc visible au scroll.
+.anim-stagger {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-md;
+    background: var(--sm-surface-muted);
+    border: 1px solid var(--sm-border-color);
+    border-radius: $border-radius-md;
+    color: var(--sm-text-primary);
+    opacity: 0;
+    transform: translateY(40px);
+    animation: stagger-slide-up 0.7s ease-out forwards;
+    animation-delay: calc(var(--i) * 150ms);
+  }
+
+  &__bullet {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--sm-primary);
+    flex-shrink: 0;
+  }
+}
+
+@keyframes stagger-slide-up {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+//#endregion
+
+//#region Appear cards
+// - cm - Quatre cartes d'apparitions standard (fade, slideUp, slideDown, scale).
+.anim-appear-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: $spacing-md;
+  margin-block: $spacing-md;
+}
+
+.anim-appear-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  padding: $spacing-lg;
+  background: var(--sm-surface-muted);
+  border: 1px solid var(--sm-border-color);
+  border-radius: $border-radius-md;
+  color: var(--sm-text-primary);
+  text-align: center;
+  font-weight: $font-weight-semibold;
+  animation-duration: 0.6s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+
+  .material-icons {
+    font-size: 32px;
+    color: var(--sm-primary);
+  }
+
+  &--fade {
+    animation-name: fadeIn;
+  }
+
+  &--slide-up {
+    animation-name: slideUp;
+  }
+
+  &--slide-down {
+    animation-name: slideDown;
+  }
+
+  &--scale {
+    animation-name: scaleIn;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+//#endregion
+
+//#region Pulse grid
+// - cm - Quatre variantes de pulsation/loop : opacite, halo, float, ping.
+.anim-pulse-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: $spacing-md;
+  margin-block: $spacing-md;
+}
+
+.anim-pulse-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-lg;
+  background: var(--sm-surface-muted);
+  border: 1px solid var(--sm-border-color);
+  border-radius: $border-radius-md;
+
+  &__label {
+    font-size: $font-size-xs;
+    text-transform: uppercase;
+    letter-spacing: $letter-spacing-wide;
+    color: var(--sm-text-secondary);
+    font-weight: $font-weight-semibold;
+  }
+}
+
+.anim-pulse {
+  &--opacity {
+    color: var(--sm-success, #22c55e);
+    font-weight: $font-weight-bold;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+
+  &--glow {
+    background: var(--sm-primary);
+    color: white;
+    border: none;
+    padding: $spacing-sm $spacing-lg;
+    border-radius: $border-radius-md;
+    font-weight: $font-weight-bold;
+    cursor: pointer;
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  &--float {
+    color: var(--sm-primary);
+    font-size: 32px !important;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  &--ping {
+    position: relative;
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+
+    &__dot {
+      position: relative;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--sm-primary);
+    }
+
+    &__wave {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: var(--sm-primary);
+      opacity: 0.6;
+      animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+  }
+}
+
+@keyframes ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  75%, 100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+//#endregion
+
+//#region Spinners
+// - cm - Trois spinners CSS : rotation simple, bordure pointillee, shimmer skeleton.
+.anim-spinner-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: $spacing-md;
+  margin-block: $spacing-md;
+}
+
+.anim-spinner-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-lg;
+  background: var(--sm-surface-muted);
+  border: 1px solid var(--sm-border-color);
+  border-radius: $border-radius-md;
+
+  &__label {
+    font-size: $font-size-xs;
+    text-transform: uppercase;
+    letter-spacing: $letter-spacing-wide;
+    color: var(--sm-text-secondary);
+    font-weight: $font-weight-semibold;
+  }
+}
+
+.anim-spinner {
+  display: inline-block;
+
+  &--spin {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--sm-border-color);
+    border-top-color: var(--sm-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  &--dash {
+    width: 32px;
+    height: 32px;
+    border: 3px dashed var(--sm-primary);
+    border-radius: 50%;
+    animation: spin 1.4s linear infinite;
+    opacity: 0.85;
+  }
+
+  &--shimmer {
+    width: 180px;
+    height: 16px;
+    border-radius: 8px;
+    background-image: linear-gradient(90deg,
+      var(--sm-surface-hover) 0%,
+      var(--sm-bg-color) 50%,
+      var(--sm-surface-hover) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.6s linear infinite;
+  }
+}
+//#endregion
+
+//#region Shake
+// - cm - Secousse horizontale declenchee one-shot (rejoue via data-replay).
+.anim-shake-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: $spacing-md;
+  margin-block: $spacing-md;
+}
+
+.anim-shake-cell {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-md;
+  background: var(--sm-surface-muted);
+  border: 1px solid var(--sm-border-color);
+  border-left: 4px solid var(--sm-error, #ef4444);
+  border-radius: $border-radius-md;
+  color: var(--sm-text-primary);
+
+  .material-icons {
+    color: var(--sm-error, #ef4444);
+  }
+
+  &--alt {
+    border-left-color: var(--sm-warning, #f59e0b);
+
+    .material-icons {
+      color: var(--sm-warning, #f59e0b);
+    }
+  }
+
+  &.is-shaking {
+    animation: shake 0.5s ease-in-out;
+  }
+}
+//#endregion
+
+//#region Hover lift
+// - cm - Cartes interactives avec translation + ombre au survol.
+.anim-hover-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: $spacing-md;
+  margin-block: $spacing-md;
+}
+
+.anim-hover-card {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  padding: $spacing-lg;
+  background: var(--sm-surface-muted);
+  border: 1px solid var(--sm-border-color);
+  border-radius: $border-radius-md;
+  color: var(--sm-text-primary);
+  cursor: pointer;
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+
+  .material-icons {
+    font-size: 32px;
+    color: var(--sm-text-secondary);
+    transition: color 200ms ease;
+  }
+
+  h4 {
+    margin: 0;
+    font-size: $font-size-md;
+  }
+
+  p {
+    margin: 0;
+    font-size: $font-size-sm;
+    color: var(--sm-text-secondary);
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    border-color: var(--sm-primary);
+
+    .material-icons {
+      color: var(--sm-primary);
+    }
+  }
+
+  &--accent:hover {
+    border-color: var(--sm-accent, var(--sm-secondary));
+    .material-icons {
+      color: var(--sm-accent, var(--sm-secondary));
+    }
+  }
+
+  &--primary:hover {
+    border-color: var(--sm-primary);
+    .material-icons {
+      color: var(--sm-primary);
+    }
+  }
+}
+//#endregion
+
+//#region Home animations
+// - cm - Reproductions locales des animations de la home page pour la démo playground.
+//        On utilise background-image (pas background:) pour preserver le linear-gradient
+//        apres l'optimizer CSS d'Angular (cf. skill sellmatch-playground-style-bundling).
+
+// - cm - Section : .text-gradient de styles.scss
+.anim-home-text-gradient-demo {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: $font-weight-bold;
+  // - cm - On utilise background-image (pas le shorthand background) pour preserver
+  //        le linear-gradient apres l'optimizer CSS d'Angular.
+  // - cm - On utilise les variables SCSS ($primary-color, $accent-color) au lieu des
+  //        variables CSS (var(--sm-primary)) car Angular préfixe var(...) par %NS%
+  //        dans le bundle des composants scopes, ce qui les rend invalides au runtime.
+  background-image: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: gradient-shift 4s ease-in-out infinite;
+}
+
+// - cm - Section : .hero__title-highlight de styles.scss
+//        Combine hero-highlight-reveal (clip-path) puis gradient-shift.
+.anim-home-hero-demo {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: $font-weight-semibold;
+  color: var(--sm-text-primary);
+  line-height: $line-height-relaxed;
+
+  &__highlight {
+    display: inline-block;
+    // - cm - On utilise background-image (pas le shorthand background) pour preserver
+    //        le linear-gradient apres l'optimizer CSS d'Angular.
+    background-image: linear-gradient(135deg,
+      #b794f4 0%,
+      #d53f8c 50%,
+      #63b3ed 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: hero-highlight-reveal 1.2s cubic-bezier(0.25, 0.1, 0.1, 1) 1s forwards,
+               gradient-shift 4s ease-in-out 1s infinite;
+    opacity: 0;
+    transform-origin: left;
+  }
+}
+
+@keyframes hero-highlight-reveal {
+  0% {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+  60% {
+    opacity: 1;
+    clip-path: inset(0 0% 0 0);
+  }
+  100% {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+// - cm - Section : appScrollReveal (de la directive shared/directives/TextRevealDirective).
+//        La directive pose elle-meme les styles inline (.sr-word__inner) au moment du
+//        reveal. On fournit juste un cadre lisible pour la démo.
+.anim-scroll-reveal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: $spacing-md;
+  margin-block: $spacing-md;
+}
+
+.anim-scroll-reveal-cell {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  padding: $spacing-lg;
+  background: var(--sm-surface-muted);
+  border: 1px solid var(--sm-border-color);
+  border-radius: $border-radius-md;
+  min-height: 110px;
+  overflow: hidden;
+
+  &__label {
+    font-size: $font-size-xs;
+    text-transform: uppercase;
+    letter-spacing: $letter-spacing-wide;
+    color: var(--sm-text-secondary);
+    font-weight: $font-weight-semibold;
+  }
+}
+
+.anim-scroll-reveal-demo {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: $font-weight-semibold;
+  color: var(--sm-text-primary);
+}
+
+// - cm - Section : keyframes décoratifs définis dans home.component.scss.
+//        On les redefinit ici (préfixe anim-home-keyframes) car ils ne sont pas globaux.
+.anim-home-keyframes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: $spacing-md;
+  margin-block: $spacing-md;
+}
+
+.anim-home-keyframes-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-lg;
+  background: var(--sm-surface-muted);
+  border: 1px solid var(--sm-border-color);
+  border-radius: $border-radius-md;
+
+  &__label {
+    font-size: $font-size-xs;
+    text-transform: uppercase;
+    letter-spacing: $letter-spacing-wide;
+    color: var(--sm-text-secondary);
+    font-weight: $font-weight-semibold;
+    text-align: center;
+  }
+}
+
+.anim-home-keyframes {
+  display: inline-block;
+
+  &--pulse-glow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background: var(--sm-primary);
+    color: white;
+    border-radius: 50%;
+    font-weight: $font-weight-bold;
+    animation: pg-pulse-glow 2.5s ease-in-out infinite;
+  }
+
+  &--gradient-rotate {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-image: linear-gradient(135deg, var(--sm-primary), var(--sm-accent, var(--sm-secondary)));
+    animation: pg-gradient-rotate 8s linear infinite;
+  }
+
+  &--bg-glow-pulse {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--sm-primary) 0%, transparent 70%);
+    animation: pg-bg-glow-pulse 3s ease-in-out infinite;
+  }
+}
+
+@keyframes pg-pulse-glow {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes pg-gradient-rotate {
+  0% {
+    transform: rotate(0deg) scale(1.5);
+  }
+  50% {
+    transform: rotate(180deg) scale(2);
+  }
+  100% {
+    transform: rotate(360deg) scale(1.5);
+  }
+}
+
+@keyframes pg-bg-glow-pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}
+//#endregion
+
+//#region Reduced motion
+// - cm - Respect des preferences systeme : on coupe les animations infinies
+//        et les one-shots declenchent leur etat final immediatement.
+@media (prefers-reduced-motion: reduce) {
+  .anim-text-gradient,
+  .anim-home-text-gradient-demo,
+  .anim-home-hero-demo__highlight,
+  .anim-home-keyframes--pulse-glow,
+  .anim-home-keyframes--gradient-rotate,
+  .anim-home-keyframes--bg-glow-pulse,
+  .anim-typewriter__caret,
+  .anim-pulse--opacity,
+  .anim-pulse--glow,
+  .anim-pulse--float,
+  .anim-pulse--ping__wave,
+  .anim-spinner--spin,
+  .anim-spinner--dash,
+  .anim-spinner--shimmer,
+  .anim-stagger__item,
+  .anim-appear-card,
+  .anim-word-fade__word,
+  .anim-shake-cell.is-shaking {
+    animation: none !important;
+  }
+
+  .anim-stagger__item,
+  .anim-appear-card,
+  .anim-word-fade__word,
+  .anim-home-hero-demo__highlight {
+    opacity: 1;
+    transform: none;
+  }
+}
+//#endregion

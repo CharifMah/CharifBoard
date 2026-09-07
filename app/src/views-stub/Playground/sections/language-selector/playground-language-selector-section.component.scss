@@ -1,0 +1,202 @@
+@use 'variables' as *;
+
+//#region Demo navbar (vraie barre de navigation avec logo, menu, actions)
+.language-selector-demo__navbar {
+  background: $card-background;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-light;
+  overflow: hidden;
+  min-width: 100%;
+}
+
+.language-selector-demo__navbar-inner {
+  display: flex;
+  align-items: center;
+  gap: $spacing-lg;
+  padding: $spacing-sm $spacing-md;
+  min-height: 64px;
+  flex-wrap: wrap;
+}
+
+// - cm - Brand (logo + nom)
+.language-selector-demo__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-shrink: 0;
+}
+
+.language-selector-demo__brand-mark {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, $primary-color, $primary-dark);
+  color: $text-on-primary;
+  font-weight: 800;
+  font-size: 1.1rem;
+  border-radius: $border-radius-sm;
+  box-shadow: $btn-shadow;
+}
+
+.language-selector-demo__brand-name {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: $text-primary;
+  letter-spacing: -0.01em;
+}
+
+// - cm - Liens de navigation au centre
+.language-selector-demo__nav {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.language-selector-demo__nav-link {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: $text-secondary;
+  text-decoration: none;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-sm;
+  transition: color 0.15s ease, background 0.15s ease;
+  white-space: nowrap;
+
+  &:hover {
+    color: $primary-color;
+    background: rgba($primary-color, 0.06);
+  }
+
+  &.is-active {
+    color: $primary-color;
+    background: rgba($primary-color, 0.10);
+    font-weight: 600;
+  }
+}
+
+// - cm - Actions à droite (recherche, langue, CTA)
+.language-selector-demo__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-shrink: 0;
+}
+
+.language-selector-demo__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: transparent;
+  color: $text-secondary;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+  .material-icons {
+    font-size: 1.25rem;
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: $primary-color;
+  }
+
+  &:focus-visible {
+    border-color: $primary-color;
+    outline: none;
+  }
+}
+
+//#region Responsive
+@media (max-width: 768px) {
+  .language-selector-demo__navbar-inner {
+    gap: $spacing-sm;
+  }
+
+  .language-selector-demo__nav {
+    order: 3;
+    flex-basis: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+}
+//#endregion
+//#endregion
+
+//#region Demo i18n (encart de traduction)
+.language-selector-demo__i18n {
+  padding: $spacing-lg;
+  background: linear-gradient(135deg, rgba($primary-color, 0.04), rgba($primary-light, 0.08));
+  border: 1px solid rgba($primary-color, 0.15);
+  border-radius: $border-radius-md;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  min-width: 100%;
+  text-align: center;
+}
+
+.language-selector-demo__i18n-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: $text-primary;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.language-selector-demo__i18n-highlight {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: $primary-color;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.language-selector-demo__i18n-current {
+  font-size: 0.9rem;
+  color: $text-secondary;
+  margin: 0;
+  padding-top: $spacing-xs;
+
+  strong {
+    color: $primary-color;
+    font-weight: 700;
+  }
+}
+
+.language-selector-demo__i18n-actions {
+  display: inline-flex;
+  justify-content: center;
+  margin-top: $spacing-sm;
+}
+//#endregion
+
+//#region Demo footer (pied de page simule)
+.language-selector-demo__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-md;
+  padding: $spacing-md $spacing-lg;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: $border-radius-md;
+  flex-wrap: wrap;
+  min-width: 100%;
+}
+
+.language-selector-demo__footer-text {
+  font-size: 0.85rem;
+  color: $text-secondary;
+}
+//#endregion

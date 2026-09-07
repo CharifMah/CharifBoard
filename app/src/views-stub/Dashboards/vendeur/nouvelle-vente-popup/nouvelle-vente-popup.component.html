@@ -1,0 +1,340 @@
+<app-popup [isOpen]="isOpen" title="Nouvelle vente" subtitle="Créez un nouveau dossier de vente immobilière"
+    icon="add_home" size="large" confirmText="Créer le dossier" cancelText="Annuler" [showFooter]="ShowFooter"
+    [confirmDisabled]="!isFormValid" [confirmLoading]="_IsCreatingDossier" (confirmed)="onCreateDossier()"
+    (cancelled)="onCancelled()" (closed)="onClosed()" [showConfirmButton]="!_WantsPriorityOption">
+
+    <div class="new-dossier-form">
+
+        <!-- Message d'erreur -->
+        @if (_ShowError && _ErrorMessage) {
+        <div class="error-banner">
+            <span class="material-icons">error</span>
+            <span class="error-text">{{ _ErrorMessage }}</span>
+            <app-button class="btn-close" variant="ghost" size="sm"
+              icon="close" ariaLabel="Fermer l'erreur" animTrigger="none" (ButtonClick)="clearError()" />
+        </div>
+        }
+
+        <!-- Étape indicateur -->
+        <div class="form-steps">
+            <div class="step" [class.active]="_CurrentStep === 1" [class.completed]="_CurrentStep > 1"
+                 (click)="goToStep(1)">
+                <span class="step-number">
+                    @if (_CurrentStep > 1) {
+                    <span class="material-icons">check</span>
+                    } @else {
+                    1
+                    }
+                </span>
+                <span class="step-label">Informations</span>
+            </div>
+
+            <div class="step-line" [class.completed]="_CurrentStep > 1"></div>
+
+            <div class="step" [class.active]="_CurrentStep === 2" [class.completed]="_CurrentStep > 2"
+                 (click)="goToStep(2)">
+                <span class="step-number">
+                    @if (_CurrentStep > 2) {
+                    <span class="material-icons">check</span>
+                    } @else {
+                    2
+                    }
+                </span>
+                <span class="step-label">Caractéristiques</span>
+            </div>
+
+            <div class="step-line" [class.completed]="_CurrentStep > 2"></div>
+
+            <div class="step" [class.active]="_CurrentStep === 3" [class.completed]="_CurrentStep > 3"
+                 (click)="goToStep(3)">
+                <span class="step-number">
+                    @if (_CurrentStep > 3) {
+                    <span class="material-icons">check</span>
+                    } @else {
+                    3
+                    }
+                </span>
+                <span class="step-label">Prix</span>
+            </div>
+
+            @if (_WantsPriorityOption) {
+            <div class="step-line" [class.completed]="_CurrentStep > 3"></div>
+
+            <div class="step" [class.active]="_CurrentStep === 4" (click)="goToStep(4)">
+                <span class="step-number">4</span>
+                <span class="step-label">Paiement</span>
+            </div>
+            }
+        </div>
+
+        <!-- Étape 1: Informations de base -->
+        <!-- Étape 1: Informations de base -->
+        @if (_CurrentStep === 1) {
+        <div class="form-section">
+            <h4>
+                <span class="material-icons">location_on</span>
+                Localisation du bien
+            </h4>
+
+            <!-- REMPLACEMENT : Utilisation du composant app-input avec autocomplétion -->
+            <app-input [label]="'Adresse complète'"
+                       [placeholder]="'Ex: 15 Rue de la Paix, Paris'"
+                       [required]="true"
+                       [isAddressAutocomplete]="true"
+                       [errorMessages]="{ required: 'L\'adresse est requise' }"
+                       [(ngModel)]="_Opportunity.address"
+                       [ngModelOptions]="{standalone: true}">
+            </app-input>
+
+            <!-- Les champs Ville et Code Postal sont supprimés car ils sont automatiquement
+             remplis par le composant app-input lors de la sélection de l'adresse -->
+            <!-- Message d'information pour l'utilisateur -->
+            <div class="form-hint">
+                <span class="material-icons">info</span>
+                <span>Sélectionnez une adresse dans la liste pour remplir automatiquement la ville et le code postal.</span>
+            </div>
+
+            <div class="form-group">
+                <label for="typeBien">Type de bien <span class="required">*</span></label>
+                <app-input id="typeBien"
+                           type="select"
+                           [options]="PropertyTypeOptions"
+                           [placeholderOption]="'Sélectionnez un type'"
+                           [(ngModel)]="_Opportunity.propertyType"
+                           [ngModelOptions]="{standalone: true}"
+                           [required]="true"
+                           [customValidators]="[GetOpportunityValidator('propertyType')]"
+                           [errorMessages]="{ required: 'Ce champ est requis', dto: 'Le type de bien est invalide' }">
+                </app-input>
+            </div>
+        </div>
+        }
+
+        <!-- Étape 2: Caractéristiques -->
+        @if (_CurrentStep === 2) {
+        <div class="form-section">
+            <h4>
+                <span class="material-icons">home</span>
+                Caractéristiques du bien
+            </h4>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="surface">Surface (m²) <span class="required">*</span></label>
+                    <app-input type="number" id="surface" [(ngModel)]="_Opportunity.surface" placeholder="Ex: 120" min="1"
+                           [maxLength]="SurfaceMaxDigits" [required]="true"></app-input>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description (optionnel)</label>
+                <textarea id="description" [(ngModel)]="_Opportunity.description"
+                          placeholder="Décrivez votre bien : état général, travaux récents, points forts..." rows="4"
+                          [maxLength]="DescriptionMaxLength" class="form-textarea"></textarea>
+            </div>
+        </div>
+        }
+
+        <!-- Étape 3: Prix -->
+        @if (_CurrentStep === 3) {
+        <div class="form-section">
+            <h4>
+                <span class="material-icons">euro</span>
+                Fourchette de prix
+            </h4>
+
+            <!-- Price Range -->
+            <div class="price-range-section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="prixMin">Prix minimum <span class="required">*</span></label>
+                        <div class="price-input">
+                            <app-input type="number" id="prixMin" [(ngModel)]="_Opportunity.priceRangeMin"
+                                   placeholder="Ex: 250000" min="0" [maxLength]="PriceMaxLength" [required]="true" suffix="€"
+                                   [customValidators]="[GetOpportunityValidator('priceRangeMin')]"
+                                   [errorMessages]="{ required: 'Ce champ est requis', dto: 'Le prix minimum dépasse la limite autorisée' }"
+                            ></app-input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="prixMax">Prix maximum <span class="required">*</span></label>
+                        <div class="price-input">
+                            <app-input type="number" id="prixMax" [(ngModel)]="_Opportunity.priceRangeMax"
+                                   placeholder="Ex: 300000" min="0" [maxLength]="PriceMaxLength" [required]="true" suffix="€"
+                                   [customValidators]="[GetOpportunityValidator('priceRangeMax')]"
+                                   [errorMessages]="{ required: 'Ce champ est requis', dto: 'Le prix maximum dépasse la limite autorisée' }"
+                            ></app-input>
+                        </div>
+                    </div>
+                </div>
+
+                @if (_Opportunity.priceRangeMin && _Opportunity.priceRangeMax && _Opportunity.priceRangeMax <
+                _Opportunity.priceRangeMin) { <div class="price-error">
+                    <span class="material-icons">warning</span>
+                    Le prix maximum doit être supérieur ou égal au prix minimum
+                </div>
+                }
+            </div>
+
+            <div class="estimation-info">
+                <span class="material-icons">lightbulb</span>
+                <div class="estimation-content">
+                    <p>
+                        <strong>Conseil :</strong> Nos agents analyseront votre bien et vous proposeront une estimation
+                        gratuite basée sur le marché local.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Récapitulatif -->
+            <div class="recap-section">
+                <h5>Récapitulatif de votre bien</h5>
+                <div class="recap-grid">
+                    <div class="recap-item">
+                        <span class="recap-label">Adresse</span>
+                        <span class="recap-value">{{ _Opportunity.address?.street }}</span>
+                    </div>
+                    <div class="recap-item">
+                        <span class="recap-label">Ville</span>
+                        <span class="recap-value">{{ _Opportunity.address?.city }} ({{ _Opportunity.address?.postcode }})</span>
+                    </div>
+                    <div class="recap-item">
+                        <span class="recap-label">Type</span>
+                        <span class="recap-value">{{ _Opportunity.propertyType }}</span>
+                    </div>
+                    <div class="recap-item">
+                        <span class="recap-label">Surface</span>
+                        <span class="recap-value">{{ _Opportunity.surface }} m²</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Premium Option Card -->
+            <div class="priority-option-card" [class.selected]="_WantsPriorityOption">
+                <div class="priority-header">
+                    <div class="priority-badge">
+                        <span class="material-icons">flash_on</span>
+                        Option ÉcoMandat
+                    </div>
+                    <div class="priority-price">{{ _PriorityPrice }}€</div>
+                </div>
+                <div class="priority-content">
+                    <p>
+                        Boostez votre dossier avec l'ÉcoMandat. Paiement unique,
+                        votre dossier est mis en avant auprès des professionnels qualifiés.
+                    </p>
+                    <ul class="priority-benefits">
+                        <li>
+                            <span class="material-icons">check_circle</span> Honoraires plafonnés
+                            <br />
+                            Seuls les professionnels respectant un plafond d'honoraires peuvent candidater.
+                        </li>
+                        <li>
+                            <span class="material-icons">check_circle</span> Visibilité prioritaire
+                            <br />
+                            Votre dossier apparaît en tête de liste.
+                        </li>
+                        <li>
+                            <span class="material-icons">check_circle</span> Signal fort de sérieux
+                            <br />
+                            Les professionnels savent que vous êtes prêt à comparer activement.
+                        </li>
+                    </ul>
+                </div>
+                <div class="priority-toggle">
+                    <label class="toggle-switch">
+                        <input type="checkbox" [(ngModel)]="_WantsPriorityOption"
+                               (ngModelChange)="onPriorityOptionChange()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label">
+                        {{ _WantsPriorityOption ? 'Oui, j\'active l\'ÉcoMandat' : 'Non,
+                        merci' }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Conditions Checkbox - Enhanced visibility -->
+            <div class="checkbox-group-enhanced" [class.checked]="_AcceptConditions">
+                <label class="checkbox-label-enhanced">
+                    <input type="checkbox" [(ngModel)]="_AcceptConditions">
+                    <span class="checkbox-box">
+                        <span class="material-icons">check</span>
+                    </span>
+                    <span class="checkbox-text">
+                        J'accepte les <a [routerLink]="this.RouteUtils.GetRoute(this.Routes.CGU)" target="_blank">
+                            conditions
+                            générales
+                        </a>
+                        et la <a [routerLink]="this.RouteUtils.GetRoute(this.Routes.POLICY)" target="_blank">
+                            politique de
+                            confidentialité
+                        </a>
+                    </span>
+                </label>
+                @if (!_AcceptConditions) {
+                <div class="checkbox-hint">
+                    <span class="material-icons">info</span>
+                    Veuillez accepter les conditions pour continuer
+                </div>
+                }
+            </div>
+        </div>
+        }
+
+        <!-- Étape 4: Paiement (si option ÉcoMandat) -->
+        @if (_CurrentStep === 4 && _WantsPriorityOption) {
+        <div class="form-section">
+            <h4>
+                <span class="material-icons">payment</span>
+                Paiement de l'ÉcoMandat
+            </h4>
+
+            <div class="payment-summary">
+                <div class="payment-item">
+                    <span>ÉcoMandat</span>
+                    <span class="payment-amount">{{ _PriorityPrice }}€</span>
+                </div>
+                <div class="payment-total">
+                    <span>Total à payer</span>
+                    <span class="payment-amount">{{ _PriorityPrice }}€</span>
+                </div>
+            </div>
+
+            <!-- Intégration du composant Stripe (moderne : SubscriptionController via planKey) -->
+            <app-stripe [planKey]="_EcoMandatPlanKey" [billingPeriod]="'one_shot'" [currency]="'eur'" [opp]="_Opportunity"
+                        [description]="'ÉcoMandat pour ' + _Opportunity.propertyType + ' à ' + $safeNavigationMigration(_Opportunity.address?.city)"
+                        (paymentSuccess)="handlePaymentSuccess($event)" (paymentError)="handlePaymentError($event)">
+            </app-stripe>
+
+            <div class="payment-secure-note">
+                <span class="material-icons">lock</span>
+                <span>Paiement sécurisé. Vos données sont protégées.</span>
+            </div>
+        </div>
+        }
+
+        <!-- Navigation entre étapes -->
+        <div class="form-navigation">
+            @if (_CurrentStep > 1) {
+            <app-button class="btn-step btn-prev" variant="light" [outline]="true"
+              icon="arrow_back" iconPosition="left" animTrigger="none"
+              (ButtonClick)="previousStep()">
+              Précédent
+            </app-button>
+            }
+
+            <div class="step-indicator">
+                Étape {{ _CurrentStep }} sur {{ totalSteps }}
+            </div>
+
+            @if (_CurrentStep < totalSteps) {
+            <app-button class="btn-step btn-next" variant="primary"
+              icon="arrow_forward" iconPosition="right" [disabled]="!isCurrentStepValid()"
+              animTrigger="none" (ButtonClick)="nextStep()">
+              Suivant
+            </app-button>
+            }
+        </div>
+    </div>
+</app-popup>

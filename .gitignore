@@ -11,3 +11,6 @@ npm-debug.log*
 # Divers
 .DS_Store
 Thumbs.db
+# Locaux (tokens, tarballs)
+app/.npmrc.local
+app/vendor/

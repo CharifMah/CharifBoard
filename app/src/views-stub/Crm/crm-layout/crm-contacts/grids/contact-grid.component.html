@@ -1,0 +1,125 @@
+<app-grid #contactGrid
+          [Data]="EffectiveData()"
+          [Loading]="EffectiveLoading()"
+          [Error]="EffectiveError()"
+          [TrackBy]="TrackByContact"
+          [Filterable]="Filterable"
+          [FilterFields]="ContactFilterFields()"
+          [Editable]="!ReadOnly"
+          (CellEdited)="OnCellEdited($event)"
+          (ActionClicked)="OnActionClicked($event)"
+          [AutoAddRow]="false"
+          [NewRowFactory]="CreateNewContact"
+          [AllowAddRow]="!ReadOnly"
+          (RowAdded)="OnRowAdded($event)"
+          [AllowExport]="true"
+          ExportFilenamePrefix="'contacts'"
+          [ExportApiPath]="'/api/Contacts/ExportXlsx'"
+          [ExportFormat]="'both'"
+          [StorageKey]="StorageKey"
+          [EmptyTextCle]="'contacts.grid.empty'"
+          [ServerSide]="ServerSide"
+          [Selectable]="Selectable"
+          (SelectionChanged)="OnSelectionChanged($event)">
+
+  <div gridBulkActions>
+    <app-button variant="danger" size="sm" [icon]="'delete'"
+      (ButtonClick)="OnAskBulkDelete()">
+      Supprimer la sélection
+    </app-button>
+  </div>
+
+  <app-grid-column Key="prenom" LabelCle="contacts.prenom"
+    [Sortable]="true" Width="100px" [Editable]="true" EditorType="text"
+    [EditorValidator]="GetFieldValidator('prenom')" [EditorMaxLength]="GetFieldMaxLength('prenom')" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="contacts.prenomPlaceholder"/>
+
+  <app-grid-column Key="nom" LabelCle="contacts.nom"
+    [Sortable]="true" Width="140px" [Editable]="true" EditorType="text"
+    [EditorValidator]="GetFieldValidator('nom')" [EditorMaxLength]="GetFieldMaxLength('nom')" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="contacts.nomPlaceholder"/>
+
+  <app-grid-column Key="email" LabelCle="contacts.email"
+    [Sortable]="true" Width="220px" [Editable]="true" EditorType="text"
+    [EditorValidator]="GetFieldValidator('email')" [EditorMaxLength]="GetFieldMaxLength('email')" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="contacts.emailPlaceholder"/>
+
+  <app-grid-column Key="telephone" LabelCle="contacts.telephone"
+    [Sortable]="false" Width="140px" [Editable]="true" EditorType="text"
+    [EditorValidator]="GetFieldValidator('telephone')" [EditorMaxLength]="GetFieldMaxLength('telephone')" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="contacts.telephonePlaceholder"/>
+
+  <app-grid-column Key="dateNaissance" LabelCle="contacts.date_naissance"
+    [Sortable]="false" Width="130px" [Editable]="true" EditorType="date"
+    [EditorValidator]="GetFieldValidator('dateNaissance')" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="contacts.dateNaissancePlaceholder"/>
+
+  <app-grid-column Key="notes" LabelCle="contacts.notes"
+    [Sortable]="false" Width="200px" [Editable]="true" EditorType="text"
+    [EditorValidator]="GetFieldValidator('notes')" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="contacts.notesPlaceholder"/>
+
+  <app-grid-column Key="adresse" LabelCle="contacts.adresse"
+    [Sortable]="true" Width="160px" [Editable]="true" EditorType="address"
+    [EditorValidator]="GetFieldValidator('adresse')" [ShowEditor]="!ReadOnly">
+  </app-grid-column>
+
+  <app-grid-column Key="createdAt" LabelCle="contacts.created_at"
+    [Sortable]="true" Width="140px" EditorType="date"/>
+
+  <app-grid-column Key="updatedAt" LabelCle="contacts.updated_at"
+    [Sortable]="true" Width="140px" EditorType="date"/>
+
+  <app-grid-column Key="typeContactId" LabelCle="contacts.type_contact_id"
+    [Sortable]="true" Width="130px" [Editable]="true" EditorType="select"
+    [EditorOptions]="TypeContactOptions()" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="contacts.typeContactIdPlaceholder"/>
+
+  <app-grid-column Key="origineId" LabelCle="contacts.origine_id"
+    [Sortable]="true" Width="140px" [Editable]="true" EditorType="select"
+    [EditorOptions]="OrigineOptions()" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="contacts.origineIdPlaceholder"/>
+
+  <app-grid-column Key="dateDerniereAction" LabelCle="contacts.date_derniere_action"
+    [Sortable]="true" Width="150px" [Editable]="true" EditorType="date" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="contacts.dateDerniereActionPlaceholder"/>
+
+  <app-grid-column Key="consentement" LabelCle="contacts.consentement"
+    [Sortable]="false" Width="110px" [Editable]="true" EditorType="select"
+    [EditorOptions]="ConsentementOptions" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="contacts.consentementPlaceholder"/>
+
+  <app-grid-column Key="preferenceContact" LabelCle="contacts.preference_contact"
+    [Sortable]="false" Width="160px" [Editable]="true" EditorType="text"
+    [EditorValidator]="GetFieldValidator('preferenceContact')" [EditorMaxLength]="GetFieldMaxLength('preferenceContact')" [ShowEditor]="!ReadOnly"/>
+</app-grid>
+
+<app-popup [(isOpen)]="ShowDeletePopup"
+  title="Supprimer ce contact ?"
+  subtitle="Cette action est irréversible."
+  icon="delete" type="error" size="small"
+  [showFooter]="true"
+  confirmText="Supprimer"
+  cancelText="Annuler"
+  [confirmLoading]="Deleting()"
+  (confirmed)="OnConfirmDelete()"
+  (cancelled)="OnCancelDelete()"
+  (closed)="OnCancelDelete()">
+  @if (RowToDelete()) {
+    <p>Confirmer la suppression du contact sélectionné ?</p>
+  }
+</app-popup>
+
+<app-popup [(isOpen)]="ShowBulkDeletePopup"
+  title="Supprimer la sélection"
+  [subtitle]="'Confirmer la suppression de ' + SelectedRows().length + ' contact(s) ?'"
+  icon="delete" type="error" size="small"
+  [showFooter]="true"
+  confirmText="Supprimer"
+  cancelText="Annuler"
+  [confirmLoading]="Deleting()"
+  (confirmed)="OnConfirmBulkDelete()"
+  (cancelled)="OnCancelBulkDelete()"
+  (closed)="OnCancelBulkDelete()">
+  <p>Cette action est irréversible et supprimera tous les contacts cochés.</p>
+</app-popup>

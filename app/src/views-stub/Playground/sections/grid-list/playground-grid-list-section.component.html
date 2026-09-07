@@ -1,0 +1,72 @@
+<h3>app-grid</h3>
+<app-playground-section
+  id="grid"
+  title="app-grid"
+  category="Data"
+  description="Tableau generique type Excel : tri, colonnes masquables/reordonnables, edition inline, selection multiple, densite, export CSV, pagination, FilterBar integree, dirty state."
+  [code]="GridCode">
+  <app-grid [Data]="GridData()" [Loading]="false" [Editable]="true" [Selectable]="true"
+    EditActionLabel="Modifier" DeleteActionLabel="Supprimer" [AllowAddRow]="true" [NewRowFactory]="NewGridRow"
+    [Filterable]="true" [FilterFields]="[{Key:'nom',Label:'Nom',Type:'text'},{Key:'role',Label:'Role',Type:'text'}]"
+    [AllowExport]="true" [ExportFilenamePrefix]="'candidats'"
+    (CellEdited)="OnCellEdited($event)" (ActionClicked)="OnActionClicked($event)" (Exported)="OnGridExported($event)"
+    StorageKey="playground-grid" EmptyText="Aucune donnee.">
+    <app-grid-column Key="nom" Label="Nom" [Sortable]="true" [Editable]="true" EditorType="text" />
+    <app-grid-column Key="email" Label="Email" [Sortable]="true" [Editable]="true" EditorType="text" />
+    <app-grid-column Key="role" Label="Role" [Sortable]="true" [Editable]="true" EditorType="select"
+      [EditorOptions]="[{Value:'Admin',Label:'Admin'},{Value:'User',Label:'User'},{Value:'Manager',Label:'Manager'}]" />
+    <app-grid-column Key="salaire" Label="Salaire" [Sortable]="true" [Editable]="true" EditorType="number" />
+    <app-grid-column Key="actif" Label="Actif" [Sortable]="true" [Editable]="true" EditorType="select"
+      [EditorOptions]="[{Value:true,Label:'Oui'},{Value:false,Label:'Non'}]" />
+  </app-grid>
+</app-playground-section>
+
+<h3>app-list</h3>
+<app-playground-section
+  id="list"
+  title="app-list"
+  category="Data"
+  description="Liste generique d'elements avec pagination, filtre, onglets, tri, etats loading/empty."
+  [code]="ListCode">
+  <app-list [Items]="ListItems" [Paginated]="true" [PageSize]="2" [ShowPageSizeSelector]="true"
+    EmptyMessage="Aucun element a afficher." (ItemClick)="OnListItemClick($event)">
+    <ng-template #itemTemplate let-item let-idx="index">
+      <div style="display:flex; align-items:center; gap:12px; padding:8px;">
+        <span class="material-icons" style="color: var(--sm-primary-color, #9c27b0);">person</span>
+        <div>
+          <strong>{{ item.nom }}</strong>
+          <span style="display:block; font-size:0.8rem; color: var(--sm-text-secondary, #757575);">
+            {{ item.role }} — {{ item.actif ? 'Actif' : 'Inactif' }}
+          </span>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template #emptyTemplate>
+      <div style="text-align:center; padding:24px;">
+        <span class="material-icons" style="font-size:3rem;">inbox</span>
+        <p>Aucun element a afficher.</p>
+      </div>
+    </ng-template>
+  </app-list>
+</app-playground-section>
+
+<h3>app-pagination</h3>
+<app-playground-section
+  id="pagination"
+  title="app-pagination"
+  category="Data"
+  description="Pagination reutilisable : selecteur de page limit, info X–Y sur Z, boutons first/prev/pages/next/last, ellipsis, responsive. Utilise app-input + app-button."
+  [code]="PaginationCode">
+  <div style="padding:16px;">
+    <app-pagination
+      [CurrentPage]="DemoPage()"
+      [TotalItems]="DemoTotal"
+      [PageSize]="DemoPageSize()"
+      [PageSizeOptions]="[10, 25, 50, 100]"
+      (PageChange)="OnDemoPageChange($event)"
+      (PageSizeChange)="OnDemoPageSizeChange($event)" />
+    <p style="margin:12px 0 0; font-size:0.85rem; color:var(--sm-text-secondary);">
+      Page {{ DemoPage() }} — Taille {{ DemoPageSize() }} — Total {{ DemoTotal }}
+    </p>
+  </div>
+</app-playground-section>

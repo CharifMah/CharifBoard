@@ -1,0 +1,174 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region Privacy Legales
+.privacy-legales {
+  min-height: 100vh;
+  background: $background-gradient;
+  padding: 4rem 2rem;
+
+  .privacy-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  // - cm - En-tête
+  .privacy-header {
+    text-align: center;
+    margin-bottom: 3rem;
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: $primary-dark;
+      margin-bottom: 1rem;
+      letter-spacing: 2px;
+    }
+
+    .header-divider {
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(135deg, $primary-color, $accent-color);
+      margin: 0 auto 1.5rem auto;
+      border-radius: $border-radius-xl;
+    }
+  }
+  // - cm - Cartes
+  .privacy-card {
+    background: $card-background;
+    backdrop-filter: blur(10px);
+    border: 1px solid $border-color;
+    border-radius: $border-radius-lg;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: $shadow-light;
+    transition: box-shadow $transition-normal, transform $transition-normal;
+
+    &:hover {
+      box-shadow: $shadow-medium;
+      transform: translateY(-2px);
+    }
+
+    &.accent-card {
+      border-left: 5px solid $accent-color;
+    }
+  }
+  // - cm - Titres & contenu
+  .section-title {
+    display: flex;
+    align-items: center;
+    font-size: 1.4rem;
+    color: $primary-color;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid $border-color;
+
+    .title-icon {
+      margin-right: 0.75rem;
+      font-size: 1.2rem;
+    }
+  }
+
+  .section-content {
+    color: $text-primary;
+    font-size: 0.95rem;
+    line-height: 1.7;
+
+    p {
+      margin-bottom: 1rem;
+    }
+
+    a {
+      color: $primary-color;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color $transition-fast;
+
+      &:hover {
+        color: $accent-color;
+      }
+    }
+    // - cm - Sous-titres (Vendeurs / Professionnels)
+    .sub-section-title {
+      font-size: 1.15rem;
+      color: $primary-dark;
+      margin-top: 1.5rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    // - cm - Encadré important
+    .highlight-text {
+      background-color: $pink-50;
+      border-left: 3px solid $accent-color;
+      padding: 1rem;
+      border-radius: $border-radius-sm;
+      color: $purple-800;
+      font-weight: 500;
+      margin-top: 1.5rem;
+    }
+  }
+  // - cm - Listes (Sans les points-virgules)
+  .info-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 1rem;
+    background: $surface-muted;
+    padding: 1rem 1rem 1rem 2rem;
+    border-radius: $border-radius-sm;
+
+    li {
+      position: relative;
+      padding-left: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: $text-secondary;
+      // - cm - Puces personnalisées
+      &::before {
+        content: '•';
+        color: $primary-color;
+        font-weight: bold;
+        position: absolute;
+        left: 0;
+      }
+      // - cm - Sécurité anti point-virgule
+      &::after {
+        content: '';
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  // - cm - Footer
+  .privacy-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid $border-color;
+
+    p {
+      font-size: 0.9rem;
+      color: $text-secondary;
+      font-style: italic;
+    }
+  }
+}
+
+//#endregion
+
+//#region Responsive
+// - cm - Responsive
+@include mobile {
+  .privacy-legales {
+    padding: 2rem 1rem;
+
+    .privacy-header h1 {
+      font-size: 1.8rem;
+    }
+
+    .privacy-card {
+      padding: 1.5rem;
+    }
+  }
+}
+//#endregion

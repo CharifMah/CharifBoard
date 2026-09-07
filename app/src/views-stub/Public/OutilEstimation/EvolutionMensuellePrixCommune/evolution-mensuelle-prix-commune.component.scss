@@ -1,0 +1,107 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region Chart Container
+.evolution-chart {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  min-height: 520px;
+  background: $card-background;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-light;
+  overflow: hidden;
+
+  @include mobile {
+    min-height: 420px;
+    border-radius: $border-radius-md;
+  }
+
+  @include xs {
+    min-height: 390px;
+    border-radius: $border-radius-sm;
+  }
+}
+
+.evolution-chart__header {
+  padding: 1.25rem 1.5rem 0.75rem;
+  border-bottom: 1px solid $border-color;
+
+  @include mobile {
+    padding: 1rem 1rem 0.65rem;
+  }
+
+  @include xs {
+    padding: 0.85rem 0.85rem 0.5rem;
+  }
+}
+
+//#endregion
+
+//#region Chart Header
+.evolution-chart__header {
+.evolution-chart__title {
+  margin: 0;
+  color: $text-primary;
+  font-size: 1.1rem;
+  font-weight: 700;
+
+  @include xs {
+    font-size: 1rem;
+  }
+}
+}
+//#endregion
+
+//#region Chart Subtitle
+.evolution-chart__subtitle {
+  margin: 0.35rem 0 0;
+  color: $text-secondary;
+  font-size: 0.9rem;
+  line-height: 1.4;
+
+  @include xs {
+    font-size: 0.78rem;
+  }
+}
+
+//#endregion
+
+//#region Chart Body
+.evolution-chart__body {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  min-height: 430px;
+  padding: 0.75rem 1rem 1rem;
+
+  @include mobile {
+    min-height: 330px;
+    padding: 0.5rem;
+  }
+
+  @include xs {
+    min-height: 300px;
+    padding: 0.25rem;
+  }
+}
+
+//#endregion
+
+//#region Echart Container
+.echart-container {
+  position: absolute;
+  inset: 0.75rem 1rem 1rem;
+  min-width: 0;
+  min-height: 0;
+
+  @include mobile {
+    inset: 0.5rem;
+  }
+
+  @include xs {
+    inset: 0.25rem;
+  }
+}

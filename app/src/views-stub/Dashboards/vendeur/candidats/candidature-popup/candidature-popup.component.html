@@ -1,0 +1,146 @@
+<app-popup
+  [isOpen]="isOpen"
+  [title]="'Envoyer une candidature'"
+  [subtitle]="opportunity?.address?.street || ''"
+  [icon]="'send'"
+  [size]="'full'"
+  [defaultFullscreen]="true"
+  (closed)="onClosed()"
+  (cancelled)="onCancelled()">
+
+    <div class="candidature-content">
+        <!-- Résumé du bien -->
+        <div class="property-summary">
+            <div class="property-image">
+                <span class="material-icons">home</span>
+            </div>
+            <div class="property-info">
+                <h4>{{ opportunity?.address?.street }}</h4>
+                <p class="property-details">
+                    <span>{{ opportunity?.address?.city }}</span>
+                    <span class="separator">•</span>
+                    <span>{{ opportunity?.propertyType }}</span>
+                    <span class="separator">•</span>
+                    <span>{{ opportunity?.surface }} m²</span>
+                </p>
+                <span class="property-price">{{ this.FormatPrice($safeNavigationMigration(opportunity?.priceRangeMin)) }}</span>
+            </div>
+        </div>
+
+        <!-- Stepper -->
+        <div class="stepper">
+            <div class="step"
+                 [class.active]="_CurrentStep === 1"
+                 [class.completed]="_CurrentStep > 1"
+                 (click)="goToStep(1)">
+                <div class="step-number">
+                    @if (_CurrentStep > 1) {
+                    <span class="material-icons">check</span>
+                    } @else {
+                    1
+                    }
+                </div>
+                <span class="step-label">Présentation</span>
+            </div>
+            <div class="step-line" [class.completed]="_CurrentStep > 1"></div>
+            <div class="step"
+                 [class.active]="_CurrentStep === 2"
+                 [class.completed]="_CurrentStep > 2"
+                 (click)="goToStep(2)">
+                <div class="step-number">
+                    @if (_CurrentStep > 2) {
+                    <span class="material-icons">check</span>
+                    } @else {
+                    2
+                    }
+                </div>
+                <span class="step-label">Honoraires</span>
+            </div>
+            <div class="step-line" [class.completed]="_CurrentStep > 2"></div>
+            <div class="step"
+                 [class.active]="_CurrentStep === 3"
+                 [class.completed]="_CurrentStep > 3"
+                 (click)="goToStep(3)">
+                <div class="step-number">3</div>
+                <span class="step-label">Message</span>
+            </div>
+        </div>
+
+        <!-- Erreur -->
+        @if (_ShowError && _ErrorMessage) {
+        <div class="error-banner">
+            <span class="material-icons">error</span>
+            <span>{{ _ErrorMessage }}</span>
+            <app-button class="btn-close" variant="ghost" size="sm"
+              icon="close" ariaLabel="Fermer l'erreur" animTrigger="none" (ButtonClick)="clearError()" />
+        </div>
+        }
+
+        <!-- Étape 1: Présentation -->
+        @if (_CurrentStep === 1) {
+        <app-step-presentation [presentation]="_Application.presentation || ''"
+                               [estimatedTimeline]="_Application.estimatedTimeline || ''"
+                               [servicesByCategory]="_ServicesByCategory"
+                               [selectedServiceIds]="_SelectedServiceIds"
+                               [isLoadingServices]="_IsLoadingServices"
+                               (presentationChange)="onPresentationChange($event)"
+                               (estimatedTimelineChange)="onTimelineChange($event)"
+                               (selectedServiceIdsChange)="onSelectedServicesChange($event)">
+        </app-step-presentation>
+        }
+
+        <!-- Étape 2: Honoraires -->
+        @if (_CurrentStep === 2) {
+        <app-step-honoraires [feeType]="ConvertToEnum(_Application.feeType || '',EFeeType)"
+                             [feePercentage]="_Application.feePercentage"
+                             [opportunite]="this.opportunity || undefined"
+                             [feeFixedAmount]="_Application.feeFixedAmount"
+                             [propertyPrice]="opportunity?.priceRangeMin || 0"
+                             (feeTypeChange)="onFeeTypeChange($event)"
+                             (feePercentageChange)="onFeePercentageChange($event)"
+                             (feeFixedAmountChange)="onFeeFixedAmountChange($event)">
+        </app-step-honoraires>
+        }
+
+        <!-- Étape 3: Message -->
+        <!-- Étape 3: Message -->
+        @if (_CurrentStep === 3) {
+        <app-step-message [message]="_Application.message || ''"
+                          [presentation]="_Application.presentation || ''"
+                          [feeType]="ConvertToEnum(_Application.feeType || '',EFeeType)"
+                          [feePercentage]="_Application.feePercentage"
+                          [feeFixedAmount]="_Application.feeFixedAmount"
+                          [estimatedTimeline]="_Application.estimatedTimeline || ''"
+                          [selectedServicesLabels]="getSelectedServicesLabels()"
+                          [selectedServicesWithCategory]="getSelectedServicesWithCategory()"
+                          [commissionEstimee]="getCommissionEstimee()"
+                          (messageChange)="onMessageChange($event)">
+        </app-step-message>
+        }
+
+        <!-- Footer Actions -->
+        <div class="popup-actions">
+            @if (_CurrentStep > 1) {
+            <app-button variant="secondary" icon="arrow_back" [disabled]="_IsSubmitting" (ButtonClick)="previousStep()">
+                Précédent
+            </app-button>
+            } @else {
+            <app-button variant="secondary" [disabled]="_IsSubmitting" (ButtonClick)="close()">
+                Annuler
+            </app-button>
+            }
+
+            @if (_CurrentStep < 3) {
+            <app-button variant="primary" icon="arrow_forward" iconPosition="right" [disabled]="!isCurrentStepValid()" (ButtonClick)="nextStep()">
+                Suivant
+            </app-button>
+            } @else {
+            <app-button variant="primary" [fullWidth]="true" [disabled]="!isFormValid || _IsSubmitting" [loading]="_IsSubmitting" icon="send" (ButtonClick)="onSubmitCandidature()">
+                @if (!_IsSubmitting) {
+                    Envoyer ma candidature
+                }
+            </app-button>
+            }
+        </div>
+    </div>
+</app-popup>

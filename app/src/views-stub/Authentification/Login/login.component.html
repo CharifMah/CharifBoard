@@ -1,0 +1,68 @@
+<div class="login-container">
+  <div class="login-card">
+    <!-- Header -->
+    <div class="login-header">
+      <div class="logo">
+        <span class="material-icons">lock</span>
+      </div>
+      <h1>{{ 'login.title' | translate }}</h1>
+      <p>{{ 'login.subtitle' | translate }}</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <!-- Error Message -->
+      @if (errorMessage) {
+      <div class="error-message">
+        <span class="material-icons">error_outline</span>
+        <span>{{ errorMessage }}</span>
+      </div>
+      }
+
+      <!-- Email/Username Field -->
+      <div class="form-group">
+        <label for="emailOrUsername">{{ 'login.emailLabel' | translate }}</label>
+        <app-input type="text"
+               id="emailOrUsername"
+               formControlName="emailOrUsername"
+               iconLeft="person_outline"
+               [placeholder]="'login.emailPlaceholder' | translate">
+        </app-input>
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group password-input">
+        <label for="password">{{ 'login.passwordLabel' | translate }}</label>
+        <app-input type="password"
+               id="password"
+               formControlName="password"
+               iconLeft="lock_outline"
+               [placeholder]="'login.passwordPlaceholder' | translate"
+               [required]="true">
+        </app-input>
+      </div>
+
+      <!-- Options -->
+      <div class="form-options">
+        <a [routerLink]="this.RouteUtils.GetRoute(this.Routes.MDP)" class="forgot-password">{{ 'login.forgotPassword' | translate }}</a>
+      </div>
+
+      <!-- Submit Button -->
+      <app-button type="submit" variant="primary" [fullWidth]="true" [disabled]="isLoading" [loading]="isLoading">
+        @if (!isLoading) {
+          {{ 'login.submit' | translate }}
+        }
+      </app-button>
+    </form>
+
+    <!-- Footer -->
+    <div class="login-footer">
+      <p>{{ 'login.noAccount' | translate }} <a [routerLink]="this.RouteUtils.GetRoute(this.Routes.INSCRIPTION_VENDEUR)">{{ 'login.createAccount' | translate }}</a></p>
+    </div>
+
+    <!-- Security Badge -->
+    <div class="security-badge">
+      <span class="material-icons">verified_user</span>
+      <span>{{ 'login.securityBadge' | translate }}</span>
+    </div>
+  </div>
+</div>

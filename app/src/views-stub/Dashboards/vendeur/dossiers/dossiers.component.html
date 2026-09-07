@@ -1,0 +1,71 @@
+<div class="dossiers-page">
+    <div class="header-actions">
+        <app-button variant="primary" icon="add" (ButtonClick)="this.State.ShowNewDossier = true">
+            Nouvelle vente
+        </app-button>
+    </div>
+
+    <app-splitter [Sizes]="[60, 40]" [MinPanelSize]="350" [GutterSize]="12">
+        <!-- Colonne gauche : Liste des dossiers -->
+        <ng-container panel1>
+            <div class="left-column">
+                <app-section-card [Title]="'Liste des dossiers'">
+                    <app-list [Items]="this.ActiveTab === 'en_cours' ? this.DossiersEnCours : this.HistoriqueVentes"
+                        [Loading]="DossiersLoading" [LoadingMessage]="'Chargement des dossiers...'"
+                        [EmptyMessage]="'Aucun dossier'" [EmptyIcon]="'folder_off'" [Tabs]="GetDossiersTabs()"
+                        [ActiveTab]="ActiveTab" [Paginated]="true" [ShowFilterBar]="true" [ShowFilterApplyButton]="true"
+                        (FilterChange)="OnFilterChanged($event)" [FilterSchema]="OpportunityFilterSchema"
+                        [FilterInitialValue]="this.Filter" [ServerSidePagination]="true"
+                        [PageSize]="this.PaginationByTab[this.ActiveTab].pageSize"
+                        [TotalItemsCount]="this.State.GetDossiersCount(this.ActiveTab)"
+                        (TabChange)="OnTabChange($event)" (PageChange)="OnPageChange($event)"
+                        (PageSizeChange)="OnPageSizeChange($event)" (ItemClick)="this.State.SelectDossier($event)">
+
+                        <ng-template #itemTemplate let-dossier let-idx="index">
+                            <app-dossier-item [Dossier]="dossier"
+                                [IsSelected]="this.DossierSelectionne?.id === dossier.id"
+                                [ShowDeleteButton]="ActiveTab === 'en_cours'"
+                                (CardClick)="this.State.SelectDossier($event)" (DeleteClick)="OpenDeletePopup($event)">
+                            </app-dossier-item>
+                        </ng-template>
+
+                        <ng-template #emptyTemplate>
+                            <div class="empty-state">
+                                <span class="material-icons">folder_off</span>
+                                <h3>Aucun dossier</h3>
+                                <p>
+                                    @if (ActiveTab === 'en_cours') {
+                                    Vous n'avez pas de dossier en cours. Créez votre première vente !
+                                    } @else {
+                                    Aucune vente dans votre historique pour le moment.
+                                    }
+                                </p>
+                                @if (ActiveTab === 'en_cours') {
+                                <app-button variant="primary" icon="add"
+                                    (ButtonClick)="this.State.ShowNewDossier = true">
+                                    Nouvelle vente
+                                </app-button>
+                                }
+                            </div>
+                        </ng-template>
+                    </app-list>
+                </app-section-card>
+            </div>
+        </ng-container>
+
+        <!-- Colonne droite : Candidats -->
+        <ng-container panel2>
+            <div class="right-column">
+                <app-candidats-card></app-candidats-card>
+            </div>
+        </ng-container>
+    </app-splitter>
+</div>
+
+<app-popup [(isOpen)]="ShowDeletePopup" title="Supprimer ce dossier ?" type="error" size="small"
+    [showConfirmButton]="true" [showFooter]="true" confirmText="Supprimer" cancelText="Annuler"
+    (confirmed)="ConfirmDelete()" (cancelled)="CloseDeletePopup()" (closed)="CloseDeletePopup()">
+    <p class="delete-message">
+        Cette action est irréversible. Toutes les candidatures associées seront également supprimées.
+    </p>
+</app-popup>

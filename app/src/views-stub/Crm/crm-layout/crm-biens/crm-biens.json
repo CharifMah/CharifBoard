@@ -1,0 +1,179 @@
+﻿{
+  "fr": {
+    "_meta": {
+      "language": "fr",
+      "entity": "crm-biens",
+      "generatedAt": "2026-08-09T00:00:00Z",
+      "totalKeys": 12
+    },
+    "title": "Biens",
+    "subtitle": "Vue agrégée du portefeuille global : transactions, locations et catalogue des biens",
+    "tabs": {
+      "transactions": "Transactions",
+      "locations": "Locations",
+      "portefeuille": "Portefeuille"
+    },
+    "filter": {
+      "ville": "Ville",
+      "reference": "Référence",
+      "referencePlaceholder": "Référence du bien…",
+      "villePlaceholder": "Rechercher une ville…",
+      "statutPlaceholder": "Statut…",
+      "typeBienPlaceholder": "Type de bien…"
+    },
+    "marker": {
+      "popup": {
+        "prix": "Prix",
+        "loyer": "Loyer",
+        "loyerHc": "Loyer HC",
+        "surface": "Surface",
+        "date": "Date",
+        "disponibleLe": "Disponible le",
+        "statut": "Statut"
+      }
+    },
+    "grid": {
+      "actions": {
+        "edit": "Modifier",
+        "delete": "Supprimer"
+      },
+      "empty": "Aucune donnée à afficher."
+    }
+  },
+  "en": {
+    "_meta": {
+      "language": "en",
+      "entity": "crm-biens",
+      "generatedAt": "2026-08-09T00:00:00Z",
+      "totalKeys": 12
+    },
+    "title": "Properties",
+    "subtitle": "Manage your portfolio of properties, transactions and rentals",
+    "tabs": {
+      "transactions": "Transactions",
+      "locations": "Rentals",
+      "portefeuille": "Portfolio"
+    },
+    "filter": {
+      "ville": "City",
+      "reference": "Reference",
+      "referencePlaceholder": "Property reference…",
+      "villePlaceholder": "Search a city…",
+      "statutPlaceholder": "Status…",
+      "typeBienPlaceholder": "Property type…"
+    },
+    "marker": {
+      "popup": {
+        "prix": "Price",
+        "loyer": "Rent",
+        "loyerHc": "Rent (excl. charges)",
+        "surface": "Area",
+        "date": "Date",
+        "disponibleLe": "Available on",
+        "statut": "Status"
+      }
+    },
+    "grid": {
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "empty": "No data to display."
+    }
+  },
+  "es": {
+    "_meta": {
+      "language": "es",
+      "entity": "crm-biens",
+      "generatedAt": "2026-08-09T00:00:00Z",
+      "totalKeys": 12
+    },
+    "title": "Propiedades",
+    "subtitle": "Gestione su cartera de propiedades, transacciones y alquileres",
+    "tabs": {
+      "transactions": "Transacciones",
+      "locations": "Alquileres",
+      "portefeuille": "Cartera"
+    },
+    "filter": {
+      "ville": "Ciudad",
+      "reference": "Referencia",
+      "referencePlaceholder": "Referencia del bien…",
+      "villePlaceholder": "Buscar una ciudad…",
+      "statutPlaceholder": "Estado…",
+      "typeBienPlaceholder": "Tipo de bien…"
+    },
+    "marker": {
+      "popup": {
+        "prix": "Precio",
+        "loyer": "Alquiler",
+        "loyerHc": "Alquiler (sin cargos)",
+        "surface": "Superficie",
+        "date": "Fecha",
+        "disponibleLe": "Disponible el",
+        "statut": "Estado"
+      }
+    },
+    "grid": {
+      "actions": {
+        "edit": "Editar",
+        "delete": "Eliminar"
+      },
+      "empty": "No hay datos para mostrar."
+    }
+  },
+  "pt": {
+    "_meta": {
+      "language": "pt",
+      "entity": "crm-biens",
+      "generatedAt": "2026-08-09T00:00:00Z",
+      "totalKeys": 12
+    },
+    "title": "Imóveis",
+    "subtitle": "Gerencie seu portfólio de imóveis, transações e locações",
+    "tabs": {
+      "transactions": "Transações",
+      "locations": "Locações",
+      "portefeuille": "Portfólio"
+    },
+    "filter": {
+      "ville": "Cidade",
+      "reference": "Referência",
+      "referencePlaceholder": "Referência do imóvel…",
+      "villePlaceholder": "Buscar uma cidade…",
+      "statutPlaceholder": "Status…",
+      "typeBienPlaceholder": "Tipo de imóvel…"
+    },
+    "marker": {
+      "popup": {
+        "prix": "Preço",
+        "loyer": "Aluguel",
+        "loyerHc": "Aluguel (sem encargos)",
+        "surface": "Área",
+        "date": "Data",
+        "disponibleLe": "Disponível em",
+        "statut": "Status"
+      }
+    },
+    "grid": {
+      "actions": {
+        "edit": "Editar",
+        "delete": "Excluir"
+      },
+      "empty": "Nenhum dado para mostrar."
+    }
+  },
+  "_meta": {
+    "entity": "crm-biens",
+    "version": "1.0.0",
+    "note": "Fusionne fr/en/es/pt en 1 fichier. Le TranslationService split par langue au load.",
+    "languages": [
+      "fr",
+      "en",
+      "es",
+      "pt"
+    ],
+    "totalKeys": 5,
+    "generatedAt": "2026-08-09T00:00:00Z"
+  }
+}

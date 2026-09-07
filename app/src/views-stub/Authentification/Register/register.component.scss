@@ -1,0 +1,255 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region Mixins
+// - cm - Mixins gradient
+@mixin gradient-bg {
+  background: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
+}
+//#endregion
+
+//#region Register Container
+// - cm - Conteneur d'inscription
+.register-container {
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.register-card {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 520px;
+  background: $card-background; // - cm - Token thème au lieu de rgba($white, 0.95)
+  backdrop-filter: blur(20px);
+  border-radius: $border-radius-xl;
+  padding: 1.75rem;
+  box-shadow: $shadow-heavy;
+  animation: slideUp 0.6s ease-out;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    @include gradient-bg;
+    border-radius: 0 0 4px 4px;
+  }
+
+  &.pro-mode .logo {
+    background: linear-gradient(135deg, $purple-700, $purple-800);
+  }
+}
+
+.register-header {
+  text-align: center;
+  margin-bottom: 1.25rem;
+
+  .logo {
+    width: 52px;
+    height: 52px;
+    @include gradient-bg;
+    border-radius: $border-radius-md;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.6rem;
+    box-shadow: 0 6px 20px rgba(var(--sm-primary-rgb), 0.3);
+
+    .material-icons {
+      font-size: 26px;
+      color: $white;
+    }
+  }
+
+  h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: $text-primary;
+    margin: 0 0 0.2rem;
+  }
+
+  p {
+    color: $text-secondary;
+    font-size: 0.9rem;
+    margin: 0;
+  }
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+
+  @include small {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  label {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: $text-primary;
+    font-weight: 600;
+    font-size: 0.8rem;
+
+    .required {
+      color: $primary-color;
+    }
+  }
+
+  &.pro-field {
+    background: linear-gradient(135deg, rgba(var(--sm-primary-rgb), 0.08), rgba(var(--sm-accent-rgb), 0.08));
+    margin: 0 -1rem 0.75rem;
+    padding: 0.85rem 1rem;
+    border-radius: $border-radius-sm;
+  }
+}
+
+.password-strength {
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+
+  .strength-bar {
+    height: 3px;
+    background: $border-color;
+    border-radius: 2px;
+    overflow: hidden;
+
+    .strength-fill {
+      height: 100%;
+      transition: all $transition-normal;
+
+      &.weak {
+        width: 33%;
+        background: $error-color;
+      }
+
+      &.medium {
+        width: 66%;
+        background: $warning-color;
+      }
+
+      &.strong {
+        width: 100%;
+        background: $success-color;
+      }
+    }
+  }
+}
+
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: $border-radius-sm;
+  margin-bottom: 1rem;
+  background: rgba($success-color, 0.1);
+  border: 1px solid rgba($success-color, 0.2);
+  color: $success-color;
+  animation: slideDown 0.3s ease;
+
+  .material-icons {
+    font-size: 18px;
+  }
+
+  span {
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+}
+
+// Bouton submit (app-button)
+.btn-submit-wrapper {
+  margin-top: 0.5rem;
+
+  .btn {
+    width: 100%;
+    height: 46px;
+    @include gradient-bg;
+    color: $white;
+    border: none;
+    border-radius: $border-radius-sm;
+    font-size: 0.95rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all $transition-normal;
+    box-shadow: 0 4px 16px rgba(var(--sm-primary-rgb), 0.3);
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(var(--sm-primary-rgb), 0.4);
+    }
+
+    &:disabled, &.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: $surface-hover; // - cm - Token thème au lieu de $gray-300
+      box-shadow: none;
+      transform: none;
+    }
+  }
+
+  .btn-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .material-icons {
+      font-size: 18px;
+      transition: transform $transition-normal;
+    }
+  }
+
+  &:hover:not(:disabled) .btn-content .material-icons {
+    transform: translateX(4px);
+  }
+
+  &.pro .btn {
+    background: linear-gradient(135deg, $purple-700, $purple-800);
+  }
+}
+
+.register-footer {
+  margin-top: 1.25rem;
+  text-align: center;
+
+  p {
+    color: $text-secondary;
+    font-size: 0.9rem;
+    margin: 0;
+
+    a {
+      color: $primary-color;
+      font-weight: 600;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+@include small {
+  .register-container {
+    padding: 1rem;
+  }
+
+  .register-card {
+    padding: 1.5rem;
+  }
+
+  .register-header h1 {
+    font-size: 1.25rem;
+  }
+}

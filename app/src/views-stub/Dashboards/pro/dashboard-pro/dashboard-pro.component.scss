@@ -1,0 +1,45 @@
+@use 'variables' as *;
+
+//#region Dashboard container
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background: $background-gradient;
+  position: relative;
+  overflow: hidden;
+}
+//#endregion
+
+//#region Main content
+.main-content {
+  width: 100%;
+}
+//#endregion
+
+//#region Tutorial launcher override
+// - cm - Le dashboard pro n'a pas de bulle chat IA : on ramène le FAB "?" à la position naturelle (24px du bord)
+:host ::ng-deep .crm-tutorial-launcher {
+  right: 24px;
+}
+//#endregion
+
+//#region View enter animation
+.view-enter {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+//#endregion
+
+
+

@@ -1,0 +1,176 @@
+<!-- contact.component.html -->
+<div class="contact-page">
+
+  <div class="contact-section" id="contact-form" appScrollReveal [Animation]="'fade'">
+    <div class="section-header">
+      <div class="section-badge">{{ 'contact.badge' | translate }}</div>
+      <h2 appScrollReveal [Animation]="'word'" [StaggerDelay]="40">{{ 'contact.title' | translate }}</h2>
+      <p>{{ 'contact.subtitle' | translate }}</p>
+    </div>
+
+    <!-- Messages de succès et d'erreur -->
+    @if (formSuccess) {
+      <div class="alert alert-success">
+        <span class="material-icons">check_circle</span>
+        <div class="alert-content">
+          <h4>{{ 'contact.alerts.successTitle' | translate }}</h4>
+          <p>{{ 'contact.alerts.successText' | translate }}</p>
+        </div>
+      </div>
+    }
+
+    @if (formError) {
+      <div class="alert alert-error">
+        <span class="material-icons">error</span>
+        <div class="alert-content">
+          <h4>{{ 'contact.alerts.errorTitle' | translate }}</h4>
+          <p>{{ errorMessage }}</p>
+        </div>
+      </div>
+    }
+
+    <div class="contact-container">
+      <div class="contact-form-card">
+        <form [formGroup]="ContactForm" (ngSubmit)="onSubmit()">
+          <div class="form-group" [class.error]="formSubmitted && formControls['name'].errors">
+            <app-input type="text" id="name"
+              [label]="'contact.form.name.label' | translate"
+              formControlName="name"
+              iconLeft="person"
+              [placeholder]="'contact.form.name.placeholder' | translate"
+              [required]="true"></app-input>
+            @if (formSubmitted && formControls['name'].errors) {
+              <div class="error-message">
+                @if (formControls['name'].errors['required']) {
+                  <span>{{ 'contact.form.name.errorRequired' | translate }}</span>
+                }
+                @if (formControls['name'].errors['minlength']) {
+                  <span>{{ 'contact.form.name.errorMinLength' | translate }}</span>
+                }
+              </div>
+            }
+          </div>
+
+          <div class="form-group" [class.error]="formSubmitted && formControls['email'].errors">
+            <app-input type="email"
+              id="email"
+              [label]="'contact.form.email.label' | translate"
+              formControlName="email"
+              iconLeft="email"
+              [readonly]="!!(isLoggedIn && UsersService.currentUser?.email)"
+              [placeholder]="'contact.form.email.placeholder' | translate"
+              [required]="true">
+            </app-input>
+              @if (formSubmitted && formControls['email'].errors) {
+                <div class="error-message">
+                  @if (formControls['email'].errors['required']) {
+                    <span>{{ 'contact.form.email.errorRequired' | translate }}</span>
+                  }
+                  @if (formControls['email'].errors['email']) {
+                    <span>{{ 'contact.form.email.errorEmail' | translate }}</span>
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="form-group" [class.error]="formSubmitted && formControls['subject'].errors">
+              <app-input type="select" id="subject"
+                [label]="'contact.form.subject.label' | translate"
+                formControlName="subject"
+                iconLeft="help"
+                [options]="subjectSelectOptions"
+                [placeholderOption]="'contact.form.subject.placeholder' | translate"
+                [required]="true"></app-input>
+              @if (formSubmitted && formControls['subject'].errors) {
+                <div class="error-message">
+                  @if (formControls['subject'].errors['required']) {
+                    <span>{{ 'contact.form.subject.errorRequired' | translate }}</span>
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="form-group" [class.error]="formSubmitted && formControls['message'].errors">
+              <label for="message">{{ 'contact.form.message.label' | translate }}</label>
+              <div class="input-wrapper textarea">
+                <span class="material-icons">message</span>
+                <textarea id="message" formControlName="message" rows="5"
+                  [placeholder]="'contact.form.message.placeholder' | translate"></textarea>
+              </div>
+              @if (formSubmitted && formControls['message'].errors) {
+                <div class="error-message">
+                  @if (formControls['message'].errors['required']) {
+                    <span>{{ 'contact.form.message.errorRequired' | translate }}</span>
+                  }
+                  @if (formControls['message'].errors['minlength']) {
+                    <span>{{ 'contact.form.message.errorMinLength' | translate }}</span>
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="form-footer">
+              <app-button type="submit" variant="primary" [fullWidth]="true" [disabled]="IsSubmitting" [loading]="IsSubmitting" icon="send" iconPosition="right">
+                {{ (IsSubmitting ? 'contact.form.submitting' : 'contact.form.submit') | translate }}
+              </app-button>
+              <p class="privacy-note">
+                <span class="material-icons">lock</span>
+                <span>{{ 'contact.form.privacyNote' | translate }}</span>
+              </p>
+            </div>
+          </form>
+        </div>
+
+        <div class="contact-info-card">
+          <div class="contact-info-header">
+            <div class="contact-info-icon">
+              <span class="material-icons">contact_support</span>
+            </div>
+            <h3>{{ 'contact.info.title' | translate }}</h3>
+            <p>{{ 'contact.info.subtitle' | translate }}</p>
+          </div>
+
+          <div class="contact-methods">
+            <div class="contact-method">
+              <div class="method-icon">
+                <span class="material-icons">email</span>
+              </div>
+              <div class="method-details">
+                <h4>{{ 'contact.info.emailLabel' | translate }}</h4>
+                <p>{{ 'contact.info.emailValue' | translate }}</p>
+                <span class="response-time">{{ 'contact.info.emailResponse' | translate }}</span>
+              </div>
+            </div>
+
+            <div class="contact-method">
+              <div class="method-icon">
+                <span class="material-icons">help_center</span>
+              </div>
+              <div class="method-details">
+                <h4>{{ 'contact.info.faqLabel' | translate }}</h4>
+                <p>{{ 'contact.info.faqValue' | translate }}</p>
+                <a [routerLink]="this.RouteUtils.GetRoute(this.Routes.FAQ)" class="method-link">
+                  <span>{{ 'contact.info.faqLink' | translate }}</span>
+                  <span class="material-icons">arrow_forward</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-preview">
+      <div class="faq-card">
+        <span class="material-icons">live_help</span>
+        <div class="faq-content">
+          <h4>{{ 'contact.faqPreview.title' | translate }}</h4>
+          <p>{{ 'contact.faqPreview.text' | translate }}</p>
+        </div>
+        <a [routerLink]="this.RouteUtils.GetRoute(Routes.FAQ)" class="faq-button">
+          <span>{{ 'contact.faqPreview.link' | translate }}</span>
+          <span class="material-icons">arrow_forward</span>
+        </a>
+      </div>
+    </div>
+  </div>

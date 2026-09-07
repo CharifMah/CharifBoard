@@ -1,0 +1,154 @@
+<div class="candidats-container">
+    <main class="content-area">
+        <!-- Header -->
+        <header class="page-header">
+            <div class="header-left">
+                <h1>
+                    <span class="material-icons">people_alt</span>
+                    Gestion des candidatures
+                </h1>
+                <p class="header-subtitle">Gérez et sélectionnez vos professionnels</p>
+            </div>
+            <div class="header-actions">
+                <div class="search-bar">
+                    <span class="material-icons">search</span>
+                    <app-input type="text" placeholder="Rechercher un candidat..." [(ngModel)]="_SearchQuery"
+                        (valueChange)="AppliquerFiltres()"></app-input>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sélecteur d'opportunité -->
+        <div class="opportunite-selector-card">
+            <div class="selector-icon">
+                <span class="material-icons">home_work</span>
+            </div>
+            <div class="selector-content">
+                <label for="opportunite-select">Opportunité sélectionnée</label>
+                <select id="opportunite-select" [disabled]="_Loading" [value]="$safeNavigationMigration(_SelectedOpportunite?.id)"
+                    (change)="ChangerOpportunite($event)">
+                    @for (opportunite of _Opportunites; track opportunite.id) {
+                    <option [value]="opportunite.id">
+                        {{ opportunite.propertyType }}{{ opportunite.surface ? ' ' + opportunite.surface + 'm²' : '' }} - {{ opportunite.address?.housenumber }} {{ opportunite.address?.street }} {{ opportunite.address?.postcode }} {{ opportunite.address?.city }}
+                    </option>
+                    }
+                </select>
+            </div>
+            @if (_SelectedOpportunite) {
+            <div class="selector-stats">
+                <div class="stat-item">
+                    <span class="stat-value">{{ _Applications.length }}</span>
+                    <span class="stat-label">Candidats</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">{{ GetSelectedCount() }}</span>
+                    <span class="stat-label">Sélectionnés</span>
+                </div>
+            </div>
+            }
+        </div>
+
+        <!-- Onglets -->
+        <app-tabs [tabs]="_TabItems" [activeTab]="_ActiveTab" [showIcons]="true" [showBadges]="true" [size]="'md'"
+            [variant]="'default'" [fullWidth]="false" [iconPosition]="'left'" (tabChange)="ChangerOnglet($event)">
+        </app-tabs>
+
+        <!-- Zone de résultats -->
+        <div class="candidats-results">
+            @if (_Loading) {
+            <div class="loading-state">
+                <div class="spinner"></div>
+                <p>Chargement des candidats...</p>
+            </div>
+            }
+
+            @if (!_Loading && _CandidatsFiltres.length === 0) {
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <span class="material-icons">person_search</span>
+                </div>
+                <h3>Aucun candidat trouvé</h3>
+                <p>Aucun professionnel n'a encore postulé à cette opportunité.</p>
+            </div>
+            }
+
+            @if (!_Loading && _CandidatsFiltres.length > 0) {
+            <div class="candidats-grid">
+                @for (candidat of _CandidatsFiltres; track candidat.id) {
+                <div class="pro-card" [class.selected]="candidat.selectedAt" [class.is-new]="IsNewCandidat(candidat)">
+
+                    @if (IsNewCandidat(candidat)) {
+                    <app-badge type="new" position="top-left" size="md" [animated]="true" [pulse]="true">
+                    </app-badge>
+                    }
+
+                    <div class="card-header">
+                        <app-avatar [avatarUrl]="this.ApiBaseUrl + $safeNavigationMigration(candidat.professional?.avatarUrl)"
+                                    [alt]="this.getFullName(candidat.professional)" size="2xl" [border]="true" borderColor="primary">
+                        </app-avatar>
+                    </div>
+
+                    <div class="pro-info">
+                        <h3 class="pro-name">{{ candidat.professional?.firstName }}</h3>
+                        <div class="contact-list">
+                            <div class="contact-item">
+                                <span class="material-icons">email</span>
+                                <span>{{ candidat.professional?.email }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fee-badge">
+                        <span class="material-icons">payments</span>
+                        @if (candidat.feeType === EnumToString(EFeeType.POURCENTAGE, EFeeType)) {
+                        {{ candidat.feePercentage }}% d'honoraires
+                        } @else {
+                        {{ candidat.feeFixedAmount | number:'1.0-0' }} € fixes
+                        }
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="status-badge" [ngClass]="getStatusClass(candidat)">
+                            @if (candidat.selectedAt) {
+                            <span class="material-icons">check_circle</span>
+                            Sélectionné
+                            } @else {
+                            <span class="material-icons">schedule</span>
+                            En attente
+                            }
+                        </div>
+
+                        <div class="meta-info">
+                            <span class="time-ago">{{ GetTimeAgo(candidat.createdAt) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="card-actions">
+                        <app-button class="action-btn select" variant="ghost" [circle]="true" size="sm"
+                          icon="check" ariaLabel="Sélectionner" [disabled]="!!candidat.selectedAt"
+                          animTrigger="none" (ButtonClick)="OuvrirPopupConfirmation(candidat)" />
+
+                        <app-button class="action-btn view" variant="ghost" [circle]="true" size="sm"
+                          icon="visibility" ariaLabel="Voir détails"
+                          animTrigger="none" (ButtonClick)="this.OuvrirPopupCandidat(candidat)" />
+                    </div>
+                </div>
+                }
+            </div>
+            }
+        </div>
+    </main>
+</div>
+
+<!-- Popup de confirmation avec app-popup -->
+<app-popup [(isOpen)]="_ShowConfirmationPopup" [title]="'Confirmer la sélection'" [icon]="'check_circle'"
+    [type]="'success'" [showFooter]=true [confirmText]="'Confirmer'" [cancelText]="'Annuler'" [size]="'small'"
+    [closeOnEscape]="true" [closeOnOverlay]="true" (confirmed)="ConfirmerAction()" (cancelled)="AnnulerAction()"
+    (closed)="AnnulerAction()">
+
+    <p>{{ _ConfirmationRaison }}</p>
+</app-popup>
+
+<app-candidat-popup [(isOpen)]="_ShowCandidatPopup" [candidat]="_CandidatSelectionne"
+    (isOpenChange)="OnCandidatPopupChange($event)" (selectionner)="OuvrirPopupConfirmation($event)">
+</app-candidat-popup>

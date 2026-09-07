@@ -1,0 +1,245 @@
+<!-- - cm - Directive appTranslate : déclare le namespace i18n 'crm-biens' pour toute la page.
+                Les pipes `tkey` enfants lisent ce namespace automatiquement (sans argument).
+                Permet de remplacer les chaînes FR en dur du header par les clés i18n. -->
+<section appTranslate [ns]="'crm-biens'">
+
+  <app-dashboard-header
+    [title]="'title' | tkey"
+    [subtitle]="'subtitle' | tkey">
+  </app-dashboard-header>
+
+  <section class="crm-page">
+
+  @if (Error()) {
+  <div class="crm-page__error">
+    <span class="material-icons">error_outline</span>
+    {{ Error() }}
+  </div>
+  }
+
+  <app-tabs [tabs]="BiensTabs" [activeTab]="ActiveTab()" [showIcons]="true" [fullWidth]="false"
+    (tabChange)="OnTabChange($event)" />
+
+  <!--
+    Carte unique au-dessus de la grille. Les markers changent selon l'onglet actif
+    via les `computed()` `ActiveMapMarkers` / `ActiveMapStyle` du composant TS.
+    L'instance Mapbox reste montée en cache (pas de rechargement Mapbox au switch).
+  -->
+  <app-section-card [Collapsible]="true"
+    [Icon]="ActiveMapIcon()">
+    <div slot="header-title" class="crm-biens__map-title">
+      <h3>{{ ActiveMapTitle() }}</h3>
+    </div>
+    <app-map-card #activeMap [Markers]="ActiveMapMarkers()" [CenterLat]="46.5" [CenterLng]="2.5"
+      [Zoom]="5" [Height]="320" [Style]="ActiveMapStyle()" [ShowStyleSelector]="false" [ShowHeader]="false"
+      [FitBounds]="true"
+      (MarkerClick)="OnMarkerClick($event)" />
+      </app-section-card>
+
+  <!-- Grilles : montées/démontées selon l'onglet actif. -->
+  @if (ActiveTab() === 'portefeuille') {
+  <app-grid #portefeuilleGrid
+    [Data]="$any(PortefeuilleRows())"
+    [Columns]="$any(PortefeuilleColumns)"
+    [Loading]="Loading()"
+    [TrackBy]="TrackByPortefeuille"
+    [Editable]="false"
+    [StorageKey]="'crm-biens-portefeuille-global-grid'"
+    (RowClicked)="OnPortefeuilleRowClicked($event)"
+    EmptyText="Aucun bien dans le portefeuille. Cliquez une ligne transaction/location pour voir les candidats matching." />
+  }
+
+  @if (ActiveTab() === 'transactions') {
+  <app-transaction-grid #transactionsGrid
+    [Data]="Transactions()"
+    [Loading]="Loading()"
+    [RefOptions]="RefOptions()"
+    [DefaultHonorairesPct]="DefaultHonorairesPct()"
+    [ServerSide]="true"
+    (ServerSideLoaded)="SurTransactionServerSideCharge($event)"
+    (ServerSideError)="SurTransactionServerSideErreur($event)"
+    (ActionClicked)="SurTransactionActionClic($event)"
+    (RowCreated)="SurTransactionCreee($event)"
+    [Selectable]="true"
+    (SelectionChanged)="SurTransactionsSelectionnees($event)">
+    <div gridBulkActions>
+      <app-button variant="danger" size="sm" [icon]="'delete'"
+        (ButtonClick)="SurDemanderSuppressionLotTransactions()">
+        Supprimer ({{ TransactionsSelectionnees().length }})
+      </app-button>
+    </div>
+  </app-transaction-grid>
+  }
+
+  @if (ActiveTab() === 'locations') {
+  <app-location-grid #locationsGrid
+    [Data]="Locations()"
+    [Loading]="Loading()"
+    [RefOptions]="RefOptions()"
+    (ActionClicked)="SurLocationActionClic($event)"
+    (RowCreated)="SurLocationCreee($event)"
+    [Selectable]="true"
+    (SelectionChanged)="SurLocationsSelectionnees($event)">
+    <div gridBulkActions>
+      <app-button variant="danger" size="sm" [icon]="'delete'"
+        (ButtonClick)="SurDemanderSuppressionLotLocations()">
+        Supprimer ({{ LocationsSelectionnees().length }})
+      </app-button>
+    </div>
+  </app-location-grid>
+  }
+
+  @if (ActiveTab() === 'properties') {
+  <app-property-grid #propertiesGrid
+    [Data]="Properties()"
+    [Loading]="Loading()"
+    [RefOptions]="RefOptions()"
+    (ActionClicked)="SurProprieteActionClic($event)"
+    (RowCreated)="SurProprieteCreee($event)"
+    [Selectable]="true"
+    (SelectionChanged)="SurProprietesSelectionnees($event)">
+    <div gridBulkActions>
+      <app-button variant="danger" size="sm" [icon]="'delete'"
+        (ButtonClick)="SurDemanderSuppressionLotProprietes()">
+        Supprimer ({{ ProprietesSelectionnees().length }})
+      </app-button>
+    </div>
+  </app-property-grid>
+  }
+
+  <!-- Popup grille éditable après clic sur un marker de la carte. -->
+  <app-popup [isOpen]="ShowMarkerPopup()"
+             (isOpenChange)="OnMarkerPopupClosed()"
+             (closed)="OnMarkerPopupClosed()"
+             [title]="SelectedMarker()?.Title || 'Détail du bien'"
+             [icon]="SelectedMarkerType() === EMarkerType.Location ? 'key' : SelectedMarkerType() === EMarkerType.Transaction ? 'sell' : 'home_work'"
+             type="info" size="large" [showFooter]="false" [showCloseButton]="true">
+
+    <!-- Transaction : grille complète en mode single-row -->
+    @if (SelectedTransaction(); as lSelectedTransaction) {
+      <app-transaction-grid
+        [Data]="[lSelectedTransaction]"
+        [Loading]="false"
+        [Filterable]="false"
+        [RefOptions]="RefOptions()"
+        (ActionClicked)="SurTransactionActionClic($event)"
+        (RowCreated)="SurTransactionCreee($event)" />
+      <!-- Bouton matching acquereurs (V2 §5) : ouverture du dialog de candidats. -->
+      <div class="crm-biens__matching-actions">
+        <app-button
+          variant="primary"
+          icon="people"
+          [fullWidth]="true"
+          (click)="OnOpenMatchingFromTransaction(lSelectedTransaction.id ?? 0)">
+          Voir les acquereurs potentiels
+        </app-button>
+      </div>
+    }
+
+    <!-- Location : grille complète en mode single-row -->
+    @if (SelectedLocation(); as lSelectedLocation) {
+      <app-location-grid
+        [Data]="[lSelectedLocation]"
+        [Loading]="false"
+        [Filterable]="false"
+        [RefOptions]="RefOptions()"
+        (ActionClicked)="SurLocationActionClic($event)"
+        (RowCreated)="SurLocationCreee($event)" />
+      <!-- Bouton matching locataires (V2 §5) : ouverture du dialog de candidats. -->
+      <div class="crm-biens__matching-actions">
+        <app-button
+          variant="primary"
+          icon="people"
+          [fullWidth]="true"
+          (click)="OnOpenMatchingFromLocation(lSelectedLocation.id ?? 0)">
+          Voir les locataires potentiels
+        </app-button>
+      </div>
+    }
+
+    <!-- Property : grille complète en mode single-row -->
+    @if (SelectedProperty(); as lSelectedProperty) {
+      <app-property-grid
+        [Data]="[lSelectedProperty]"
+        [Loading]="false"
+        [Filterable]="false"
+        [RefOptions]="RefOptions()"
+        (ActionClicked)="SurProprieteActionClic($event)"
+        (RowCreated)="SurProprieteCreee($event)" />
+    }
+  </app-popup>
+
+  <app-popup [(isOpen)]="ShowDeleteTransactionPopup" title="Confirmer la suppression"
+    subtitle="Cette action est irréversible." icon="delete" type="error" size="small"
+    [showFooter]="true" confirmText="Supprimer" cancelText="Annuler"
+    [confirmLoading]="Deleting()" (confirmed)="OnConfirmDeleteTransaction()"
+    (cancelled)="OnCancelDeleteTransaction()" (closed)="OnCancelDeleteTransaction()">
+    @if (RowToDeleteTransaction()) {
+      <p>Voulez-vous vraiment supprimer cette transaction ?</p>
+    }
+  </app-popup>
+
+  <app-popup [(isOpen)]="ShowDeleteLocationPopup" title="Confirmer la suppression"
+    subtitle="Cette action est irréversible." icon="delete" type="error" size="small"
+    [showFooter]="true" confirmText="Supprimer" cancelText="Annuler"
+    [confirmLoading]="Deleting()" (confirmed)="OnConfirmDeleteLocation()"
+    (cancelled)="OnCancelDeleteLocation()" (closed)="OnCancelDeleteLocation()">
+    @if (RowToDeleteLocation()) {
+      <p>Voulez-vous vraiment supprimer cette location ?</p>
+    }
+  </app-popup>
+
+  <app-popup [(isOpen)]="ShowDeletePropertyPopup" title="Confirmer la suppression"
+    subtitle="Cette action est irréversible." icon="delete" type="error" size="small"
+    [showFooter]="true" confirmText="Supprimer" cancelText="Annuler"
+    [confirmLoading]="Deleting()" (confirmed)="OnConfirmDeleteProperty()"
+    (cancelled)="OnCancelDeleteProperty()" (closed)="OnCancelDeleteProperty()">
+    @if (RowToDeleteProperty()) {
+      <p>Voulez-vous vraiment supprimer ce bien ?</p>
+    }
+  </app-popup>
+
+  <app-popup [(isOpen)]="AfficherPopupSuppressionLotTransactions"
+    title="Supprimer la sélection"
+    [subtitle]="'Confirmer la suppression de ' + TransactionsSelectionnees().length + ' transaction(s) ?'"
+    icon="delete" type="error" size="small"
+    [showFooter]="true" confirmText="Supprimer" cancelText="Annuler"
+    [confirmLoading]="Deleting()" (confirmed)="SurConfirmerSuppressionLotTransactions()"
+    (cancelled)="SurAnnulerSuppressionLotTransactions()" (closed)="SurAnnulerSuppressionLotTransactions()">
+    <p>Cette action est irréversible et supprimera toutes les transactions cochées.</p>
+  </app-popup>
+
+  <app-popup [(isOpen)]="AfficherPopupSuppressionLotLocations"
+    title="Supprimer la sélection"
+    [subtitle]="'Confirmer la suppression de ' + LocationsSelectionnees().length + ' location(s) ?'"
+    icon="delete" type="error" size="small"
+    [showFooter]="true" confirmText="Supprimer" cancelText="Annuler"
+    [confirmLoading]="Deleting()" (confirmed)="SurConfirmerSuppressionLotLocations()"
+    (cancelled)="SurAnnulerSuppressionLotLocations()" (closed)="SurAnnulerSuppressionLotLocations()">
+    <p>Cette action est irréversible et supprimera toutes les locations cochées.</p>
+  </app-popup>
+
+  <app-popup [(isOpen)]="AfficherPopupSuppressionLotProprietes"
+    title="Supprimer la sélection"
+    [subtitle]="'Confirmer la suppression de ' + ProprietesSelectionnees().length + ' bien(s) ?'"
+    icon="delete" type="error" size="small"
+    [showFooter]="true" confirmText="Supprimer" cancelText="Annuler"
+    [confirmLoading]="Deleting()" (confirmed)="SurConfirmerSuppressionLotProprietes()"
+    (cancelled)="SurAnnulerSuppressionLotProprietes()" (closed)="SurAnnulerSuppressionLotProprietes()">
+    <p>Cette action est irréversible et supprimera tous les biens cochés.</p>
+  </app-popup>
+
+  <!--
+    Dialog de candidats matching acquereurs / locataires (rapport V2 §5).
+    Ouvert depuis les boutons 'Voir candidats' injectes dans la popup marker
+    (voir '.crm-biens__matching-actions' au-dessus des grilles single-row).
+    Recharge auto a chaque changement de bienId/kind (cf. ngOnChanges du dialog).
+  -->
+  <app-matching-candidates-dialog
+    [isOpen]="ShowMatchingDialog()"
+    [bienId]="MatchingBienId()"
+    [kind]="MatchingKind()"
+    (closed)="OnCloseMatchingDialog()">
+  </app-matching-candidates-dialog>
+</section>
+</section>

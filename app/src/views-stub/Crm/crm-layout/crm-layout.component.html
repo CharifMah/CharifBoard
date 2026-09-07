@@ -1,0 +1,143 @@
+<app-dashboard-layout [extraMenuItems]="MenuItems"
+                      [activeView]="View"
+                      [resizableSidebar]="false"
+                      [showBaseMenuItems]="false"
+                      (viewChanged)="Go($event)"
+                      (supportClicked)="ShowSupport = true">
+
+    <main class="main-content">
+        @switch (View) {
+        @case ('dashboard') {
+            <div class="view-enter">
+                @defer (on viewport; prefetch on idle) {
+                    <app-crm-dashboard></app-crm-dashboard>
+                } @placeholder {
+                    <div class="view-defer-placeholder" aria-busy="true" aria-label="Chargement du tableau de bord"></div>
+                }
+            </div>
+        }
+        @case ('contacts') {
+            <div class="view-enter">
+                @defer (on viewport; prefetch on idle) {
+                    <app-crm-contacts></app-crm-contacts>
+                } @placeholder {
+                    <div class="view-defer-placeholder" aria-busy="true" aria-label="Chargement des contacts"></div>
+                }
+            </div>
+        }
+        @case ('portefeuille') {
+            <div class="view-enter">
+                @defer (on viewport; prefetch on idle) {
+                    <app-crm-biens></app-crm-biens>
+                } @placeholder {
+                    <div class="view-defer-placeholder" aria-busy="true" aria-label="Chargement du portefeuille"></div>
+                }
+            </div>
+        }
+        @case ('prospection') {
+            <div class="view-enter">
+                @defer (on viewport; prefetch on idle) {
+                    <app-crm-prospection></app-crm-prospection>
+                } @placeholder {
+                    <div class="view-defer-placeholder" aria-busy="true" aria-label="Chargement de la prospection"></div>
+                }
+            </div>
+        }
+        @case ('projets') {
+            <div class="view-enter">
+                @defer (on viewport; prefetch on idle) {
+                    <app-crm-projets></app-crm-projets>
+                } @placeholder {
+                    <div class="view-defer-placeholder" aria-busy="true" aria-label="Chargement des projets"></div>
+                }
+            </div>
+        }
+        @case ('taches') {
+            <div class="view-enter">
+                @defer (on viewport; prefetch on idle) {
+                    <app-crm-taches></app-crm-taches>
+                } @placeholder {
+                    <div class="view-defer-placeholder" aria-busy="true" aria-label="Chargement des tâches"></div>
+                }
+            </div>
+        }
+        @case ('objectifs') {
+            <div class="view-enter">
+                @defer (on viewport; prefetch on idle) {
+                    <app-crm-objectifs></app-crm-objectifs>
+                } @placeholder {
+                    <div class="view-defer-placeholder" aria-busy="true" aria-label="Chargement des objectifs"></div>
+                }
+            </div>
+        }
+        @case ('indicateurs') {
+            <div class="view-enter">
+                @defer (on viewport; prefetch on idle) {
+                    <app-crm-indicateurs></app-crm-indicateurs>
+                } @placeholder {
+                    <div class="view-defer-placeholder" aria-busy="true" aria-label="Chargement des indicateurs"></div>
+                }
+            </div>
+        }
+        @case ('recrutement') {
+            <div class="view-enter">
+                @defer (on viewport; prefetch on idle) {
+                    <app-crm-recrutement></app-crm-recrutement>
+                } @placeholder {
+                    <div class="view-defer-placeholder" aria-busy="true" aria-label="Chargement du recrutement"></div>
+                }
+            </div>
+        }
+        @case ('historique') {
+            <div class="view-enter">
+                @defer (on viewport; prefetch on idle) {
+                    <app-crm-historique></app-crm-historique>
+                } @placeholder {
+                    <div class="view-defer-placeholder" aria-busy="true" aria-label="Chargement de l'historique"></div>
+                }
+            </div>
+        }
+        @case ('parametres') {
+            <div class="view-enter">
+                @defer (on viewport; prefetch on idle) {
+                    <app-crm-parametres></app-crm-parametres>
+                } @placeholder {
+                    <div class="view-defer-placeholder" aria-busy="true" aria-label="Chargement des paramètres"></div>
+                }
+            </div>
+        }
+        @case ('profil') {
+            <div class="view-enter">
+                @defer (on viewport; prefetch on idle) {
+                    <app-profil></app-profil>
+                } @placeholder {
+                    <div class="view-defer-placeholder" aria-busy="true" aria-label="Chargement du profil"></div>
+                }
+            </div>
+        }
+        @case ('chat-ia') {
+            <div class="view-enter view-enter--ia">
+                @defer (on viewport; prefetch on idle) {
+                    <app-crm-agent-chat [Embedded]="true" [PageContext]="CurrentPageContext()"></app-crm-agent-chat>
+                } @placeholder {
+                    <div class="view-defer-placeholder view-defer-placeholder--ia" aria-busy="true" aria-label="Chargement du chat IA"></div>
+                }
+            </div>
+        }
+        @default {
+            <div class="view-enter"><p>{{ ViewNotFound() }}</p></div>
+        }
+        }
+    </main>
+
+</app-dashboard-layout>
+
+<app-popup-support [(isOpen)]="ShowSupport" />
+
+<!-- - cm - Bulle chat agent IA CRM (présente sur toutes les pages CRM sauf la page Chat IA où le chat est rendu en embedded plein écran) -->
+@if (!IsOnIaPage()) {
+<app-crm-agent-chat [PageContext]="CurrentPageContext()" />
+}
+
+<!-- - cm - Lanceur du tutoriel CRM (FAB "?" flottant en bas a droite, visible uniquement quand le tutoriel n'est pas deja actif) -->
+<app-crm-tutorial-launcher [CurrentView]="View" />

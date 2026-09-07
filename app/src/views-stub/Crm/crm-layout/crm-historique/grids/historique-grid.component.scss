@@ -1,0 +1,9 @@
+// - cm - Fichier SCSS du composant HistoriqueGridComponent.
+// - cm - Encapsulation désactivée (ViewEncapsulation.None) : les styles préfixés
+// - cm - `historique-grid--` sont globaux et visent les templates `#cell` instanciés
+// - cm - dans le DOM de la GridComponent parente via [ngTemplateOutlet].
+// - cm - Pour l'instant, pas de style spécifique à l'historique (colonnes standards
+// - cm - rendues par app-grid). À enrichir si on a besoin de pastilles, code couleur
+// - cm - sur le type d'échange, etc.
+
+// Réservé pour évolutions futures.

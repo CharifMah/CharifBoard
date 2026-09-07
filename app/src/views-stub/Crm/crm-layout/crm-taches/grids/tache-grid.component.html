@@ -1,0 +1,96 @@
+<app-grid #tacheGrid
+          [Data]="EffectiveData()"
+          [Loading]="EffectiveLoading()"
+          [Error]="EffectiveError()"
+          [TrackBy]="TrackByTache"
+          [Filterable]="Filterable"
+          [FilterFields]="TacheFilterFields()"
+          [Editable]="!ReadOnly"
+          (CellEdited)="OnCellEdited($event)"
+          (ActionClicked)="OnActionClicked($event)"
+          [AutoAddRow]="false"
+          [NewRowFactory]="CreateNewTache"
+          [AllowAddRow]="!ReadOnly"
+          (RowAdded)="OnRowAdded($event)"
+          [AllowExport]="true"
+          ExportFilenamePrefix="'taches'"
+          [ExportApiPath]="'/api/Taches/ExportXlsx'"
+          [ExportFormat]="'both'"
+          [StorageKey]="StorageKey"
+          [EmptyTextCle]="'taches.grid.empty'"
+          [ServerSide]="ServerSide"
+          [Selectable]="Selectable"
+          (SelectionChanged)="OnSelectionChanged($event)">
+
+  <div gridBulkActions>
+    <app-button variant="danger" size="sm" [icon]="'delete'"
+                (ButtonClick)="OnAskBulkDelete()">
+      Supprimer la sélection
+    </app-button>
+  </div>
+
+  <app-grid-column Key="nom" LabelCle="taches.nom"
+                   [Sortable]="true"  [Editable]="!ReadOnly" EditorType="text"
+                   [EditorValidator]="GetFieldValidator('nom')" [EditorMaxLength]="GetFieldMaxLength('nom')"
+                   [ShowEditor]="!ReadOnly"
+                   EditorPlaceholderCle="taches.nomPlaceholder"/>
+
+  <app-grid-column Key="description" LabelCle="taches.description"
+                   [Sortable]="false" Width="260px" [Editable]="!ReadOnly" EditorType="textarea"
+                   [ShowEditor]="!ReadOnly"
+                   EditorPlaceholderCle="taches.descriptionPlaceholder"/>
+
+  <app-grid-column Key="prioriteId" LabelCle="taches.priorite_id"
+                   [Sortable]="true" Width="140px" [Editable]="!ReadOnly" EditorType="select"
+                   [EditorOptions]="PrioriteOptions()" [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="validee" LabelCle="taches.validee"
+                   [Sortable]="true" Width="100px" [Editable]="!ReadOnly" EditorType="select"
+                   [EditorOptions]="ValideeOptions()" [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="archivee" LabelCle="taches.archivee"
+                   [Sortable]="true" Width="100px" [Editable]="!ReadOnly" EditorType="select"
+                   [EditorOptions]="ArchiveeOptions()" [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="dateEcheance" LabelCle="taches.date_echeance"
+                   [Sortable]="true" Width="140px" [Editable]="!ReadOnly" EditorType="date" [ShowEditor]="!ReadOnly"/>
+
+  <app-grid-column Key="notes" LabelCle="taches.notes"
+                   [Sortable]="false" Width="220px" [Editable]="!ReadOnly" EditorType="textarea"
+                   [ShowEditor]="!ReadOnly"
+                   EditorPlaceholderCle="taches.notesPlaceholder"/>
+
+  <app-grid-column Key="contactId" LabelCle="taches.contact_id"
+                   [Sortable]="true" Width="180px" [Editable]="!ReadOnly" EditorType="select"
+                   [EditorOptions]="ContactOptions()" [ShowEditor]="!ReadOnly"/>
+</app-grid>
+
+<app-popup [(isOpen)]="ShowDeletePopup"
+           title="Supprimer cette tâche ?"
+           subtitle="Cette action est irréversible."
+           icon="delete" type="error" size="small"
+           [showFooter]="true"
+           confirmText="Supprimer"
+           cancelText="Annuler"
+           [confirmLoading]="Deleting()"
+           (confirmed)="OnConfirmDelete()"
+           (cancelled)="OnCancelDelete()"
+           (closed)="OnCancelDelete()">
+  @if (RowToDelete()) {
+    <p>Confirmer la suppression de la tâche sélectionnée ?</p>
+  }
+</app-popup>
+
+<app-popup [(isOpen)]="ShowBulkDeletePopup"
+           title="Supprimer la sélection"
+           [subtitle]="'Confirmer la suppression de ' + SelectedRows().length + ' tâche(s) ?'"
+           icon="delete" type="error" size="small"
+           [showFooter]="true"
+           confirmText="Supprimer"
+           cancelText="Annuler"
+           [confirmLoading]="Deleting()"
+           (confirmed)="OnConfirmBulkDelete()"
+           (cancelled)="OnCancelBulkDelete()"
+           (closed)="OnCancelBulkDelete()">
+  <p>Cette action est irréversible et supprimera toutes les tâches cochées.</p>
+</app-popup>

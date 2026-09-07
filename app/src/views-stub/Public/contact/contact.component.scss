@@ -1,0 +1,705 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region Base
+.contact-page {
+  color: $text-primary;
+  min-height: 100vh;
+}
+//#endregion
+
+//#region Hero Section
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 8rem 1.5rem 2rem;
+  position: relative;
+
+  @include from-tablet {
+    padding: 8rem 2rem 2rem;
+  }
+
+  app-scroll-indicator {
+    margin-top: auto;
+    padding-bottom: 3rem;
+  }
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: $success-light;
+  color: $success-color;
+  border-radius: 50px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+
+  .material-icons {
+    font-size: 18px;
+  }
+}
+
+.hero h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: $text-primary;
+  margin-bottom: 1.25rem;
+  line-height: 1.25;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+
+  span {
+    @include gradient-text;
+    display: inline;
+  }
+
+  @include from-tablet {
+    font-size: 2.5rem;
+  }
+}
+
+.hero .subtitle {
+  font-size: 1.05rem;
+  color: $text-secondary;
+  max-width: 550px;
+  margin: 0 auto 2rem;
+  line-height: 1.7;
+
+  @include from-tablet {
+    font-size: 1.15rem;
+  }
+}
+
+.hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  @include card-style;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+
+  @include from-tablet {
+    flex-wrap: nowrap;
+    gap: 1.5rem;
+  }
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+}
+
+.stat-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @include gradient-bg;
+  color: $white;
+  border-radius: 12px;
+  font-size: 22px;
+}
+
+.stat-text {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+
+  strong {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: $text-primary;
+  }
+
+  span {
+    font-size: 0.8rem;
+    color: $text-secondary;
+  }
+}
+
+.stat-divider {
+  display: none;
+  width: 1px;
+  height: 40px;
+  background: $border-color;
+
+  @include from-tablet {
+    display: block;
+  }
+}
+//#endregion
+
+//#region Section Header
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $text-primary;
+    margin-bottom: 0.5rem;
+
+    span {
+      @include gradient-text;
+    }
+
+    @include from-tablet {
+      font-size: 2rem;
+    }
+  }
+
+  > p {
+    font-size: 1rem;
+    color: $text-secondary;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+.section-badge {
+  display: inline-block;
+  padding: 0.375rem 0.875rem;
+  background: linear-gradient(135deg, rgba($primary-color, 0.1) 0%, rgba($accent-color, 0.1) 100%);
+  color: $primary-color;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+//#endregion
+
+//#region Contact Section
+.contact-section {
+  padding: 3rem 1.5rem 4rem;
+  max-width: 1100px;
+  margin: 0 auto;
+
+  @include from-tablet {
+    padding: 4rem 2rem 5rem;
+  }
+}
+
+// - cm - Alerts
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: $border-radius-md;
+  margin-bottom: 2rem;
+
+  .material-icons {
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .alert-content {
+    flex: 1;
+
+    h4 {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin: 0 0 0.25rem;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+  }
+
+  &.alert-success {
+    background-color: $success-light;
+    border-left: 4px solid $success-color;
+
+    .material-icons {
+      color: $success-color;
+    }
+
+    h4 {
+      color: $success-color; // - cm - Token thème au lieu de color-mix black
+    }
+  }
+
+  &.alert-error {
+    background-color: $error-light;
+    border-left: 4px solid $error-color;
+
+    .material-icons {
+      color: $error-color;
+    }
+
+    h4 {
+      color: $error-color; // - cm - Token thème au lieu de color-mix black
+    }
+  }
+}
+
+.contact-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+
+  @include from-tablet {
+    grid-template-columns: 3fr 2fr;
+  }
+}
+
+.contact-form-card {
+  @include card-style;
+  padding: 2rem;
+
+  @include from-tablet {
+    padding: 2.5rem;
+  }
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+
+  &.error {
+    .input-wrapper {
+      border-color: $error-color;
+      background-color: rgba($error-color, 0.03);
+    }
+
+    label {
+      color: $error-color;
+    }
+  }
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: $text-primary;
+  }
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  background-color: $card-background; // - cm - Token thème au lieu de $white
+  transition: all $transition-fast;
+
+  &:focus-within {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+  }
+
+  .material-icons {
+    color: $text-secondary;
+    margin-left: 0.75rem;
+    font-size: 20px;
+  }
+
+  input, select, textarea {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 0.875rem 0.75rem;
+    color: $text-primary;
+    font-size: 1rem;
+    font-family: inherit;
+    background: transparent;
+    width: 100%;
+
+    &::placeholder {
+      color: $text-secondary; // - cm - Token thème au lieu de $gray-300
+      opacity: 0.6;
+    }
+  }
+
+  select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px;
+    padding-right: 2.5rem;
+  }
+
+  &.textarea {
+    align-items: flex-start;
+
+    .material-icons {
+      margin-top: 0.875rem;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+  }
+}
+
+.error-message {
+  color: $error-color;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+
+  &::before {
+    content: "!";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    background-color: $error-color;
+    color: $white;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: bold;
+    margin-right: 0.5rem;
+  }
+}
+
+.form-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+
+  @include from-tablet {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.submit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  @include gradient-bg;
+  color: $white;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: $btn-border-radius;
+  cursor: pointer;
+  transition: all $transition-normal;
+  box-shadow: 0 4px 10px rgba($primary-color, 0.25);
+  width: 100%;
+
+  @include from-tablet {
+    width: auto;
+  }
+
+  .material-icons {
+    font-size: 18px;
+
+    &.loading {
+      animation: spin 1s linear infinite;
+    }
+  }
+
+  &:hover:not(:disabled) {
+    box-shadow: 0 6px 15px rgba($primary-color, 0.35);
+    transform: translateY(-2px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.privacy-note {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: $text-secondary;
+  margin: 0;
+
+  .material-icons {
+    font-size: 16px;
+    color: $success-color;
+  }
+}
+//#endregion
+
+//#region Contact Info Card
+.contact-info-card {
+  @include card-style;
+  padding: 2rem;
+
+  @include from-tablet {
+    padding: 2.5rem;
+  }
+}
+
+.contact-info-header {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  .contact-info-icon {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    @include gradient-bg;
+    color: $white;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+
+    .material-icons {
+      font-size: 32px;
+    }
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: $text-primary;
+    margin: 0 0 0.5rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: $text-secondary;
+    margin: 0;
+  }
+}
+
+.contact-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.contact-method {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+
+  .method-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $primary-light;
+    color: $primary-color;
+    border-radius: $border-radius-sm;
+    flex-shrink: 0;
+
+    .material-icons {
+      font-size: 22px;
+    }
+
+    &:nth-child(3n+2) {
+      background-color: $info-light;
+      color: $info-color;
+    }
+
+    &:nth-child(3n+3) {
+      background-color: $success-light;
+      color: $success-color;
+    }
+  }
+
+  .method-details {
+    flex: 1;
+
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: $text-primary;
+      margin: 0 0 0.25rem;
+    }
+
+    p {
+      font-size: 0.95rem;
+      color: $text-primary;
+      margin: 0 0 0.25rem;
+    }
+
+    .response-time {
+      display: inline-block;
+      font-size: 0.8rem;
+      color: $text-secondary;
+      background-color: $surface-muted; // - cm - Token thème au lieu de $gray-100
+      padding: 0.25rem 0.5rem;
+      border-radius: 50px;
+    }
+
+    .method-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      color: $primary-color;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      margin-top: 0.5rem;
+      transition: all $transition-fast;
+
+      .material-icons {
+        font-size: 16px;
+        transition: transform $transition-fast;
+      }
+
+      &:hover {
+        color: $primary-color; // - cm - Token thème au lieu de color-mix black
+
+        .material-icons {
+          transform: translateX(3px);
+        }
+      }
+    }
+  }
+}
+//#endregion
+
+//#region FAQ Preview
+.faq-preview {
+  padding: 0 1.5rem 3rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.faq-card {
+  @include card-style;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  text-align: center;
+
+  @include from-tablet {
+    flex-direction: row;
+    text-align: left;
+    padding: 1.5rem 2rem;
+  }
+
+  > .material-icons {
+    font-size: 40px;
+    color: $primary-light;
+  }
+}
+
+.faq-content {
+  flex: 1;
+
+  h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: $text-primary;
+    margin: 0 0 0.25rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: $text-secondary;
+    margin: 0;
+  }
+}
+
+.faq-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: transparent;
+  color: $primary-color;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 2px solid $primary-light;
+  border-radius: $btn-border-radius;
+  cursor: pointer;
+  transition: all $transition-normal;
+  white-space: nowrap;
+  text-decoration: none;
+
+  .material-icons {
+    font-size: 18px;
+    transition: transform $transition-fast;
+  }
+
+  &:hover {
+    background: $primary-light;
+    border-color: $primary-color;
+
+    .material-icons {
+      transform: translateX(4px);
+    }
+  }
+}
+//#endregion
+
+//#region Responsive
+@include mobile {
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero .subtitle {
+    font-size: 0.95rem;
+  }
+
+  .hero-stats {
+    padding: 1rem;
+  }
+
+  .stat-item {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .contact-form-card,
+  .contact-info-card {
+    padding: 1.5rem;
+  }
+
+  .contact-info-header {
+    .contact-info-icon {
+      width: 56px;
+      height: 56px;
+
+      .material-icons {
+        font-size: 28px;
+      }
+    }
+
+    h3 {
+      font-size: 1.2rem;
+    }
+  }
+
+  .faq-card {
+    padding: 1.5rem;
+  }
+}
+//#endregion

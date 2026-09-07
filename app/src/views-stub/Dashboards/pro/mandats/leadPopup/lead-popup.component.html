@@ -1,0 +1,180 @@
+<app-popup [isOpen]="IsOpen"
+           [title]="'Détails de la piste commerciale'"
+           [subtitle]="Application?.opportunity?.address?.street || 'Adresse non renseignée'"
+           [size]="'large'"
+           [type]="'info'"
+           [icon]="'real_estate_agent'"
+           [showHeader]="true"
+           [showFooter]="true"
+           [closeOnOverlay]="true"
+           [closeOnEscape]="true"
+           [showCloseButton]="true"
+           [showConfirmButton]="false"
+           [cancelText]="'Fermer'"
+           (closed)="OnClose()"
+           (cancelled)="OnClose()"
+           (isOpenChange)="IsOpenChange.emit($event)">
+
+
+    <div class="lead-details">
+        @if (Application?.opportunity?.isPrio) {
+        <!-- En-tête avec statut et priorité -->
+        <div class="lead-header">
+
+            <app-badge type="premium" size="md">
+                Lead prioritaire
+            </app-badge>
+
+        </div>
+        }
+        <!-- Informations du vendeur -->
+        <div class="lead-section">
+            <h3 class="section-title">
+                <span class="material-icons">person</span>
+                Informations du vendeur
+            </h3>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Nom</span>
+                    <span class="info-value">{{ Application?.opportunity?.user?.lastName || 'Non renseigné' }}</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Prénom</span>
+                    <span class="info-value">{{ Application?.opportunity?.user?.firstName || 'Non renseigné' }}</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Email</span>
+                    <span class="info-value contact-info">
+                        @if (Application?.opportunity?.user?.email) {
+                        <a href="mailto:{{ Application?.opportunity?.user?.email }}" class="contact-link">
+                            <span class="material-icons contact-icon">email</span>
+                            {{ Application?.opportunity?.user?.email }}
+                        </a>
+                        } @else {
+                        Non renseigné
+                        }
+                    </span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Téléphone</span>
+                    <span class="info-value contact-info">
+                        @if (Application?.opportunity?.user?.phone) {
+                        <a href="tel:{{ Application?.opportunity?.user?.phone }}" class="contact-link">
+                            <span class="material-icons contact-icon">phone</span>
+                            {{ Application?.opportunity?.user?.phone }}
+                        </a>
+                        } @else {
+                        Non renseigné
+                        }
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informations du bien -->
+        <div class="lead-section">
+            <h3 class="section-title">
+                <span class="material-icons">home</span>
+                Informations du bien
+            </h3>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Adresse</span>
+                    <span class="info-value">{{ Application?.opportunity?.address?.street || 'Non renseignée' }}</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Code postal / Ville</span>
+                    <span class="info-value">{{ Application?.opportunity?.address?.postcode }} {{ Application?.opportunity?.address?.city }}</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Type de bien</span>
+                    <span class="info-value">{{ Application?.opportunity?.propertyType || 'Non renseigné' }}</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Surface</span>
+                    <span class="info-value">{{ Application?.opportunity?.surface ? (Application?.opportunity?.surface + ' m²') : 'Non renseignée' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informations financières -->
+        <div class="lead-section">
+            <h3 class="section-title">
+                <span class="material-icons">euro</span>
+                Informations financières
+            </h3>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Prix estimé</span>
+                    <span class="info-value highlight-primary">{{ this.State.GetMandatPrixEstime(this.Application) }}</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Commission</span>
+                    <span class="info-value highlight-success">{{ this.Application?.feePercentage }}%</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Commission estimé</span>
+                    <span class="info-value highlight-success">{{ FormatPrice(this.State.GetCommissionEstimee($safeNavigationMigration(Application?.opportunity))) }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dates importantes -->
+        <div class="lead-section">
+            <h3 class="section-title">
+                <span class="material-icons">calendar_today</span>
+                Dates importantes
+            </h3>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Date de création</span>
+                    <span class="info-value">{{ $safeNavigationMigration(Application?.createdAt) | date:'dd/MM/yyyy' }}</span>
+                </div>
+
+                @if (Application?.opportunity?.expiresAt) {
+                <div class="info-item">
+                    <span class="info-label">Date d'expiration</span>
+                    <span class="info-value" [class.urgent]="JoursRestants <= 30 && JoursRestants > 0">
+                        {{ $safeNavigationMigration(Application?.opportunity?.expiresAt) | date:'dd/MM/yyyy' }}
+                        @if (JoursRestants > 0) {
+                        <span class="jours-restants">
+                            ({{ JoursRestants }} jours restants)
+                        </span>
+                        } @else {
+                        <span class="jours-restants expired">
+                            (Expiré)
+                        </span>
+                        }
+                    </span>
+                </div>
+                }
+            </div>
+        </div>
+
+        <!-- Commentaires et notes -->
+        @if (Application?.opportunity?.description) {
+        <div class="lead-section">
+            <h3 class="section-title">
+                <span class="material-icons">comment</span>
+                Description
+            </h3>
+
+            <div class="description-box">
+                {{ Application?.opportunity?.description }}
+            </div>
+        </div>
+        }
+    </div>
+</app-popup>

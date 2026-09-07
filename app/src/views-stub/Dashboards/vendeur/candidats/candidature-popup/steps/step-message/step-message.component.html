@@ -1,0 +1,85 @@
+<div class="step-content">
+  <h3 class="step-title">
+    <span class="material-icons">mail</span>
+    Message personnalisé
+  </h3>
+  <p class="step-description">
+    Ajoutez un message personnel au vendeur (optionnel).
+  </p>
+
+  <!-- Message -->
+  <div class="form-group">
+    <label for="message">Votre message</label>
+    <textarea
+      id="message"
+      [ngModel]="message"
+      (ngModelChange)="onMessageChange($event)"
+      placeholder="Un message supplémentaire pour le vendeur..."
+      rows="4">
+    </textarea>
+  </div>
+
+  <!-- Récapitulatif -->
+  <div class="summary-section">
+    <h4>
+      <span class="material-icons">summarize</span>
+      Récapitulatif de votre candidature
+    </h4>
+
+    <div class="summary-grid">
+      <!-- Présentation -->
+      <div class="summary-item summary-presentation">
+        <span class="summary-label">Présentation</span>
+        <span class="summary-value">{{ presentation.length > 120 ? presentation.substring(0, 120) + '...' : presentation }}</span>
+      </div>
+
+      <!-- Services sélectionnés par catégorie -->
+      <div class="summary-item summary-services-block">
+        <span class="summary-label">Services proposés ({{ selectedServicesCount }})</span>
+        
+        <div class="services-by-category">
+          @for (group of groupedServices; track group.category) {
+            <div class="category-group">
+              <div class="category-title">
+                <span class="material-icons">{{ group.categoryIcon }}</span>
+                <span>{{ group.categoryLabel }}</span>
+                <span class="category-badge">{{ group.services.length }}</span>
+              </div>
+              <div class="category-services">
+                @for (service of group.services; track service) {
+                  <span class="service-badge">{{ service }}</span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Honoraires -->
+      <div class="summary-item">
+        <span class="summary-label">Honoraires</span>
+        <span class="summary-value highlight">
+            @if (feeType === EFeeType.POURCENTAGE) {
+            {{ feePercentage }}%
+            } @else {
+            {{ this.FormatPrice(feeFixedAmount) }}
+            }
+        </span>
+      </div>
+
+      <!-- Commission estimée -->
+      <div class="summary-item">
+        <span class="summary-label">Commission estimée</span>
+        <span class="summary-value highlight">{{ this.FormatPrice(commissionEstimee) }}</span>
+      </div>
+
+      <!-- Délai estimé -->
+      @if (estimatedTimeline) {
+        <div class="summary-item">
+          <span class="summary-label">Délai estimé</span>
+          <span class="summary-value">{{ estimatedTimeline }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</div>

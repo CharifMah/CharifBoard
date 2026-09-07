@@ -1,0 +1,317 @@
+@use 'variables' as *;
+
+//#region Candidature content
+// - cm - Contenu de la candidature
+.candidature-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+//#endregion
+
+//#region Résumé du bien
+// - cm - Résumé du bien
+.property-summary {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  // - cm - Fond de carte harmonisé via token (réagit au dark theme)
+  background: $card-background;
+  border-radius: $border-radius-md;
+  border: 1px solid $border-color;
+
+  .property-image {
+    width: 60px;
+    height: 60px;
+    border-radius: $border-radius-sm;
+    background: linear-gradient(135deg, $primary-color 0%, $purple-700 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    .material-icons {
+      font-size: 28px;
+      color: $white;
+    }
+  }
+
+  .property-info {
+    flex: 1;
+    min-width: 0;
+
+    h4 {
+      margin: 0 0 0.25rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: $text-primary;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .property-details {
+      margin: 0 0 0.25rem;
+      font-size: 0.85rem;
+      color: $text-secondary;
+
+      .separator {
+        margin: 0 0.5rem;
+        color: $text-secondary;
+      }
+    }
+
+    .property-price {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: $primary-color;
+    }
+  }
+}
+
+//#endregion
+
+//#region Stepper
+// - cm - Stepper
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0;
+
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover .step-number {
+      transform: scale(1.05);
+    }
+
+    .step-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: $surface-hover;
+      color: $text-secondary;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all $transition-normal;
+
+      .material-icons {
+        font-size: 18px;
+      }
+    }
+
+    .step-label {
+      font-size: 0.75rem;
+      color: $text-secondary;
+      font-weight: 500;
+    }
+
+    &.active {
+      .step-number {
+        background: linear-gradient(135deg, $primary-color 0%, $purple-700 100%);
+        color: $white;
+        box-shadow: $btn-shadow;
+      }
+
+      .step-label {
+        color: $primary-color;
+        font-weight: 600;
+      }
+    }
+
+    &.completed {
+      .step-number {
+        background: $success-color;
+        color: $white;
+      }
+
+      .step-label {
+        color: $success-color;
+      }
+    }
+  }
+
+  .step-line {
+    width: 60px;
+    height: 3px;
+    background: $border-color;
+    margin: 0 0.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 2px;
+    transition: background $transition-normal;
+
+    &.completed {
+      background: $success-color;
+    }
+  }
+}
+
+//#endregion
+
+//#region Erreur
+// - cm - Bannière d'erreur
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: $error-light;
+  border: 1px solid $error-color;
+  border-radius: $border-radius-sm;
+  color: $error-color;
+
+  .material-icons {
+    font-size: 20px;
+  }
+
+  span {
+    flex: 1;
+    font-size: 0.9rem;
+  }
+
+  .btn-close-error {
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    cursor: pointer;
+    color: $error-color;
+    opacity: 0.7;
+    transition: opacity $transition-fast;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    .material-icons {
+      font-size: 18px;
+    }
+  }
+}
+
+//#endregion
+
+//#region Actions
+// - cm - Actions de la popup
+.popup-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  margin-top: 1rem;
+  border-top: 1px solid $border-color;
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: $btn-border-radius;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all $transition-fast;
+    border: none;
+
+    .material-icons {
+      font-size: 18px;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  .btn-secondary {
+    background: $surface-muted;
+    color: $text-secondary;
+    border: 2px solid $border-color;
+
+    &:hover:not(:disabled) {
+      background: $surface-hover;
+      color: $text-primary;
+    }
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, $primary-color 0%, $purple-700 100%);
+    color: $white;
+    min-width: 140px;
+    box-shadow: $btn-shadow;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: $btn-hover-shadow;
+    }
+  }
+
+  .btn-submit {
+    min-width: 200px;
+  }
+
+  .spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid $primary-light;
+    border-top-color: $white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+}
+//#endregion
+
+//#region Responsive
+// - cm - Adaptation petit ecran : densifie le contenu pour eviter une scrollbar prematuree
+@media (max-width: $mobile-breakpoint) {
+  .candidature-content {
+    gap: 1rem;
+  }
+
+  .property-summary {
+    padding: 0.75rem;
+
+    .property-image {
+      width: 48px;
+      height: 48px;
+
+      .material-icons {
+        font-size: 22px;
+      }
+    }
+  }
+
+  .stepper {
+    padding: 0.5rem 0;
+
+    .step-line {
+      width: 32px;
+    }
+
+    .step-label {
+      font-size: 0.7rem;
+    }
+  }
+
+  .popup-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    margin-top: 0.75rem;
+
+    .btn {
+      width: 100%;
+    }
+  }
+}//#endregion

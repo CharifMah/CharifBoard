@@ -1,0 +1,91 @@
+<main class="blog-page">
+    <!-- - cm - Hero du blog -->
+    <header class="blog-hero" appScrollReveal [Animation]="'fade'">
+        <span class="blog-hero__eyebrow">Blog immobilier</span>
+        <h1 class="blog-hero__title" appScrollReveal [Animation]="'word'">
+            Conseils et analyses immobilières
+        </h1>
+        <p class="blog-hero__subtitle">
+            Estimation, prix au m², données DVF+ et conseils pour vendre votre bien au bon prix.
+        </p>
+        @if (IsAdmin) {
+            <div class="blog-hero__admin">
+                <app-button variant="primary" size="sm" icon="edit" iconPosition="left" (ButtonClick)="ToggleAdmin()">
+                    {{ ShowAdmin ? 'Fermer l\'administration' : 'Gérer le blog' }}
+                </app-button>
+            </div>
+        }
+    </header>
+
+    @if (ShowAdmin && IsAdmin) {
+        <app-blog-admin (DataChanged)="OnAdminChanged()"></app-blog-admin>
+    }
+
+    <!-- - cm - Liste des articles -->
+    <section class="blog-list" aria-label="Articles du blog">
+        @if (Articles.length === 0) {
+            <div class="blog-empty">
+                <span class="material-icons" aria-hidden="true">inbox</span>
+                Aucun article publié pour le moment. Revenez bientôt !
+            </div>
+        }
+
+        @if (Articles.length > 0) {
+            <div class="blog-grid">
+                @for (lArticle of Articles; track lArticle.id) {
+                    <article class="blog-card" [class.blog-card--featured]="lArticle.isFeatured" appScrollReveal [Animation]="'fade'">
+                        <a [routerLink]="['/blog', lArticle.slug]" class="blog-card__link">
+                            <div class="blog-card__image-wrapper">
+                                @if (lArticle.isFeatured) {
+                                    <div class="blog-card__featured-badge">
+                                        <app-badge label="À la une" icon="star" type="warning" variant="soft"></app-badge>
+                                    </div>
+                                }
+                                @if (lArticle.coverImage) {
+                                    <app-image [src]="ApiBaseUrl + lArticle.coverImage"
+                                        [alt]="lArticle.title ?? ''"
+                                        [isWebp]="true"
+                                        loading="lazy"
+                                        objectFit="cover"
+                                        class="blog-card__image">
+                                    </app-image>
+                                } @else {
+                                    <div class="blog-card__image blog-card__image--placeholder" role="img" [attr.aria-label]="lArticle.title ?? ''">
+                                        <span class="material-icons" aria-hidden="true">article</span>
+                                    </div>
+                                }
+                            </div>
+                            <div class="blog-card__body">
+                                @if (lArticle.category) {
+                                    <app-badge [label]="lArticle.category" type="info" variant="soft" size="sm"></app-badge>
+                                }
+                                <h2 class="blog-card__title">{{ lArticle.title }}</h2>
+                                @if (lArticle.excerpt) {
+                                    <p class="blog-card__excerpt">{{ lArticle.excerpt }}</p>
+                                }
+                                <div class="blog-card__meta">
+                                    @if (lArticle.publishedAt) {
+                                        <span class="blog-card__date">{{ FormatDate(lArticle.publishedAt) }}</span>
+                                    }
+                                    @if (lArticle.readingTimeMinutes) {
+                                        <span class="blog-card__reading">{{ lArticle.readingTimeMinutes }} min de lecture</span>
+                                    }
+                                </div>
+                            </div>
+                        </a>
+                    </article>
+                }
+            </div>
+        }
+    </section>
+
+    <!-- - cm - CTA estimation -->
+    <section class="blog-cta" appScrollReveal [Animation]="'fade'">
+        <h2 class="blog-cta__title">Estimez votre bien gratuitement</h2>
+        <p class="blog-cta__text">Obtenez une fourchette de prix fiable en 2 minutes grâce aux données officielles DVF+.</p>
+        <app-button variant="primary" size="lg" [routerLink]="this.RouteUtils.GetRoute(Routes.OUTILESTIMATION)"
+            icon="calculate" iconPosition="right" [rounded]="true">
+            Estimer mon bien
+        </app-button>
+    </section>
+</main>

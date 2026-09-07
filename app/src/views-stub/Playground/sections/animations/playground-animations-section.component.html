@@ -1,0 +1,349 @@
+<!-- - cm - Section 1 : animation de texte "gradient" qui defile en boucle.
+        Reprend le pattern du hero global (styles.scss) pour la coherence visuelle. -->
+<app-playground-section
+  id="anim-text-gradient"
+  title="Texte dégradé animé"
+  category="Design"
+  description="Titre avec un dégradé qui se déplace en boucle (4s). Utilisé pour le hero et les CTA marketing. Repose sur background-clip:text et un keyframe gradient-shift."
+  [code]="GradientTextCode">
+
+  <h2 class="anim-text-gradient anim-text-gradient--demo">SellMatch en mouvement</h2>
+  <p class="anim-demo__hint">
+    Animation infinie 4s. Le dégradé balaye le texte de gauche à droite puis recommence.
+  </p>
+</app-playground-section>
+
+<!-- - cm - Section 2 : animation de texte "typewriter" avec caret clignotant.
+        Démo en direct : on écrit caractère par caractère avec un timer. -->
+<app-playground-section
+  id="anim-text-typewriter"
+  title="Texte machine à écrire (typewriter)"
+  category="Design"
+  description="Texte qui apparaît caractère par caractère avec un caret clignotant. Idéal pour les écrans d'accueil, hero animés et messages d'IA. Vitesse réglable en ms."
+  [code]="TypewriterCode">
+
+  <div class="anim-typewriter">
+    <span class="anim-typewriter__text">{{ TypewriterText() }}</span>
+    <span class="anim-typewriter__caret" [class.is-hidden]="!TypewriterCaretVisible()">|</span>
+  </div>
+
+  <div class="anim-demo__controls">
+    <app-input type="number" label="Vitesse (ms/caractère)" [min]="10" [max]="500" [step]="5"
+      [value]="TypewriterSpeedLabel()"
+      (valueChange)="SetTypewriterSpeed($any($event))" />
+  </div>
+</app-playground-section>
+
+<!-- - cm - Section 3 : animation de texte "mot par mot" (fade in décalé).
+        Chaque mot entre en scène avec un delay calculé sur --i. -->
+<app-playground-section
+  id="anim-text-word-fade"
+  title="Apparition mot par mot"
+  category="Design"
+  description="Chaque mot entre en scène avec un délai de 80ms. Idéal pour les phrases d'accroche courtes. Le bouton Rejouer re-déclenche l'animation en re-montant le composant."
+  [code]="WordFadeCode">
+
+  <h3 class="anim-word-fade" [attr.data-replay]="WordReplay()">
+    @for (lWord of WordFadeWords; track $index) {
+      <span
+        class="anim-word-fade__word"
+        [class.is-highlighted]="IsWordHighlighted($index)"
+        [style.--i]="$index">{{ lWord }}@if (!$last) {&nbsp;}</span>
+    }
+  </h3>
+
+  <div class="anim-demo__actions">
+    <button type="button" class="anim-demo__btn" (click)="ReplayWordFade()">
+      <span class="material-icons">replay</span>
+      Rejouer l'animation
+    </button>
+    <button type="button" class="anim-demo__btn" (click)="ToggleHighlightLoop()">
+      <span class="material-icons">{{ HighlightLoop() ? 'pause' : 'play_arrow' }}</span>
+      {{ HighlightLoop() ? 'Pause surbrillance' : 'Reprendre surbrillance' }}
+    </button>
+  </div>
+</app-playground-section>
+
+<!-- - cm - Section 4 : apparitions en cascade (slideUp avec stagger). -->
+<app-playground-section
+  id="anim-stagger"
+  title="Apparition en cascade (stagger)"
+  category="Design"
+  description="Liste d'éléments qui apparaissent un à un avec un délai progressif (100ms entre chaque). Très utilisé pour les résultats de recherche, listes de notifications et feed d'activité."
+  [code]="StaggerCode">
+
+  <!-- - cm - Le @if cree un nouveau conteneur a chaque changement de ReplayToken
+       pour relancer l'animation CSS "forwards" (sans ca, les elements restent
+       bloques a leur etat final apres la premiere lecture). -->
+  @if (StaggerVisible()) {
+    <ul class="anim-stagger">
+      @for (lItem of StaggerItems; track lItem.id) {
+        <li class="anim-stagger__item" [style.--i]="$index">
+          <span class="anim-stagger__bullet"></span>
+          {{ lItem.label }}
+        </li>
+      }
+    </ul>
+  } @else {
+    <ul class="anim-stagger">
+      <li class="anim-stagger__item anim-stagger__item--placeholder" style="--i: 0">
+        <span class="anim-stagger__bullet"></span>
+        Premier élément
+      </li>
+    </ul>
+  }
+
+  <div class="anim-demo__actions">
+    <button type="button" class="anim-demo__btn" (click)="ReplayStagger()">
+      <span class="material-icons">replay</span>
+      Rejouer la cascade
+    </button>
+  </div>
+</app-playground-section>
+
+<!-- - cm - Section 5 : apparitions simples (fadeIn, slideUp, slideDown, scaleIn). -->
+<app-playground-section
+  id="anim-appear"
+  title="Apparitions (fade / slide / scale)"
+  category="Design"
+  description="Quatre apparitions standards pour les entrées de vue, modales, toasts et tooltips. Toutes utilisent des keyframes globaux de _animations.scss et respectent prefers-reduced-motion."
+  [code]="FadeInCode">
+
+  <div class="anim-appear-grid" [attr.data-replay]="ReplayToken()">
+    <div class="anim-appear-card anim-appear-card--fade">
+      <span class="material-icons">opacity</span>
+      <span>fadeIn</span>
+    </div>
+    <div class="anim-appear-card anim-appear-card--slide-up">
+      <span class="material-icons">arrow_upward</span>
+      <span>slideUp</span>
+    </div>
+    <div class="anim-appear-card anim-appear-card--slide-down">
+      <span class="material-icons">arrow_downward</span>
+      <span>slideDown</span>
+    </div>
+    <div class="anim-appear-card anim-appear-card--scale">
+      <span class="material-icons">open_in_full</span>
+      <span>scaleIn</span>
+    </div>
+  </div>
+
+  <div class="anim-demo__actions">
+    <button type="button" class="anim-demo__btn" (click)="ReplayToken.set(ReplayToken() + 1)">
+      <span class="material-icons">replay</span>
+      Rejouer les apparitions
+    </button>
+  </div>
+</app-playground-section>
+
+<!-- - cm - Section 6 : pulsations continues (pulse opacity, pulse-glow CTA, float). -->
+<app-playground-section
+  id="anim-pulse"
+  title="Pulsations et flottements"
+  category="Design"
+  description="Pulsations d'opacité, halo pulsé pour les CTA et flottement vertical. Tous en boucle infinie, à utiliser pour attirer l'œil sur des éléments clés."
+  [code]="PulseGlowCode">
+
+  <div class="anim-pulse-grid">
+    <div class="anim-pulse-item">
+      <span class="anim-pulse-item__label">pulse (opacité)</span>
+      <span class="anim-pulse anim-pulse--opacity">Actif</span>
+    </div>
+    <div class="anim-pulse-item">
+      <span class="anim-pulse-item__label">pulse-glow (halo)</span>
+      <button type="button" class="anim-pulse anim-pulse--glow">CTA pulsé</button>
+    </div>
+    <div class="anim-pulse-item">
+      <span class="anim-pulse-item__label">float (flottement)</span>
+      <span class="anim-pulse anim-pulse--float material-icons">arrow_upward</span>
+    </div>
+    <div class="anim-pulse-item">
+      <span class="anim-pulse-item__label">ping (onde)</span>
+      <span class="anim-pulse anim-pulse--ping">
+        <span class="anim-pulse--ping__dot"></span>
+        <span class="anim-pulse--ping__wave"></span>
+      </span>
+    </div>
+  </div>
+</app-playground-section>
+
+<!-- - cm - Section 7 : spinners et indicateurs de chargement. -->
+<app-playground-section
+  id="anim-spinner"
+  title="Spinners et chargement"
+  category="Design"
+  description="Trois spinners CSS prêts à l'emploi : rotation simple, rotation avec bordure pointillée, et shimmer pour les skeletons. Tous compatibles prefers-reduced-motion."
+  [code]="SpinCode">
+
+  <div class="anim-spinner-grid">
+    <div class="anim-spinner-item">
+      <span class="anim-spinner-item__label">spin (rotation)</span>
+      <span class="anim-spinner anim-spinner--spin" aria-label="Chargement"></span>
+    </div>
+    <div class="anim-spinner-item">
+      <span class="anim-spinner-item__label">spin (alternatif)</span>
+      <span class="anim-spinner anim-spinner--dash" aria-label="Chargement"></span>
+    </div>
+    <div class="anim-spinner-item">
+      <span class="anim-spinner-item__label">shimmer (skeleton)</span>
+      <span class="anim-spinner anim-spinner--shimmer"></span>
+    </div>
+  </div>
+</app-playground-section>
+
+<!-- - cm - Section 8 : secousse d'erreur et feedback visuel. -->
+<app-playground-section
+  id="anim-shake"
+  title="Secousse d'erreur (shake)"
+  category="Design"
+  description="Animation de secousse horizontale pour signaler un champ invalide, une erreur de sauvegarde ou une action refusée. Boucle optionnelle pour la démo, à déclencher one-shot en production."
+  [code]="ShakeCode">
+
+  <div class="anim-shake-row">
+    <div class="anim-shake-cell" [class.is-shaking]="ShakeLoop()" [attr.data-replay]="ReplayToken()">
+      <span class="material-icons">error_outline</span>
+      <span>Champ invalide</span>
+    </div>
+    <div class="anim-shake-cell anim-shake-cell--alt" [class.is-shaking]="ShakeLoop()" [attr.data-replay]="ReplayToken()">
+      <span class="material-icons">report_problem</span>
+      <span>Sauvegarde refusée</span>
+    </div>
+  </div>
+
+  <div class="anim-demo__actions">
+    <button type="button" class="anim-demo__btn" (click)="ToggleShakeLoop()">
+      <span class="material-icons">{{ ShakeLoop() ? 'pause' : 'play_arrow' }}</span>
+      {{ ShakeLoop() ? 'Pause boucle' : 'Reprendre boucle' }}
+    </button>
+    <button type="button" class="anim-demo__btn" (click)="ReplayShake()">
+      <span class="material-icons">replay</span>
+      Déclencher une fois
+    </button>
+  </div>
+</app-playground-section>
+
+<!-- - cm - Section 9 : effet hover lift + glow pour cartes interactives. -->
+<app-playground-section
+  id="anim-hover"
+  title="Survol (lift + ombre)"
+  category="Design"
+  description="Transition CSS au survol : translation verticale et ombre plus prononcée. À appliquer sur les cartes cliquables, tuiles de dashboard et conteneurs d'action."
+  [code]="HoverLiftCode">
+
+  <div class="anim-hover-grid">
+    <div class="anim-hover-card">
+      <span class="material-icons">dashboard</span>
+      <h4>Carte 1</h4>
+      <p>Survolez pour voir l'effet</p>
+    </div>
+    <div class="anim-hover-card anim-hover-card--accent">
+      <span class="material-icons">insights</span>
+      <h4>Carte 2</h4>
+      <p>Variante accentuée</p>
+    </div>
+    <div class="anim-hover-card anim-hover-card--primary">
+      <span class="material-icons">trending_up</span>
+      <h4>Carte 3</h4>
+      <p>Variante primaire</p>
+    </div>
+  </div>
+</app-playground-section>
+
+<!-- - cm - Section 10 : animations de la home (page d'accueil).
+        Reproduit les 3 patterns d'animation utilisés sur https://recette.sellmatch.fr/ :
+        - .text-gradient (de styles.scss) pour le titre principal
+        - .hero__title-highlight (de styles.scss) qui combine clip-path reveal + gradient-shift
+        - appScrollReveal avec [Animation]="'word'" (Cuberto-like mot par mot) et 'fade' (fade-up)
+        Ces animations sont déjà actives sur la page home, cette section les décompose pour
+        comprendre comment les réutiliser. -->
+<app-playground-section
+  id="anim-home-text-gradient"
+  title="Animation home : texte dégradé (.text-gradient)"
+  category="Design"
+  description="Pattern utilisé sur la home pour le titre hero et les surlignages. background-image en linear-gradient + background-clip:text + animation gradient-shift 4s. Toujours utiliser background-image (pas le shorthand background) pour éviter que l'optimizer CSS d'Angular efface la valeur du linear-gradient avec var()."
+  [code]="TextGradientCode">
+
+  <h3 class="anim-home-text-gradient-demo">Le titre principal de la home</h3>
+  <p class="anim-demo__hint">
+    Animation infinie 4s. background-image preserve la valeur contrairement au shorthand background.
+  </p>
+</app-playground-section>
+
+<!-- - cm - Section 11 : hero__title-highlight — clip-path reveal puis gradient-shift.
+        Reproduit l'animation exacte du hero de la home (deux animations combinées). -->
+<app-playground-section
+  id="anim-home-hero-highlight"
+  title="Animation home : hero__title-highlight (clip-path + gradient)"
+  category="Design"
+  description="Combine deux animations : hero-highlight-reveal 1.2s qui decouvre le mot avec clip-path inset (gauche vers droite, 1s de delai), puis gradient-shift 4s qui anime le degrade. C'est l'effet exact du sous-titre de la home. Rejouer declenche l'animation avec un nouveau delai aleatoire pour bien voir les deux phases."
+  [code]="HeroHighlightCode">
+
+  <h3 class="anim-home-hero-demo">
+    Une phrase avec un
+    <span class="anim-home-hero-demo__highlight" [attr.data-replay]="ReplayToken()">mot surligné</span>
+    qui se révèle au chargement.
+  </h3>
+  <div class="anim-demo__actions">
+    <button type="button" class="anim-demo__btn" (click)="ReplayToken.set(ReplayToken() + 1)">
+      <span class="material-icons">replay</span>
+      Rejouer l'animation
+    </button>
+  </div>
+</app-playground-section>
+
+<!-- - cm - Section 12 : appScrollReveal — directive mot par mot (Cuberto-like) et fade-up.
+        C'est la directive utilisée partout sur la home (titre, sous-titre, descriptions,
+        step-cards, sections). On l'emploie ici pour démontrer les deux modes. -->
+<app-playground-section
+  id="anim-home-scroll-reveal"
+  title="Animation home : appScrollReveal (mot par mot / fade)"
+  category="Design"
+  description="Directive Angular appScrollReveal (shared/directives/TextRevealDirective) qui anime les éléments à l'entrée dans le viewport. Mode 'word' : decoupe le texte en mots et les fait monter (Cuberto-like). Mode 'fade' : fade + translation Y. Utilisée sur toute la home : hero title/subtitle, step cards, section headers. Rejouer pour voir l'animation."
+  [code]="ScrollRevealCode">
+
+  <div class="anim-scroll-reveal-grid">
+    <div class="anim-scroll-reveal-cell">
+      <span class="anim-scroll-reveal-cell__label">Mode "word" (Cuberto-like)</span>
+      <h4 class="anim-scroll-reveal-demo" appScrollReveal [Animation]="'word'" [StaggerDelay]="60" [Threshold]="0.2">
+        Chaque mot monte un par un
+      </h4>
+    </div>
+    <div class="anim-scroll-reveal-cell">
+      <span class="anim-scroll-reveal-cell__label">Mode "fade" (fade-up bloc)</span>
+      <h4 class="anim-scroll-reveal-demo" appScrollReveal [Animation]="'fade'" [OffsetY]="30" [Threshold]="0.2">
+        Bloc qui fade + slide up
+      </h4>
+    </div>
+  </div>
+  <div class="anim-demo__actions">
+    <button type="button" class="anim-demo__btn" (click)="ReplayToken.set(ReplayToken() + 1)">
+      <span class="material-icons">replay</span>
+      Rejouer (scroll vers le haut puis revenir)
+    </button>
+  </div>
+</app-playground-section>
+
+<!-- - cm - Section 13 : keyframes spécifiques à la home (pulse-glow, gradient-rotate, bg-glow-pulse).
+        Ces keyframes sont dans home.component.scss et animent les éléments décoratifs. -->
+<app-playground-section
+  id="anim-home-keyframes"
+  title="Animation home : keyframes décoratifs (pulse-glow, gradient-rotate, bg-glow-pulse)"
+  category="Design"
+  description="Trois keyframes définies dans home.component.scss pour les éléments décoratifs : pulse-glow pour les badges, gradient-rotate pour les orbes de fond, bg-glow-pulse pour les halos ambient. Reprise ici pour démontrer le pattern."
+  [code]="HomeKeyframesCode">
+
+  <div class="anim-home-keyframes-grid">
+    <div class="anim-home-keyframes-cell">
+      <span class="anim-home-keyframes-cell__label">pulse-glow (badge)</span>
+      <span class="anim-home-keyframes anim-home-keyframes--pulse-glow">1.0x</span>
+    </div>
+    <div class="anim-home-keyframes-cell">
+      <span class="anim-home-keyframes-cell__label">gradient-rotate (orbe)</span>
+      <span class="anim-home-keyframes anim-home-keyframes--gradient-rotate"></span>
+    </div>
+    <div class="anim-home-keyframes-cell">
+      <span class="anim-home-keyframes-cell__label">bg-glow-pulse (halo)</span>
+      <span class="anim-home-keyframes anim-home-keyframes--bg-glow-pulse"></span>
+    </div>
+  </div>
+</app-playground-section>

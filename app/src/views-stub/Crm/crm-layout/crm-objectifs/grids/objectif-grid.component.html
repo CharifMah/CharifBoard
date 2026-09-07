@@ -1,0 +1,93 @@
+<app-grid #objectifGrid
+          [Data]="EffectiveData()"
+          [Loading]="EffectiveLoading()"
+          [Error]="EffectiveError()"
+          [TrackBy]="TrackByObjectif"
+          [Filterable]="Filterable"
+          [FilterFields]="ObjectifFilterFields()"
+          [Editable]="!ReadOnly"
+          [EditActionLabelCle]="'objectifs.gridActionsEdit'"
+          [DeleteActionLabelCle]="'objectifs.gridActionsDelete'"
+          (CellEdited)="OnCellEdited($event)"
+          (ActionClicked)="OnActionClicked($event)"
+          [AutoAddRow]="false"
+          [NewRowFactory]="CreateNewObjectif"
+          [AllowAddRow]="!ReadOnly"
+          (RowAdded)="OnRowAdded($event)"
+          [AllowExport]="true"
+          ExportFilenamePrefix="'objectifs'"
+          [ExportApiPath]="'/api/Objectifs/ExportXlsx'"
+          [ExportFormat]="'both'"
+          [StorageKey]="StorageKey"
+          [EmptyTextCle]="'objectifs.gridEmpty'"
+          [ServerSide]="ServerSide"
+          [Selectable]="Selectable"
+          (SelectionChanged)="OnSelectionChanged($event)">
+
+  <div gridBulkActions>
+    <app-button variant="danger" size="sm" [icon]="'delete'"
+      (ButtonClick)="OnAskBulkDelete()">
+      Supprimer la sélection
+    </app-button>
+  </div>
+
+  <app-grid-column Key="objectif" LabelCle="objectifs.objectif"
+    [Sortable]="true" Width="180px" [Editable]="true" EditorType="text" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="objectifs.objectifPlaceholder"/>
+
+  <app-grid-column Key="periodeId" LabelCle="objectifs.periodeId"
+    [Sortable]="true" Width="140px" [Editable]="true" EditorType="select"
+    [EditorOptions]="PeriodeOpts()" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="objectifs.periodeIdPlaceholder"/>
+
+  <app-grid-column Key="dateDebut" LabelCle="objectifs.dateDebut"
+    [Sortable]="true" Width="140px" [Editable]="true" EditorType="date" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="objectifs.dateDebutPlaceholder"/>
+
+  <app-grid-column Key="dateFin" LabelCle="objectifs.dateFin"
+    [Sortable]="true" Width="140px" [Editable]="true" EditorType="date" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="objectifs.dateFinPlaceholder"/>
+
+  <app-grid-column Key="cible" LabelCle="objectifs.cible"
+    [Sortable]="true" Width="140px" [Editable]="true" EditorType="text" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="objectifs.ciblePlaceholder"/>
+
+  <app-grid-column Key="resultat" LabelCle="objectifs.resultat"
+    [Sortable]="false" Width="140px" [Editable]="true" EditorType="text" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="objectifs.resultatPlaceholder"/>
+
+  <app-grid-column Key="validee" LabelCle="objectifs.validee"
+    [Sortable]="true" Width="100px" [Editable]="true" EditorType="select"
+    [EditorOptions]="ValideeOpts()" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="objectifs.valideePlaceholder"/>
+</app-grid>
+
+<app-popup [(isOpen)]="ShowDeletePopup"
+  title="Supprimer cet objectif ?"
+  subtitle="Cette action est irréversible."
+  icon="delete" type="error" size="small"
+  [showFooter]="true"
+  confirmText="Supprimer"
+  cancelText="Annuler"
+  [confirmLoading]="Deleting()"
+  (confirmed)="OnConfirmDelete()"
+  (cancelled)="OnCancelDelete()"
+  (closed)="OnCancelDelete()">
+  @if (RowToDelete()) {
+    <p>Confirmer la suppression de l'objectif sélectionné ?</p>
+  }
+</app-popup>
+
+<app-popup [(isOpen)]="ShowBulkDeletePopup"
+  title="Supprimer la sélection"
+  [subtitle]="'Confirmer la suppression de ' + SelectedRows().length + ' objectif(s) ?'"
+  icon="delete" type="error" size="small"
+  [showFooter]="true"
+  confirmText="Supprimer"
+  cancelText="Annuler"
+  [confirmLoading]="Deleting()"
+  (confirmed)="OnConfirmBulkDelete()"
+  (cancelled)="OnCancelBulkDelete()"
+  (closed)="OnCancelBulkDelete()">
+  <p>Cette action est irréversible et supprimera tous les objectifs cochés.</p>
+</app-popup>

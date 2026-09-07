@@ -1,0 +1,174 @@
+<!-- - cm - Page de gestion d'abonnement SellMatch -->
+<section class="subscription-management">
+
+  <header class="subscription-management__header">
+    <h1 class="subscription-management__title">Mon abonnement</h1>
+    <p class="subscription-management__subtitle">
+      Suivez vos paiements, vos dossiers ÉcoMandat et gérez votre abonnement SellMatch.
+    </p>
+  </header>
+
+  @if (Loading()) {
+    <div class="subscription-management__loading">
+      <div class="subscription-management__spinner"></div>
+      <span>Chargement de vos données…</span>
+    </div>
+  }
+
+  @if (ErrorMessage()) {
+    <div class="subscription-management__error">
+      <span class="material-icons">error</span>
+      <span>{{ ErrorMessage() }}</span>
+    </div>
+  }
+
+  @if (!Loading() && !ErrorMessage()) {
+    <!-- - cm - Abonnement courant -->
+    <section class="subscription-management__section">
+      <h2 class="subscription-management__section-title">
+        <span class="material-icons">workspace_premium</span>
+        Mon abonnement courant
+      </h2>
+
+      @if (CurrentSubscription(); as lSub) {
+        <article class="subscription-management__current">
+          <div class="subscription-management__current-info">
+            <h3>{{ GetSubField(lSub, 'plan')?.label ?? 'Plan inconnu' }}</h3>
+            <p class="subscription-management__current-status">
+              <span class="subscription-management__badge"
+                [class.subscription-management__badge--active]="(GetSubField(lSub, 'status') ?? '').toLowerCase() === 'active'">
+                {{ StatusLabel(GetSubField(lSub, 'status')) }}
+              </span>
+            </p>
+            <p class="subscription-management__current-price">
+              @if (lSub.billingPeriod === 'one_shot') {
+                <strong>{{ FormatPriceValue(GetSubField(lSub, 'plan')?.priceOneShotTtc) }}</strong>
+                <span class="subscription-management__period">Paiement unique</span>
+              } @else {
+                <strong>
+                  {{ FormatPriceValue(GetSubField(lSub, 'plan')?.priceMonthlyHt) }}
+                </strong>
+                <span class="subscription-management__period">
+                  {{ PeriodLabel(lSub.billingPeriod) }}
+                </span>
+              }
+            </p>
+            @if (GetSubField(lSub, 'currentPeriodEnd')) {
+              <p class="subscription-management__current-renewal">
+                Prochain prélèvement : <strong>{{ FormatDateValue(GetSubField(lSub, 'currentPeriodEnd')) }}</strong>
+              </p>
+            }
+          </div>
+
+          <div class="subscription-management__current-actions">
+            @if (IsCancellable(lSub)) {
+              <app-button variant="danger" [outline]="true" size="md"
+                icon="cancel" [loading]="Cancelling()"
+                (ButtonClick)="CancelSubscription()">
+                Annuler l'abonnement
+              </app-button>
+            }
+            <app-button variant="primary" [outline]="true" size="md"
+              icon="compare_arrows" (ButtonClick)="GoToPricing()">
+              Changer d'offre
+            </app-button>
+          </div>
+        </article>
+      } @else {
+        <div class="subscription-management__empty">
+          <span class="material-icons">info</span>
+          <p>Vous n'avez aucun abonnement actif.</p>
+          <app-button variant="primary" size="md" icon="shopping_cart"
+            (ButtonClick)="GoToPricing()">
+            Découvrir nos offres
+          </app-button>
+        </div>
+      }
+    </section>
+
+    <!-- - cm - Historique des paiements -->
+    <section class="subscription-management__section">
+      <h2 class="subscription-management__section-title">
+        <span class="material-icons">receipt_long</span>
+        Historique des paiements
+      </h2>
+
+      @if (Subscriptions().length > 0) {
+        <div class="subscription-management__table-wrapper">
+          <table class="subscription-management__table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Plan</th>
+                <th>Type</th>
+                <th>Montant</th>
+                <th>Statut</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (lSub of Subscriptions(); track lSub.id) {
+                <tr>
+                  <td>{{ FormatDateValue(lSub.createdAt) }}</td>
+                  <td>{{ GetSubField(lSub, 'plan')?.label ?? '-' }}</td>
+                  <td>{{ PeriodLabel(lSub.billingPeriod) }}</td>
+                  <td>
+                    @if (lSub.billingPeriod === 'one_shot') {
+                      {{ FormatPriceValue(GetSubField(lSub, 'plan')?.priceOneShotTtc) }}
+                    } @else if (lSub.billingPeriod === 'yearly') {
+                      {{ FormatPriceValue(GetSubField(lSub, 'plan')?.priceYearlyHt) }}
+                    } @else {
+                      {{ FormatPriceValue(GetSubField(lSub, 'plan')?.priceMonthlyHt) }}
+                    }
+                  </td>
+                  <td>
+                    <span class="subscription-management__badge"
+                      [class.subscription-management__badge--active]="(GetSubField(lSub, 'status') ?? '').toLowerCase() === 'active'"
+                      [class.subscription-management__badge--canceled]="(GetSubField(lSub, 'status') ?? '').toLowerCase() === 'canceled'">
+                      {{ StatusLabel(GetSubField(lSub, 'status')) }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <p class="subscription-management__empty-text">Aucun paiement enregistré pour le moment.</p>
+      }
+    </section>
+
+    <!-- - cm - Dossiers boostés via ÉcoMandat -->
+    <section class="subscription-management__section">
+      <h2 class="subscription-management__section-title">
+        <span class="material-icons">flash_on</span>
+        Mes dossiers ÉcoMandat
+      </h2>
+
+      @if (EcoMandatOpportunities().length > 0) {
+        <div class="subscription-management__opps">
+          @for (lOpp of EcoMandatOpportunities(); track lOpp.id) {
+            <article class="subscription-management__opp">
+              <div class="subscription-management__opp-info">
+                <h4>{{ lOpp.address?.street ?? 'Dossier sans adresse' }}</h4>
+                <p>
+                  {{ lOpp.address?.city }} ({{ lOpp.address?.postcode }})
+                  · {{ lOpp.propertyType }} · {{ lOpp.surface }} m²
+                </p>
+                <p class="subscription-management__opp-date">
+                  Créé le {{ FormatDateValue(lOpp.createdAt) }}
+                </p>
+              </div>
+              <span class="subscription-management__badge subscription-management__badge--ecomandat">
+                ÉcoMandat
+              </span>
+            </article>
+          }
+        </div>
+      } @else {
+        <p class="subscription-management__empty-text">
+          Aucun dossier boosté via ÉcoMandat pour le moment.
+        </p>
+      }
+    </section>
+  }
+</section>

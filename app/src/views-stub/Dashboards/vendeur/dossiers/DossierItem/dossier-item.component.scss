@@ -1,0 +1,355 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region Dossier card
+// - cm - Carte de dossier
+.dossier-card {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: $card-background;
+  border-radius: $border-radius;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all $transition-fast;
+  position: relative;
+
+  @media (min-width: 576px) {
+    padding: 1.25rem;
+    gap: 1.25rem;
+  }
+
+  &:hover {
+    border-color: rgba($primary-color, 0.3);
+    box-shadow: $shadow;
+    transform: translateY(-2px);
+
+    .btn-delete {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  &.selected {
+    border-color: $primary-color;
+    background: rgba($primary-color, 0.02);
+  }
+  // - cm - Style Premium
+  &.Premium {
+    background: linear-gradient(135deg, rgba($warning-color, 0.08), rgba($accent-color, 0.08));
+    border: 2px solid rgba($warning-color, 0.4);
+    box-shadow: 0 4px 20px rgba($warning-color, 0.15);
+    padding-top: 1.75rem;
+
+    @media (min-width: 576px) {
+      padding-top: 2rem;
+    }
+
+    &:hover {
+      background: linear-gradient(135deg, rgba($warning-color, 0.12), rgba($accent-color, 0.12));
+      box-shadow: 0 6px 25px rgba($warning-color, 0.25);
+      border-color: rgba($warning-color, 0.6);
+    }
+
+    &.selected {
+      border-color: $warning-color;
+      background: linear-gradient(135deg, rgba($warning-color, 0.1), rgba($accent-color, 0.1));
+    }
+
+    .dossier-info {
+      h3 {
+        color: color-mix(in srgb, $warning-color, black 10%);
+      }
+    }
+  }
+
+  .dossier-image {
+    position: relative;
+    flex-shrink: 0;
+
+    .image-placeholder {
+      width: 80px;
+      height: 80px;
+      border-radius: $border-radius;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba($primary-color, 0.1), rgba($primary-color, 0.05));
+
+      @media (min-width: 576px) {
+        width: 100px;
+        height: 100px;
+      }
+
+      @media (min-width: 768px) {
+        width: 120px;
+        height: 120px;
+      }
+
+      .material-icons {
+        font-size: 2rem;
+        color: $primary-color;
+        opacity: 0.6;
+
+        @media (min-width: 576px) {
+          font-size: 2.5rem;
+        }
+
+        @media (min-width: 768px) {
+          font-size: 3rem;
+        }
+      }
+    }
+
+  }
+
+  .dossier-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+
+    @media (min-width: 576px) {
+      gap: 0.5rem;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: $text-primary;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: color $transition-fast;
+
+      @media (min-width: 576px) {
+        font-size: 1.05rem;
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+
+      @media (min-width: 768px) {
+        font-size: 1.1rem;
+      }
+    }
+
+    .dossier-location {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      margin: 0;
+      font-size: 0.8rem;
+      color: $text-secondary;
+
+      @media (min-width: 576px) {
+        font-size: 0.85rem;
+        gap: 0.35rem;
+      }
+
+      .material-icons {
+        font-size: 0.9rem;
+        color: $primary-color;
+
+        @media (min-width: 576px) {
+          font-size: 1rem;
+        }
+      }
+    }
+
+    .dossier-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+
+      @media (min-width: 576px) {
+        gap: 0.6rem;
+      }
+
+      .detail {
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
+        font-size: 0.75rem;
+        color: $text-secondary;
+        background: rgba(var(--sm-text-secondary-rgb), 0.08);
+        padding: 0.2rem 0.5rem;
+        border-radius: $border-radius-sm;
+
+        .material-icons {
+          font-size: 0.85rem;
+
+          @media (min-width: 576px) {
+            font-size: 0.95rem;
+          }
+        }
+      }
+    }
+
+    .dossier-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid rgba(var(--sm-text-secondary-rgb), 0.1);
+
+      @media (min-width: 576px) {
+        margin-top: 0.6rem;
+        padding-top: 0.6rem;
+      }
+
+      .prix-range {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+
+        @media (min-width: 576px) {
+          gap: 0.5rem;
+        }
+
+        .prix-min {
+          font-size: 0.95rem;
+          font-weight: 700;
+          color: $success-color;
+
+          @media (min-width: 576px) {
+            font-size: 1.05rem;
+          }
+
+          @media (min-width: 768px) {
+            font-size: 1.1rem;
+          }
+        }
+
+        .prix-separator {
+          font-size: 0.85rem;
+          color: rgba(var(--sm-text-secondary-rgb), 0.5);
+          font-weight: 300;
+        }
+
+        .prix-max {
+          font-size: 0.95rem;
+          font-weight: 700;
+          color: color-mix(in srgb, $success-color, black 10%);
+
+          @media (min-width: 576px) {
+            font-size: 1.05rem;
+          }
+
+          @media (min-width: 768px) {
+            font-size: 1.1rem;
+          }
+        }
+      }
+
+      .candidats {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.75rem;
+        color: $text-secondary;
+        background: rgba($primary-color, 0.08);
+        padding: 0.25rem 0.5rem;
+        border-radius: $border-radius-sm;
+
+        .material-icons {
+          font-size: 0.9rem;
+          color: $primary-color;
+
+          @media (min-width: 576px) {
+            font-size: 1rem;
+          }
+        }
+      }
+    }
+
+    .dossier-date {
+      margin: 0;
+      font-size: 0.7rem;
+      color: rgba(var(--sm-text-secondary-rgb), 0.6);
+
+      @media (min-width: 576px) {
+        font-size: 0.75rem;
+      }
+    }
+  }
+
+  .btn-delete {
+    // - cm - Positionnement + animation d apparition sur le host app-button
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: auto;
+    height: auto;
+    border: none;
+    background: transparent;
+    border-radius: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: all $transition-fast;
+
+    @media (min-width: 576px) {
+      top: 0.5rem;
+      right: 0.5rem;
+    }
+
+    @include mobile {
+      opacity: 0.7;
+      visibility: visible;
+    }
+
+    // - cm - Rendu visuel sur le bouton interne
+    ::ng-deep .btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: rgba($error-color, 0.1);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all $transition-fast;
+
+      @media (min-width: 576px) {
+        width: 36px;
+        height: 36px;
+      }
+
+      .material-icons {
+        font-size: 1.1rem;
+        color: $error-color;
+
+        @media (min-width: 576px) {
+          font-size: 1.2rem;
+        }
+      }
+
+      &:hover {
+        background: rgba($error-color, 0.2);
+        transform: scale(1.1);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+  }
+  // Ajustement du bouton delete quand Premium
+  &.Premium {
+    .btn-delete {
+      top: 2rem;
+
+      @media (min-width: 576px) {
+        top: 2.25rem;
+      }
+    }
+  }
+}
+//#endregion

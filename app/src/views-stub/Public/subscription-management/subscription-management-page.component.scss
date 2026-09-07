@@ -1,0 +1,315 @@
+@use 'variables' as *;
+
+//#region Page wrapper
+.subscription-management {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: $spacing-xl $spacing-md;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+}
+
+.subscription-management__header {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.subscription-management__title {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $text-primary;
+  margin: 0;
+}
+
+.subscription-management__subtitle {
+  font-size: $font-size-md;
+  color: $text-secondary;
+  margin: 0;
+}
+//#endregion
+
+//#region Section
+.subscription-management__section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.subscription-management__section-title {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
+  margin: 0;
+
+  .material-icons {
+    color: $primary-color;
+  }
+}
+//#endregion
+
+//#region Current subscription
+.subscription-management__current {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  background: $bg-primary;
+  border: 1px solid $border-color;
+  border-radius: $radius-lg;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  flex-wrap: wrap;
+}
+
+.subscription-management__current-info {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  flex: 1;
+  min-width: 280px;
+
+  h3 {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin: 0;
+  }
+}
+
+.subscription-management__current-status {
+  margin: 0;
+}
+
+.subscription-management__current-price {
+  display: flex;
+  align-items: baseline;
+  gap: $spacing-xs;
+  margin: 0;
+  color: $text-primary;
+
+  strong {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+  }
+}
+
+.subscription-management__period {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+}
+
+.subscription-management__current-renewal {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  margin: 0;
+}
+
+.subscription-management__current-actions {
+  display: flex;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+}
+//#endregion
+
+//#region Empty state
+.subscription-management__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-xl;
+  background: $surface-muted;
+  border: 1px dashed $border-color;
+  border-radius: $radius-lg;
+  text-align: center;
+
+  .material-icons {
+    font-size: 2.5rem;
+    color: $text-secondary;
+  }
+
+  p {
+    font-size: $font-size-md;
+    color: $text-secondary;
+    margin: 0;
+  }
+}
+
+.subscription-management__empty-text {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  margin: 0;
+  padding: $spacing-md;
+  background: $surface-muted;
+  border-radius: $radius-md;
+  text-align: center;
+}
+//#endregion
+
+//#region Table
+.subscription-management__table-wrapper {
+  overflow-x: auto;
+  border: 1px solid $border-color;
+  border-radius: $radius-lg;
+  background: $bg-primary;
+}
+
+.subscription-management__table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th, td {
+    padding: $spacing-sm $spacing-md;
+    text-align: left;
+    font-size: $font-size-sm;
+    border-bottom: 1px solid $border-color;
+  }
+
+  th {
+    font-weight: $font-weight-semibold;
+    color: $text-secondary;
+    text-transform: uppercase;
+    font-size: $font-size-xs;
+    letter-spacing: 0.05em;
+    background: $surface-muted;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  tbody tr:hover {
+    background: $surface-hover;
+  }
+}
+//#endregion
+
+//#region Badges
+.subscription-management__badge {
+  display: inline-block;
+  padding: 2px $spacing-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  border-radius: $radius-md;
+  background: $surface-muted;
+  color: $text-secondary;
+
+  &--active {
+    background: rgba($success-color, 0.15);
+    color: $success-color;
+  }
+
+  &--canceled {
+    background: rgba($danger-color, 0.15);
+    color: $danger-color;
+  }
+
+  &--ecomandat {
+    background: rgba($accent-color, 0.15);
+    color: $accent-color;
+  }
+}
+//#endregion
+
+//#region ÉcoMandat opportunities
+.subscription-management__opps {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: $spacing-sm;
+}
+
+.subscription-management__opp {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-sm;
+  padding: $spacing-md;
+  background: $bg-primary;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+}
+
+.subscription-management__opp-info {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  flex: 1;
+
+  h4 {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin: 0;
+  }
+
+  p {
+    font-size: $font-size-xs;
+    color: $text-secondary;
+    margin: 0;
+  }
+}
+
+.subscription-management__opp-date {
+  font-style: italic;
+}
+//#endregion
+
+//#region Loading
+.subscription-management__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  padding: $spacing-xl;
+  color: $text-secondary;
+  font-size: $font-size-md;
+}
+
+.subscription-management__spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba($primary-color, 0.2);
+  border-top-color: $primary-color;
+  border-radius: 50%;
+  animation: subscription-management__spin 0.8s linear infinite;
+}
+
+@keyframes subscription-management__spin {
+  to { transform: rotate(360deg); }
+}
+
+.subscription-management__error {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-md;
+  background: rgba($danger-color, 0.06);
+  border: 1px solid rgba($danger-color, 0.2);
+  border-radius: $radius-md;
+  color: $danger-color;
+  font-size: $font-size-sm;
+
+  .material-icons {
+    font-size: $font-size-lg;
+    flex-shrink: 0;
+  }
+}
+//#endregion
+
+//#region Responsive
+@media (max-width: 768px) {
+  .subscription-management {
+    padding: $spacing-md $spacing-sm;
+  }
+
+  .subscription-management__current {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+//#endregion

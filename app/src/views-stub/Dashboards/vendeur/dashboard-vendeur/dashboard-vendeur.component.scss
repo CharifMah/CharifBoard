@@ -1,0 +1,8 @@
+@use 'variables' as *;
+
+//#region Tutorial launcher override
+// - cm - Le dashboard vendeur n'a pas de bulle chat IA : on ramène le FAB "?" à la position naturelle (24px du bord)
+:host ::ng-deep .crm-tutorial-launcher {
+  right: 24px;
+}
+//endregion

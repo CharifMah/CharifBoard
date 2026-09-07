@@ -1,0 +1,17 @@
+// dashboard-home.component.scss
+@use 'variables' as *;
+
+//#region Dashboard home
+.dashboard-home {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+
+  @media (max-width: #{$mobile-breakpoint}) {
+    padding: 0 6px; // - cm - Padding horizontal réduit sur mobile pour maximiser la largeur
+  }
+}
+//#endregion

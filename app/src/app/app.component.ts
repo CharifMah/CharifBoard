@@ -1,30 +1,25 @@
 import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { StarsBackgroundComponent } from './components/stars-background/stars-background.component';
 import { SocialBarComponent } from './components/social-bar/social-bar.component';
-import { TitleComponent } from './components/title/title.component';
-import { AboutComponent } from './components/about/about.component';
-import { WindowsHostComponent } from './components/windows-host/windows-host.component';
-import { CardsComponent } from './components/cards/cards.component';
-import { SlidersComponent } from './components/sliders/sliders.component';
 
 /**
  * Composant racine de CharifBoard.
- * Assemble le fond étoilé, la barre sociale, le titre, la présentation,
- * les cartes, les fenêtres modales et les carrousels de créations.
+ * Fond étoilé + barre sociales persistants, le routeur affiche home ou playground.
+ * Les fenêtres modales (CV, compétences) sont portées par chaque page.
  */
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
+    RouterOutlet,
     StarsBackgroundComponent,
     SocialBarComponent,
-    TitleComponent,
-    AboutComponent,
-    WindowsHostComponent,
-    CardsComponent,
-    SlidersComponent,
   ],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
+  template: `
+    <app-stars-background />
+    <app-social-bar />
+    <router-outlet />
+  `,
 })
 export class AppComponent {}

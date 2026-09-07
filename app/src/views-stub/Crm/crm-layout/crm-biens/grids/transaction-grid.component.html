@@ -1,0 +1,52 @@
+<app-grid #transactionGrid [Data]="EffectiveData()" [Loading]="EffectiveLoading()" [Error]="EffectiveError()" [TrackBy]="TrackByTransaction"
+  [Filterable]="Filterable" [FilterFields]="TransactionFilterFields()"
+  [Editable]="!ReadOnly"
+    [EditActionLabelCle]="'grid.actions.edit'"
+    [DeleteActionLabelCle]="'grid.actions.delete'"
+    EmptyTextCle="transactions.grid.empty"
+  (CellEdited)="OnCellEdited($event)" (ActionClicked)="ActionClicked.emit($event)"
+  [AllowAddRow]="!ReadOnly" [AutoAddRow]="false" [NewRowFactory]="CreateNewTransaction"
+  [ValidateRows]="!ReadOnly" [RequireAllFields]="!ReadOnly"
+  (RowAdded)="OnRowAdded($event)" (RowValidated)="RowValidated.emit($event)"
+  [AllowExport]="true" ExportFilenamePrefix="'transactions'"
+  [ExportApiPath]="'/api/Transactions/ExportXlsx'" [ExportFormat]="'both'"
+  [StorageKey]="StorageKey"
+  [ServerSide]="ServerSide"
+  (PageChanged)="OnServerSidePageChange($event)"
+  (SortChanged)="OnServerSideSortChange($event)"
+  (FilterChanged)="OnServerSideFilterChange($event)"
+  [Selectable]="Selectable"
+  (SelectionChanged)="SelectionChanged.emit($event)">
+  <ng-content select="[gridBulkActions]"></ng-content>
+  <app-grid-column Key="reference" LabelCle="transactions.reference" [Sortable]="true" Width="140px" [Editable]="true" EditorType="text"
+    [EditorValidator]="GetFieldValidator('reference')" [EditorMaxLength]="GetFieldMaxLength('reference')" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="transactions.referencePlaceholder"/>
+  <app-grid-column Key="propertyId" LabelCle="transactions.property_id" [Sortable]="true" Width="220px" [Editable]="true" EditorType="select"
+    [EditorOptions]="PropertyOptions()" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="adresse" LabelCle="transactions.adresse_id" [Sortable]="true" Width="180px" [Editable]="true" EditorType="address" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="natureAffaireId" LabelCle="transactions.nature_affaire_id" [Sortable]="true" Width="160px" [Editable]="true" EditorType="select"
+    [EditorOptions]="NatureAffaireOptions()" [EditorValidator]="GetFieldValidator('natureAffaireId')" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="statutId" LabelCle="transactions.statut_id" [Sortable]="true" Width="130px" [Editable]="true" EditorType="select"
+    [EditorOptions]="StatutOptions()" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="etatCommercialId" LabelCle="transactions.etat_commercial_id" [Sortable]="true" Width="150px" [Editable]="true" EditorType="select"
+    [EditorOptions]="EtatCommercialOptions()" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="motifBlocageId" LabelCle="transactions.motif_blocage_id" [Sortable]="true" Width="150px" [Editable]="true" EditorType="select"
+    [EditorOptions]="MotifBlocageOptions()" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="clientId" LabelCle="transactions.client_id" [Sortable]="true" Width="160px" [Editable]="true" EditorType="select"
+    [EditorOptions]="ContactOptions()" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="prixAffiche" LabelCle="transactions.prix_affiche" [Sortable]="true" Width="130px" [Editable]="true" EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="prixFinal" LabelCle="transactions.prix_final" [Sortable]="true" Width="130px" [Editable]="true" EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="honorairesPct" LabelCle="transactions.honoraires_pct" [Sortable]="true" Width="120px" [Editable]="true" EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="commissionEstimee" LabelCle="transactions.commission_estimee" [Sortable]="true" Width="150px" [Editable]="false" EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="partReseauPct" LabelCle="transactions.part_reseau_pct" [Sortable]="true" Width="120px" [Editable]="true" EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="partReseauMontant" LabelCle="transactions.part_reseau_montant" [Sortable]="true" Width="150px" [Editable]="false" EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="tvaMontant" LabelCle="transactions.tva_montant" [Sortable]="true" Width="130px" [Editable]="false" EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="revenuVariable" LabelCle="transactions.revenu_variable" [Sortable]="true" Width="140px" [Editable]="true" EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="revenuTotalEncaisse" LabelCle="transactions.revenu_total_encaisse" [Sortable]="true" Width="160px" [Editable]="false" EditorType="number" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="acquereurPotentiel" LabelCle="transactions.acquereur_potentiel" [Sortable]="true" Width="160px" [Editable]="true" EditorType="text" [ShowEditor]="!ReadOnly"
+    EditorPlaceholderCle="transactions.acquereur_potentielPlaceholder"/>
+  <app-grid-column Key="dateEstimation" LabelCle="transactions.date_estimation" [Sortable]="true" Width="150px" [Editable]="true" EditorType="date" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="datePriseMandat" LabelCle="transactions.date_prise_mandat" [Sortable]="true" Width="170px" [Editable]="true" EditorType="date" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="dateCommercialisation" LabelCle="transactions.date_commercialisation" [Sortable]="true" Width="180px" [Editable]="true" EditorType="date" [ShowEditor]="!ReadOnly"/>
+  <app-grid-column Key="dateSignatureAuthentique" LabelCle="transactions.date_signature_authentique" [Sortable]="true" Width="190px" [Editable]="true" EditorType="date" [ShowEditor]="!ReadOnly"/>
+</app-grid>

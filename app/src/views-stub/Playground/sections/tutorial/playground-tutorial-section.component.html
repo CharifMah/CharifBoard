@@ -1,0 +1,119 @@
+<!-- - cm - Section : aperçu + boutons de lancement -->
+<app-playground-section
+  id="tutorial"
+  title="app-tutorial-overlay"
+  category="Overlay"
+  description="Système de tutoriel guidé générique (spotlight + tooltip + navigation). Réutilisable dans toute l'app via TutorialService (signals) et le composant <app-tutorial-overlay> monté une fois au niveau racine."
+  [code]="TutorialOverlayCode">
+
+  <div class="playground-tutorial__launchers">
+    <app-button variant="primary"
+                icon="play_arrow"
+                [disabled]="IsRunning()"
+                (ButtonClick)="OnStartDemo()">
+      Lancer le tuto de démo
+    </app-button>
+
+    <app-button variant="light"
+                icon="stop"
+                [outline]="true"
+                [disabled]="!IsRunning()"
+                (ButtonClick)="OnSkip()">
+      Couper le tuto
+    </app-button>
+
+    <app-button variant="ghost"
+                icon="restart_alt"
+                (ButtonClick)="OnReset()">
+      Réinitialiser (relancer le tuto au prochain clic)
+    </app-button>
+
+    <span class="playground-tutorial__status" aria-live="polite">
+      État : {{ IsRunning() ? 'en cours' : (IsDone() ? 'déjà vu' : 'jamais lancé') }}
+    </span>
+  </div>
+</app-playground-section>
+
+<!-- - cm - Section : fausse UI cible pour les selectors du tuto -->
+<app-playground-section
+  id="tutorial-targets"
+  title="UI ciblée par le tuto"
+  category="Overlay"
+  description="Ces éléments sont les cibles (selector) du parcours de démonstration. Chaque carte porte un id CSS repris dans les étapes du tuto."
+  [code]="'#demo-card / #demo-input / #demo-checkbox / #demo-finish'">
+
+  <div class="playground-tutorial__targets">
+    <div id="demo-card" class="playground-tutorial__card">
+      <div class="playground-tutorial__card-icon">
+        <span class="material-icons">credit_card</span>
+      </div>
+      <div class="playground-tutorial__card-body">
+        <h3>Carte démo #demo-card</h3>
+        <p>Cible du spotlight à droite (placement: right). Le composant overlay mesure la position au démarrage de l'étape puis la recale au scroll/resize.</p>
+      </div>
+    </div>
+
+    <div id="demo-input" class="playground-tutorial__card">
+      <div class="playground-tutorial__card-icon">
+        <span class="material-icons">edit</span>
+      </div>
+      <div class="playground-tutorial__card-body">
+        <h3>Input démo #demo-input</h3>
+        <p>Cible du spotlight en bas (placement: bottom). Vous pouvez taper dans le champ même pendant le tuto (le tooltip ne bloque pas les inputs en-dehors de sa zone).</p>
+        <app-input type="text"
+                   label="Nom de démo"
+                   icon="person"
+                   [value]="DemoInput()"
+                   (valueChange)="OnDemoInputChanged($event)" />
+      </div>
+    </div>
+
+    <div id="demo-checkbox" class="playground-tutorial__card">
+      <div class="playground-tutorial__card-icon">
+        <span class="material-icons">check_box</span>
+      </div>
+      <div class="playground-tutorial__card-body">
+        <h3>Checkbox démo #demo-checkbox</h3>
+        <p>Cible du spotlight à gauche (placement: left). Toggle possible pendant le tuto (le backdrop n'intercepte que les clics en-dehors des éléments autorisés).</p>
+        <app-input type="checkbox"
+                   label="Cocher pour tester"
+                   [compact]="true"
+                   [value]="DemoChecked()"
+                   (valueChange)="OnDemoCheckedToggle($event)" />
+      </div>
+    </div>
+
+    <div id="demo-finish" class="playground-tutorial__card playground-tutorial__card--finish">
+      <div class="playground-tutorial__card-icon">
+        <span class="material-icons">celebration</span>
+      </div>
+      <div class="playground-tutorial__card-body">
+        <h3>Fin du parcours #demo-finish</h3>
+        <p>Dernière étape (placement: top). Cliquer "Terminer" appelle <code>Tutorial.Complete()</code> qui marque <code>done=true</code> en localStorage et ferme l'overlay.</p>
+      </div>
+    </div>
+  </div>
+</app-playground-section>
+
+<!-- - cm - Section : snippets copiables -->
+<app-playground-section
+  id="tutorial-code"
+  title="API TutorialService"
+  category="Overlay"
+  description="Le service expose des signals réactifs (IsActive, CurrentStep, CurrentStepIndex, Steps) et des méthodes (Start, Next, Prev, Skip, Complete, Reset, IsFirstStep, IsLastStep, IsDone)."
+  [code]="TutorialServiceCode">
+  <p>Le service est un singleton Angular (<code>providedIn: 'root'</code>) — l'injecter n'importe où donne la même instance que celle utilisée par <code>&lt;app-tutorial-overlay&gt;</code>.</p>
+</app-playground-section>
+
+<app-playground-section
+  id="tutorial-types"
+  title="ITutorialStep"
+  category="Overlay"
+  description="Forme d'une étape : id, titre, description, selector CSS optionnel, navigation optionnelle et placement."
+  [code]="TutorialStepCode">
+  <ul>
+    <li><strong>Selector</strong> : sélecteur CSS spotlighé dans la vue courante. Si null ou non trouvé, le spotlight couvre toute la zone de contenu.</li>
+    <li><strong>NavigateTo</strong> : nom de vue à atteindre AVANT l'étape (déclenché via le callback <code>TutorialService.OnViewChange</code>).</li>
+    <li><strong>Placement</strong> : position préférée du tooltip. Le composant flip automatiquement pour rester visible.</li>
+  </ul>
+</app-playground-section>

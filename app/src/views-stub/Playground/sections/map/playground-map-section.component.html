@@ -1,0 +1,24 @@
+<app-playground-section
+  id="map-card"
+  title="app-map-card (wrappe dans app-section-card)"
+  category="Data"
+  description="Carte interactive MapLibre GL JS wrappee dans un app-section-card repliable. Le selecteur de style (5 boutons) est projete dans le slot header-actions du wrapper. Le clic sur un bouton ne replie pas la carte (stopPropagation auto)."
+  [code]="MapCardCode">
+  <app-section-card [Collapsible]="true" Icon="map" (CollapsedChange)="OnMapCollapsedChange($event)">
+    <div slot="header-title" class="playground-data__map-title">
+      <h3>Demo carte Paris (pattern wrapper)</h3>
+    </div>
+    <div slot="header-actions" class="playground-data__map-actions">
+      @for (lStyle of MapStyles; track lStyle.Value) {
+      <app-button variant="ghost" size="sm" [circle]="true" [icon]="lStyle.Icon"
+        [ariaLabel]="lStyle.Label" [class.is-active]="MapStyle === lStyle.Value"
+        [attr.aria-pressed]="MapStyle === lStyle.Value" (ButtonClick)="OnMapStyleChange(lStyle.Value)">
+      </app-button>
+      }
+    </div>
+    <app-map-card #playgroundMap [CenterLat]="48.8566" [CenterLng]="2.3522" [Zoom]="13" [Height]="400"
+      [Style]="MapStyle" [Markers]="MapMarkers" [ShowStyleSelector]="false" [ShowHeader]="false"
+      [ScrollWheelZoom]="false" Title="Demo carte Paris" Icon="map"
+      (MapClick)="OnMapClick($event)" (MarkerClick)="OnMarkerClick($event)" />
+  </app-section-card>
+</app-playground-section>

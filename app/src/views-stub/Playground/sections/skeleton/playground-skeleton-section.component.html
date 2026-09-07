@@ -1,0 +1,215 @@
+<!-- - cm - Section app-skeleton : bloc shimmer de base reutilisable partout -->
+<app-playground-section
+  id="skeleton-base"
+  title="app-skeleton"
+  category="Data"
+  description="Bloc shimmer generique reutilisable. Largeur/hauteur configurables, taille sm pour les icones/checkbox (40px), animation shimmer 1.6s qui respecte prefers-reduced-motion."
+  [code]="SkeletonCode">
+
+  <div class="skeleton-demo">
+    <div class="skeleton-demo__group">
+      <span class="skeleton-demo__label">Defaut (80% x 16px)</span>
+      <app-skeleton [Width]="SkeletonWidth()" [Height]="SkeletonHeight()"
+        [style.--shimmer-delay.ms]="0" />
+    </div>
+    <div class="skeleton-demo__group">
+      <span class="skeleton-demo__label">Compact (40px - checkbox)</span>
+      <app-skeleton Size="sm"
+        [style.--shimmer-delay.ms]="350" />
+    </div>
+    <div class="skeleton-demo__group">
+      <span class="skeleton-demo__label">Hauteur custom 32px</span>
+      <app-skeleton Width="100%" Height="32px"
+        [style.--shimmer-delay.ms]="700" />
+    </div>
+    <div class="skeleton-demo__group">
+      <span class="skeleton-demo__label">Barre complete</span>
+      <app-skeleton Width="100%" Height="20px"
+        [style.--shimmer-delay.ms]="1050" />
+    </div>
+  </div>
+
+  <div class="skeleton-demo__controls">
+    <app-input type="number" label="Largeur (%)" [min]="20" [max]="100" [step]="10"
+      [value]="GetWidthNumber()"
+      (valueChange)="SetWidth(Number($any($event)))" />
+    <app-input type="number" label="Hauteur (px)" [min]="8" [max]="48" [step]="2"
+      [value]="GetHeightNumber()"
+      (valueChange)="SetHeight(Number($any($event)))" />
+  </div>
+</app-playground-section>
+
+<!-- - cm - Section app-grid-skeleton : skeleton de chargement pour une grille complete -->
+<app-playground-section
+  id="skeleton-grid"
+  title="app-grid-skeleton"
+  category="Data"
+  description="Skeleton complet d'une grille pendant le chargement initial (avant que les donnees arrivent). Parametrable : nombre de colonnes, lignes, checkbox de selection, colonne d'actions."
+  [code]="SkeletonCode">
+
+  <div class="skeleton-demo__controls">
+    <app-input type="number" label="Colonnes" [min]="2" [max]="10" [step]="1"
+      [value]="SkeletonColCount()" (valueChange)="SkeletonColCount.set(Number($any($event)))" />
+    <app-input type="number" label="Lignes" [min]="2" [max]="12" [step]="1"
+      [value]="SkeletonRowCount()" (valueChange)="SkeletonRowCount.set(Number($any($event)))" />
+    <app-input type="checkbox" label="Colonne selection" [compact]="true"
+      [value]="SkeletonSelectable()" (valueChange)="SkeletonSelectable.set($event)" />
+    <app-input type="checkbox" label="Colonne actions" [compact]="true"
+      [value]="SkeletonHasActions()" (valueChange)="SkeletonHasActions.set($event)" />
+  </div>
+
+  <div class="skeleton-demo__grid-wrapper">
+    <app-grid-skeleton
+      [ColumnCount]="SkeletonColCount()"
+      [RowCount]="SkeletonRowCount()"
+      [Selectable]="SkeletonSelectable()"
+      [HasActions]="SkeletonHasActions()" />
+  </div>
+</app-playground-section>
+
+<!-- - cm - Section app-card-skeleton : skeletons pour cartes KPI (dashboard, indicateurs) -->
+<app-playground-section
+  id="skeleton-card"
+  title="app-card-skeleton"
+  category="Data"
+  description="Skeleton pour cartes KPI (dashboard). Parametrable : nombre de cartes, presence d'un hint (sous-texte)."
+  [code]="SkeletonCode">
+
+  <div class="skeleton-demo__cards">
+    <app-card-skeleton [Count]="4" [HasHint]="true" />
+  </div>
+  <div class="skeleton-demo__cards">
+    <app-card-skeleton [Count]="3" [HasHint]="false" />
+  </div>
+</app-playground-section>
+
+<!-- - cm - Section skeleton inline (cellule / ligne) : demonstration du fix de positionnement.
+        Quand une cellule passe en is-cell-saving, le app-skeleton interne prend toute la cellule.
+        Avant le fix : le skeleton remontait au .grid__table (absolute remonte au position:relative parent
+        le plus proche, qui etait la table). Apres le fix : position:relative sur la cellule elle-meme. -->
+<app-playground-section
+  id="skeleton-cell-saving"
+  title="Skeleton inline sur cellule (cell-saving)"
+  category="Data"
+  description="Quand une cellule est en cours de sauvegarde API, elle affiche un app-skeleton a la place du contenu. Le fix ajoute position:relative sur la cellule pour que le skeleton (absolute) reste confine a la cellule, sinon il remontait au .grid__table et flottait sur toute la grille."
+  [code]="CellSavingCode">
+
+  <div class="skeleton-demo__actions">
+    <app-tooltip [Text]="'Reinitialise toutes les cellules en mode normal'" [Position]="'bottom'" [MaxWidth]="240">
+      <app-button variant="ghost" icon="refresh" size="sm" (ButtonClick)="ResetSavingFlags()">
+        Reinitialiser
+      </app-button>
+    </app-tooltip>
+  </div>
+
+  <div class="skeleton-demo__grid-wrapper">
+    <table class="grid">
+      <thead class="grid__thead">
+        <tr class="grid__row">
+          <th class="grid__th" style="width: 50px">#</th>
+          <th class="grid__th" style="width: 220px">Nom</th>
+          <th class="grid__th" style="width: 280px">Email</th>
+          <th class="grid__th" style="width: 200px">Role</th>
+          <th class="grid__th" style="width: 160px">Statut</th>
+        </tr>
+      </thead>
+      <tbody class="grid__tbody">
+        @for (lRow of DemoData(); track lRow.id; let lRowIdx = $index) {
+        <tr class="grid__row">
+          <td class="grid__td" style="width: 50px">{{ lRow.id }}</td>
+          <td class="grid__td" style="width: 220px">
+            @if (IsRowSaving(lRow)) {
+            <app-skeleton class="grid__cell-saving" Width="100%" Height="20px"
+              [style.--shimmer-delay.ms]="ComputeDemoShimmerDelay(lRowIdx)" />
+            } @else {
+            {{ lRow.name }}
+            }
+          </td>
+          <td class="grid__td" style="width: 280px">
+            @if (IsRowSaving(lRow)) {
+            <app-skeleton class="grid__cell-saving" Width="100%" Height="20px"
+              [style.--shimmer-delay.ms]="ComputeDemoShimmerDelay(lRowIdx)" />
+            } @else {
+            {{ lRow.email }}
+            }
+          </td>
+          <td class="grid__td" [class.is-cell-saving]="IsCellSaving(lRow, 'role')" style="width: 200px">
+            @if (IsCellSaving(lRow, 'role')) {
+            <app-skeleton class="grid__cell-saving" Width="100%" Height="20px"
+              [style.--shimmer-delay.ms]="ComputeDemoShimmerDelay(lRowIdx)" />
+            } @else {
+            {{ lRow.role }}
+            }
+          </td>
+          <td class="grid__td" [class.is-cell-saving]="IsCellSaving(lRow, 'status')" style="width: 160px">
+            @if (IsCellSaving(lRow, 'status')) {
+            <app-skeleton class="grid__cell-saving" Width="100%" Height="20px"
+              [style.--shimmer-delay.ms]="ComputeDemoShimmerDelay(lRowIdx)" />
+            } @else {
+            {{ lRow.status }}
+            }
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <p class="skeleton-demo__hint">
+    Cliquez sur une cellule Role ou Statut pour basculer son etat saving.
+    Le skeleton doit rester confine a la cellule (position:relative sur la cellule parente depuis le fix).
+    Avant le fix : le skeleton remontait a la table et flottait sur toute la grille.
+  </p>
+
+  <div class="skeleton-demo__cells-actions">
+    @for (lRow of DemoData(); track lRow.id) {
+    <div class="skeleton-demo__cell-toggle">
+      <span class="skeleton-demo__cell-label">Ligne {{ lRow.id }}</span>
+      <app-button variant="ghost" size="sm" icon="person"
+        [class.is-active]="IsCellSaving(lRow, 'role')"
+        (ButtonClick)="ToggleCellSaving(lRow, 'role')">
+        Role
+      </app-button>
+      <app-button variant="ghost" size="sm" icon="flag"
+        [class.is-active]="IsCellSaving(lRow, 'status')"
+        (ButtonClick)="ToggleCellSaving(lRow, 'status')">
+        Statut
+      </app-button>
+      <app-button variant="ghost" size="sm" icon="horizontal_rule"
+        [class.is-active]="IsRowSaving(lRow)"
+        (ButtonClick)="ToggleRowSaving(lRow)">
+        Ligne
+      </app-button>
+    </div>
+    }
+  </div>
+</app-playground-section>
+
+<!-- - cm - Section cas complet : vraie grille app-grid avec colonnes select editable.
+        Permet de tester l'integration reelle : le GridComponent positionne lui-meme
+        les classes is-cell-saving / is-row-saving via SetCellSaving / SetRowSaving.
+        Pour declencher : editer une cellule select, le parent fait un SetCellSaving
+        avant l'appel API puis ClearCellSaving apres. -->
+<app-playground-section
+  id="skeleton-grid-integration"
+  title="Integration dans une vraie app-grid (cellules select)"
+  category="Data"
+  description="Meme demo que ci-dessus mais cette fois avec une vraie app-grid editable et des colonnes select. Le bouton 'Simuler sauvegarde' declenche SetCellSaving/SetRowSaving sur la grille pour visualiser les skeletons en conditions reelles."
+  [code]="SkeletonCode">
+
+  <div class="skeleton-demo__grid-wrapper">
+    <app-grid [Data]="$any(DemoData())" [TrackBy]="$any(TrackByAny)" [Editable]="false">
+      <app-grid-column key="id" label="#" [Sortable]="true" Width="60px" />
+      <app-grid-column key="name" label="Nom" [Sortable]="true" Width="220px" />
+      <app-grid-column key="email" label="Email" [Sortable]="true" Width="280px" />
+      <app-grid-column key="role" label="Role" EditorType="select" [EditorOptions]="RoleOptions" Width="200px" />
+      <app-grid-column key="status" label="Statut" EditorType="select" [EditorOptions]="StatusOptions" Width="160px" />
+    </app-grid>
+  </div>
+
+  <p class="skeleton-demo__hint">
+    En production, les classes is-cell-saving / is-row-saving sont gerees par le parent de la grille
+    via Grid.SetCellSaving(row, colKey) et Grid.SetRowSaving(row). Cette demo montre les memes
+    conditions directement dans le DOM via [class.is-cell-saving].
+  </p>
+</app-playground-section>

@@ -1,0 +1,335 @@
+﻿@use 'variables' as *;
+
+//#region StepContent
+.step-content {
+  .step-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: $text-primary;
+
+    .material-icons {
+      color: $primary-color;
+    }
+  }
+
+  .step-description {
+    margin: 0 0 1.5rem;
+    font-size: 0.9rem;
+    color: $text-secondary;
+    line-height: 1.5;
+  }
+}
+
+//#endregion
+
+//#region FeeCapAlert
+// - cm - Alerte Fee Cap
+.fee-cap-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, rgba($warning-color, 0.1), rgba($accent-color, 0.08));
+  border: 1px solid rgba($warning-color, 0.3);
+  border-radius: $border-radius-md;
+  border-left: 4px solid $warning-color;
+
+  > .material-icons {
+    color: $warning-color;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .alert-content {
+    flex: 1;
+
+    strong {
+      display: block;
+      color: color-mix(in srgb, $warning-color, black 10%);
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: $text-secondary;
+      line-height: 1.4;
+
+      strong {
+        display: inline;
+        color: $warning-color;
+        font-size: inherit;
+      }
+    }
+  }
+}
+
+//#endregion
+
+//#region FormGroup
+// - cm - Formulaires
+.form-group {
+  margin-bottom: 1.25rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $text-primary;
+  }
+
+  .field-hint {
+    margin: 0.5rem 0 0;
+    font-size: 0.8rem;
+    color: $text-secondary;
+
+    &.cap-hint {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      color: $warning-color;
+      font-weight: 500;
+
+      .material-icons {
+        font-size: 16px;
+      }
+    }
+  }
+
+  .field-error {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin: 0.5rem 0 0;
+    font-size: 0.8rem;
+    color: $error-color;
+    font-weight: 500;
+
+    .material-icons {
+      font-size: 16px;
+    }
+  }
+
+  input[type="number"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid $border-color;
+    border-radius: $border-radius-sm;
+    font-size: 0.95rem;
+    transition: all $transition-fast;
+    background: $card-background;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px $primary-light;
+    }
+
+    &::placeholder {
+      color: $text-secondary;
+    }
+
+    &.error {
+      border-color: $error-color;
+      background: rgba($error-color, 0.02);
+
+      &:focus {
+        box-shadow: 0 0 0 3px rgba($error-color, 0.15);
+      }
+    }
+  }
+}
+
+.input-with-suffix {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  input {
+    padding-right: 3rem;
+  }
+
+  .suffix {
+    position: absolute;
+    right: 1rem;
+    color: $text-secondary;
+    font-weight: 600;
+  }
+}
+
+//#endregion
+
+//#region FeeTypeOptions
+// - cm - Type d'honoraires
+.fee-type-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+
+  .fee-option {
+    position: relative;
+    cursor: pointer;
+
+    input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .option-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1.25rem 1rem;
+      background: $surface-muted;
+      border: 2px solid $border-color;
+      border-radius: $border-radius-md;
+      transition: all $transition-fast;
+      text-align: center;
+
+      .material-icons {
+        font-size: 28px;
+        color: $text-secondary;
+      }
+
+      .option-label {
+        font-weight: 600;
+        color: $text-primary;
+      }
+
+      .option-hint {
+        font-size: 0.75rem;
+        color: $text-secondary;
+      }
+    }
+
+    &:hover .option-content {
+      border-color: $primary-color;
+    }
+
+    &.selected .option-content {
+      border-color: $primary-color;
+      background: $primary-light;
+
+      .material-icons {
+        color: $primary-color;
+      }
+    }
+  }
+}
+
+//#endregion
+
+//#region CommissionPreview
+// - cm - Aperçu commission
+.commission-preview {
+  margin-top: 1.5rem;
+  border-radius: $border-radius-md;
+  overflow: hidden;
+  border: 2px solid $border-color;
+
+  &.priority {
+    border-color: rgba($warning-color, 0.4);
+    background: linear-gradient(135deg, rgba($warning-color, 0.02), rgba($accent-color, 0.02));
+
+    .preview-header {
+      background: linear-gradient(135deg, rgba($warning-color, 0.1), rgba($accent-color, 0.08));
+    }
+  }
+
+  .preview-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: $surface-muted;
+    font-weight: 600;
+    color: $text-primary;
+    font-size: 0.9rem;
+
+    .material-icons {
+      color: $primary-color;
+      font-size: 20px;
+    }
+
+    .priority-badge {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0.5rem;
+      background: linear-gradient(135deg, $warning-color, $accent-color);
+      color: $white;
+      border-radius: $border-radius-sm;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+
+      .material-icons {
+        font-size: 12px;
+        color: $white;
+      }
+    }
+  }
+
+  .preview-content {
+    padding: 1rem;
+    background: $card-background;
+
+    .preview-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+
+      &:not(:last-child) {
+        border-bottom: 1px solid $border-color;
+      }
+
+      &.cap-row {
+        background: rgba($warning-color, 0.05);
+        margin: 0 -1rem;
+        padding: 0.5rem 1rem;
+        border-bottom: 1px solid rgba($warning-color, 0.15);
+
+        .value.cap {
+          color: $warning-color;
+          font-weight: 700;
+        }
+      }
+
+      span:first-child {
+        color: $text-secondary;
+        font-size: 0.9rem;
+      }
+
+      .value {
+        font-weight: 600;
+        color: $text-primary;
+
+        &.highlight {
+          color: $primary-color;
+          font-size: 1.1rem;
+
+          &.over-cap {
+            color: $error-color;
+          }
+        }
+      }
+    }
+  }
+}
+//#endregion

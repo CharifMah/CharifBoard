@@ -1,0 +1,69 @@
+<main class="article-page">
+
+    @if (NotFound) {
+        <div class="article-not-found">
+            <span class="material-icons" aria-hidden="true">search_off</span>
+            <h1>Article introuvable</h1>
+            <p>Cet article n'existe pas ou n'est plus disponible.</p>
+            <app-button variant="primary" [routerLink]="this.RouteUtils.GetRoute(Routes.BLOG)" icon="arrow_back" iconPosition="left">
+                Retour au blog
+            </app-button>
+        </div>
+    }
+
+    @if (Article  && !NotFound) {
+        <!-- - cm - Fil d'ariane -->
+        <nav class="article-breadcrumb" aria-label="Fil d'ariane">
+            <a [routerLink]="this.RouteUtils.GetRoute(Routes.HOME)">Accueil</a>
+            <span class="material-icons" aria-hidden="true">chevron_right</span>
+            <a [routerLink]="this.RouteUtils.GetRoute(Routes.BLOG)">Blog</a>
+            <span class="material-icons" aria-hidden="true">chevron_right</span>
+            <span>{{ Article.title }}</span>
+        </nav>
+
+        <!-- - cm - En-tête de l'article -->
+        <header class="article-header" appScrollReveal [Animation]="'fade'">
+            @if (Article.category) {
+                <app-badge [label]="Article.category" type="info" variant="soft"></app-badge>
+            }
+            <h1 class="article-header__title" appScrollReveal [Animation]="'word'">{{ Article.title }}</h1>
+            <div class="article-header__meta">
+                @if (Article.publishedAt) {
+                    <span class="article-header__date">{{ FormatDate(Article.publishedAt) }}</span>
+                }
+                @if (Article.readingTimeMinutes) {
+                    <span class="article-header__reading">{{ Article.readingTimeMinutes }} min de lecture</span>
+                }
+            </div>
+        </header>
+
+        <!-- - cm - Image de couverture -->
+        @if (Article.coverImage) {
+            <app-image [src]="ApiBaseUrl + Article.coverImage" [alt]="Article.title ?? ''" [isWebp]="true" objectFit="cover" class="article-cover"></app-image>
+        } @else {
+            <div class="article-cover article-cover--placeholder" role="img" [attr.aria-label]="Article.title ?? ''">
+                <span class="material-icons" aria-hidden="true">article</span>
+            </div>
+        }
+
+        <!-- - cm - Contenu de l'article -->
+        <article class="article-content" [innerHTML]="Article.content"></article>
+
+        <!-- - cm - CTA estimation -->
+        <section class="article-cta" appScrollReveal [Animation]="'fade'">
+            <h2 class="article-cta__title">Estimez votre bien gratuitement</h2>
+            <p class="article-cta__text">Obtenez une fourchette de prix fiable en 2 minutes grâce aux données officielles DVF+.</p>
+            <app-button variant="primary" size="lg" [routerLink]="this.RouteUtils.GetRoute(Routes.OUTILESTIMATION)"
+                icon="calculate" iconPosition="right" [rounded]="true">
+                Estimer mon bien
+            </app-button>
+        </section>
+
+        <!-- - cm - Retour au blog -->
+        <div class="article-back">
+            <app-button variant="ghost" [routerLink]="this.RouteUtils.GetRoute(Routes.BLOG)" icon="arrow_back" iconPosition="left">
+                Retour au blog
+            </app-button>
+        </div>
+    }
+</main>

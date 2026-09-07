@@ -1,0 +1,11 @@
+<!-- dashboard-home.component.html -->
+<div class="dashboard-home">
+    <app-dashboard-header [showGreeting]="true"
+                          [title]="''"
+                          [subtitle]="'Gérez vos ventes immobilières et suivez vos dossiers en temps réel.'">
+    </app-dashboard-header>
+
+    <app-dossiers (NavigateTo)="onNavigate($event)"
+                  (openNewDossier)="onNouveauDossier()">
+    </app-dossiers>
+</div>

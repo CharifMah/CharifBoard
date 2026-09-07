@@ -1,0 +1,138 @@
+<div class="playground">
+  <header id="playground-top" class="playground__header">
+    <div class="playground__title">
+      <span class="material-icons playground__icon">widgets</span>
+      <h1>Playground des composants</h1>
+    </div>
+    <p class="playground__subtitle">Tous les composants génériques SellMatch avec exemples interactifs et code à copier. Réservé aux administrateurs.</p>
+
+    <!-- - cm - Barre de recherche filtrant les sections dynamiquement -->
+    <div class="playground__search">
+      <span class="material-icons playground__search-icon">search</span>
+      <input
+        type="search"
+        class="playground__search-input"
+        placeholder="Filtrer une section..."
+        [value]="SearchQuery()"
+        (input)="FilterSections($any($event.target).value)"
+        aria-label="Filtrer les sections du playground" />
+      @if (SearchQuery()) {
+        <button
+          type="button"
+          class="playground__search-clear"
+          aria-label="Effacer la recherche"
+          (click)="FilterSections('')">
+          <span class="material-icons">close</span>
+        </button>
+      }
+    </div>
+
+    <!-- - cm - Sélecteur de mode d'affichage : scroll ou onglets -->
+    <div class="playground__mode-switcher">
+      <button
+        type="button"
+        class="playground__mode-btn"
+        [class.playground__mode-btn--active]="ViewMode() === 'scroll'"
+        (click)="SetViewMode('scroll')"
+        aria-label="Mode défilement">
+        <span class="material-icons">view_agenda</span>
+        <span>Défilement</span>
+      </button>
+      <button
+        type="button"
+        class="playground__mode-btn"
+        [class.playground__mode-btn--active]="ViewMode() === 'tabs'"
+        (click)="SetViewMode('tabs')"
+        aria-label="Mode onglets">
+        <span class="material-icons">tab</span>
+        <span>Onglets</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- - cm - Mode scroll : TOC sticky + toutes les sections visibles -->
+  @if (ViewMode() === 'scroll') {
+    <div class="playground__toc-wrapper">
+      <nav class="playground__toc" aria-label="Table des matières">
+        @for (item of FilteredSections(); track item.id) {
+          <a
+            tabindex="0"
+            role="button"
+            class="playground__toc-item"
+            (click)="ScrollToSection(item.id)"
+            (keydown.enter)="ScrollToSection(item.id)">
+            <span class="material-icons playground__toc-icon">{{ item.icon }}</span>
+            <span class="playground__toc-label">{{ item.label }}</span>
+            <span class="playground__toc-badge" [attr.data-category]="item.category">{{ item.category }}</span>
+          </a>
+        }
+        @if (FilteredSections().length === 0) {
+          <p class="playground__toc-empty">Aucune section trouvée.</p>
+        }
+      </nav>
+    </div>
+
+    @if (IsSectionVisible('button')) { <app-playground-buttons-section /> }
+        @if (IsSectionVisible('input')) { <app-playground-inputs-section /> }
+        @if (IsSectionVisible('badge')) { <app-playground-badge-section /> }
+        @if (IsSectionVisible('avatar')) { <app-playground-avatar-section /> }
+        @if (IsSectionVisible('cards')) { <app-playground-cards-section /> }
+        @if (IsSectionVisible('skeleton')) { <app-playground-skeleton-section /> }
+        @if (IsSectionVisible('grid-list')) { <app-playground-grid-list-section /> }
+        @if (IsSectionVisible('map')) { <app-playground-map-section /> }
+        @if (IsSectionVisible('stepper-splitter')) { <app-playground-stepper-splitter-section /> }
+        @if (IsSectionVisible('tabs')) { <app-playground-navigation-section /> }
+        @if (IsSectionVisible('filter-bar')) { <app-playground-forms-section /> }
+        @if (IsSectionVisible('popup')) { <app-playground-overlay-section /> }
+        @if (IsSectionVisible('tutorial')) { <app-playground-tutorial-section /> }
+        @if (IsSectionVisible('stripe')) { <app-playground-stripe-section /> }
+        @if (IsSectionVisible('ai-crm-agent')) { <app-playground-ai-section /> }
+        @if (IsSectionVisible('language-selector-select')) { <app-playground-language-selector-section /> }
+        @if (IsSectionVisible('stat-card')) { <app-playground-stat-card-section /> }
+        @if (IsSectionVisible('palette')) { <app-playground-palette-section /> }
+        @if (IsSectionVisible('animations')) { <app-playground-animations-section /> }
+      }
+
+  <!-- - cm - Mode onglets : une seule section affichée à la fois -->
+  @if (ViewMode() === 'tabs') {
+    <app-tabs
+      [tabs]="SectionTabs()"
+      [activeTab]="ActiveSectionId()"
+      (tabChange)="OnSectionTabChange($event)"
+      [showIcons]="true"
+      variant="pills"
+      [fullWidth]="true" />
+
+    <div class="playground__tab-content">
+      @switch (ActiveSectionId()) {
+              @case ('button') { <app-playground-buttons-section /> }
+              @case ('input') { <app-playground-inputs-section /> }
+              @case ('badge') { <app-playground-badge-section /> }
+              @case ('avatar') { <app-playground-avatar-section /> }
+              @case ('cards') { <app-playground-cards-section /> }
+              @case ('skeleton') { <app-playground-skeleton-section /> }
+              @case ('grid-list') { <app-playground-grid-list-section /> }
+              @case ('map') { <app-playground-map-section /> }
+              @case ('stepper-splitter') { <app-playground-stepper-splitter-section /> }
+              @case ('tabs') { <app-playground-navigation-section /> }
+              @case ('filter-bar') { <app-playground-forms-section /> }
+              @case ('popup') { <app-playground-overlay-section /> }
+              @case ('tutorial') { <app-playground-tutorial-section /> }
+              @case ('stripe') { <app-playground-stripe-section /> }
+              @case ('ai-crm-agent') { <app-playground-ai-section /> }
+              @case ('language-selector-select') { <app-playground-language-selector-section /> }
+              @case ('stat-card') { <app-playground-stat-card-section /> }
+              @case ('palette') { <app-playground-palette-section /> }
+              @case ('animations') { <app-playground-animations-section /> }
+            }
+    </div>
+  }
+
+  <footer class="playground__footer">
+    <p>Playground SellMatch — tous les composants génériques. Page réservée aux administrateurs (route /playground).</p>
+  </footer>
+</div>
+
+<app-scroll-indicator label="Remonter" />
+
+<!-- - cm - Overlay tutoriel monté une fois au niveau racine : il écoute les signals du TutorialService et s'affiche par-dessus tout -->

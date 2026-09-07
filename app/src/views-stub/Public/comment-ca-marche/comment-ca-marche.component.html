@@ -1,0 +1,160 @@
+<div class="comment-ca-marche-page">
+    <!-- Hero Section -->
+    <section class="hero">
+        <app-badge type="success" variant="soft" shape="pill" icon="verified" label="100% gratuit pour les vendeurs"></app-badge>
+        <h1 appScrollReveal [Animation]="'word'">Trouvez le bon agent immobilier sans être démarché</h1>
+        <p class="subtitle">
+            En 3 étapes simples, comparez les professionnels de votre secteur et choisissez celui qui vous convient.
+            <strong>Vous gardez le contrôle de A à Z.</strong>
+        </p>
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-icon material-icons">schedule</span>
+                <div class="stat-text">
+                    <strong>5 min</strong>
+                    <span>pour créer votre dossier</span>
+                </div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-icon material-icons">groups</span>
+                <div class="stat-text">
+                    <strong>24h</strong>
+                    <span>premières propositions</span>
+                </div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-icon material-icons">lock</span>
+                <div class="stat-text">
+                    <strong>100%</strong>
+                    <span>anonyme</span>
+                </div>
+            </div>
+        </div>
+        <app-scroll-indicator label="Découvrir le processus" targetId="timeline-section"></app-scroll-indicator>
+    </section>
+
+    <!-- Timeline Section -->
+    <section class="timeline-section" id="timeline-section" appScrollReveal [Animation]="'fade'">
+        <div class="section-header">
+            <app-badge type="info" variant="soft" shape="pill" label="Comment ça marche"></app-badge>
+            <h2 appScrollReveal [Animation]="'word'" [StaggerDelay]="40">Un processus simple et transparent</h2>
+            <p>Suivez ces 3 phases pour trouver le professionnel idéal</p>
+        </div>
+
+        <div class="timeline-container">
+            @for (phase of phases; track phase.number) {
+            <div class="timeline-phase" [class.phase-active]="phase.number === 1">
+                <!-- Phase Card -->
+                <div class="phase-card">
+                    <div class="phase-number">
+                        <span>{{ phase.number }}</span>
+                    </div>
+                    <div class="phase-header">
+                        <span class="phase-label">Phase {{ phase.number }}</span>
+                        <h3 class="phase-title">{{ phase.title }}</h3>
+                    </div>
+
+                    <div class="phase-steps">
+                        @for (step of phase.steps; track step.number; let isLast = $last) {
+                        <div class="step-card">
+                            <div class="step-header">
+                                <div class="step-number">{{ step.number }}</div>
+                                <h4 class="step-title">{{ step.title }}</h4>
+                            </div>
+
+                            <p class="step-description">{{ step.description }}</p>
+
+                            @if (step.bulletPoints) {
+                            <ul class="step-checklist">
+                                @for (point of step.bulletPoints; track point) {
+                                <li>
+                                    <span class="check-icon material-icons">check_circle</span>
+                                    <span>{{ point }}</span>
+                                </li>
+                                }
+                            </ul>
+                            }
+
+                            @if (step.highlight) {
+                            <app-badge type="warning" variant="soft" shape="pill" icon="bolt" [label]="step.highlight"></app-badge>
+                            }
+
+                            @if (step.detail) {
+                            <app-badge type="info" variant="soft" shape="pill" icon="info" [label]="step.detail"></app-badge>
+                            }
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                @if (phase.number < 3) {
+                <div class="phase-connector">
+                    <span class="material-icons">arrow_downward</span>
+                </div>
+                }
+            </div>
+            }
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="benefits-section">
+        <div class="section-header">
+            <app-badge type="info" variant="soft" shape="pill" label="Vos garanties"></app-badge>
+            <h2>Pourquoi passer par <span>SellMatch</span> ?</h2>
+            <p>Des avantages concrets pour une vente sereine</p>
+        </div>
+
+        <div class="benefits-grid">
+            @for (advantage of advantages; track advantage.title; let i = $index) {
+            <div class="benefit-card" [style.animation-delay]="i * 0.1 + 's'">
+                <div class="benefit-icon">
+                    <span class="material-icons">{{ getAdvantageIcon(i) }}</span>
+                </div>
+                <div class="benefit-content">
+                    <h4>{{ advantage.title }}</h4>
+                    <p>{{ advantage.description }}</p>
+                </div>
+            </div>
+            }
+        </div>
+
+        <div class="trust-badges">
+            <app-badge type="success" variant="soft" shape="pill" icon="shield" label="Données sécurisées"></app-badge>
+            <app-badge type="success" variant="soft" shape="pill" icon="thumb_up" label="Sans engagement"></app-badge>
+            <app-badge type="success" variant="soft" shape="pill" icon="check_circle" label="Inscription gratuite pour les vendeurs"></app-badge>
+            <app-badge type="success" variant="soft" shape="pill" icon="euro" label="0€ pour les vendeurs"></app-badge>
+        </div>
+    </section>
+
+    <!-- FAQ Preview -->
+    <section class="faq-preview">
+        <div class="faq-card">
+            <span class="material-icons">help_outline</span>
+            <div class="faq-content">
+                <h4>Une question ?</h4>
+                <p>Consultez notre FAQ ou contactez-nous, nous répondons sous 24h.</p>
+            </div>
+            <app-button variant="light" [routerLink]="this.RouteUtils.GetRoute(Routes.FAQ)" icon="arrow_forward" iconPosition="right">
+                Voir la FAQ
+            </app-button>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-card">
+            <div class="cta-icon">
+                <span class="material-icons">rocket_launch</span>
+            </div>
+            <h3>Prêt à trouver le bon professionnel ?</h3>
+            <p>Créez votre dossier en 5 minutes et recevez vos premières propositions sous 24h</p>
+            <app-button variant="primary" size="lg" [routerLink]="this.RouteUtils.GetRoute(this.Routes.INSCRIPTION_VENDEUR)" icon="arrow_forward" iconPosition="right">
+                Créer mon dossier gratuitement
+            </app-button>
+            <app-badge class="cta-reassurance-badge" type="success" variant="solid" shape="pill" icon="check_circle" label="Gratuit • Sans engagement • Anonyme"></app-badge>
+        </div>
+    </section>
+</div>

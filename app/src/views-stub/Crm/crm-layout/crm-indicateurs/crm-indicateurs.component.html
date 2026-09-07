@@ -1,0 +1,79 @@
+<!-- - cm - Directive appTranslate : déclare le namespace i18n 'crm-indicateurs' pour toute la page.
+                Les pipes `tkey` enfants lisent ce namespace automatiquement (sans argument).
+                Permet de supprimer les getters TitleI18n/SubtitleI18n du TS. -->
+<section appTranslate [ns]="'crm-indicateurs'">
+
+  <app-dashboard-header
+    [title]="'title' | tkey"
+    [subtitle]="'subtitle' | tkey">
+  </app-dashboard-header>
+
+  <section class="crm-page">
+    <header class="crm-page__header">
+      <div class="crm-page__title">
+        <span class="material-icons crm-page__icon">insights</span>
+        <h2>{{ 'sectionTitle' | tkey }}</h2>
+      </div>
+      <div class="crm-page__actions">
+        <app-button variant="ghost" icon="refresh" size="sm" (ButtonClick)="OnRefresh()">{{ 'refresh' | tkey }}</app-button>
+      </div>
+    </header>
+
+    @if (Error()) {
+    <div class="crm-page__error">
+      <span class="material-icons">error_outline</span>
+      {{ Error()! | tkey }}
+    </div>
+    }
+
+  @if (Loading()) {
+  <section class="crm-indicateurs__group">
+    <h3 class="crm-indicateurs__group-title">{{ 'groups.primary' | tkey }}</h3>
+    <app-card-skeleton [Count]="5" />
+  </section>
+  <section class="crm-indicateurs__group">
+    <h3 class="crm-indicateurs__group-title">{{ 'groups.secondary' | tkey }}</h3>
+    <app-card-skeleton [Count]="4" />
+  </section>
+  } @else {
+  <section class="crm-indicateurs__group">
+    <h3 class="crm-indicateurs__group-title">{{ 'groups.primary' | tkey }}</h3>
+    <div class="crm-indicateurs__grid">
+      @for (lKpi of PrimaryKpis(); track lKpi.Label) {
+      <article class="crm-indicateurs__card crm-indicateurs__card--{{ lKpi.Accent }}"
+        (click)="OnKpiClick(lKpi.Label)">
+        <div class="crm-indicateurs__card-head">
+          <span class="material-icons crm-indicateurs__card-icon">{{ lKpi.Icon }}</span>
+          <span class="crm-indicateurs__card-label">{{ lKpi.Label }}</span>
+          <app-tooltip [Text]="lKpi.Formula" Position="top" Variant="dark" [MaxWidth]="300" [AriaLabel]="'formulaAriaLabel' | tkey">
+            <span class="material-icons crm-indicateurs__card-info">info</span>
+          </app-tooltip>
+        </div>
+        <span class="crm-indicateurs__card-value">{{ lKpi.Value }}</span>
+        <p class="crm-indicateurs__card-hint">{{ lKpi.Hint }}</p>
+      </article>
+      }
+    </div>
+  </section>
+
+  <section class="crm-indicateurs__group">
+    <h3 class="crm-indicateurs__group-title">{{ 'groups.secondary' | tkey }}</h3>
+    <div class="crm-indicateurs__grid">
+      @for (lKpi of SecondaryKpis(); track lKpi.Label) {
+      <article class="crm-indicateurs__card crm-indicateurs__card--{{ lKpi.Accent }}"
+        (click)="OnKpiClick(lKpi.Label)">
+        <div class="crm-indicateurs__card-head">
+          <span class="material-icons crm-indicateurs__card-icon">{{ lKpi.Icon }}</span>
+          <span class="crm-indicateurs__card-label">{{ lKpi.Label }}</span>
+          <app-tooltip [Text]="lKpi.Formula" Position="top" Variant="dark" [MaxWidth]="300" [AriaLabel]="'formulaAriaLabel' | tkey">
+            <span class="material-icons crm-indicateurs__card-info">info</span>
+          </app-tooltip>
+        </div>
+        <span class="crm-indicateurs__card-value">{{ lKpi.Value }}</span>
+        <p class="crm-indicateurs__card-hint">{{ lKpi.Hint }}</p>
+      </article>
+      }
+    </div>
+  </section>
+  }
+</section>

@@ -1,0 +1,1178 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region Host
+:host {
+  --motion-duration-fast: 160ms;
+  --motion-duration-base: 240ms;
+  --motion-duration-slow: 420ms;
+  --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.required-mark {
+  display: inline-block;
+  margin-left: 2px;
+  color: $error-color;
+}
+
+//#endregion
+
+//#region Form Group
+.form-group {
+  min-width: 0;
+
+  &--full {
+    grid-column: 1 / -1;
+    margin-bottom: 1.5rem;
+  }
+
+  &__label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: $text-secondary;
+    font-size: 0.875rem;
+    font-weight: 600;
+
+    &--with-tooltip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+  }
+}
+
+.tooltip-info {
+  display: inline-flex;
+  color: $primary-color;
+  cursor: help;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.characteristics-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.characteristics-section {
+  padding: 1rem;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  background: $surface-muted;
+
+  &--cta {
+    border-color: rgba($primary-color, 0.18);
+    background: rgba($primary-color, 0.04);
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  &__title {
+    margin: 0 0 0.25rem;
+    color: $text-primary;
+    font-size: 1rem;
+    font-weight: 750;
+  }
+
+  &__hint {
+    margin: 0;
+    color: $text-secondary;
+    font-size: 0.84rem;
+    line-height: 1.4;
+  }
+
+  app-tooltip {
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+
+  .form-grid {
+    margin-bottom: 0;
+  }
+
+  .form-group--full {
+    margin-bottom: 0;
+  }
+}
+
+.soft-account-nudge {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-top: 1rem;
+
+  &__icon {
+    flex-shrink: 0;
+    color: $primary-color;
+    font-size: 1.35rem;
+  }
+}
+
+//#region Estimation layout
+
+.estimation-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+.estimation-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid $border-color;
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    width: fit-content;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid rgba($primary-color, 0.18);
+    border-radius: $border-radius-xl;
+    background: rgba($primary-color, 0.06);
+    color: $primary-dark;
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1.4;
+
+    .material-icons {
+      font-size: 1rem;
+      color: $primary-color;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    color: $text-primary;
+    font-size: clamp(1.85rem, 3.2vw, 2.6rem);
+    font-weight: 850;
+    line-height: 1.15;
+  }
+
+  &__highlight {
+    color: $primary-color;
+  }
+
+  &__subtitle {
+    margin: 0;
+    color: $text-secondary;
+    font-size: clamp(1rem, 1.4vw, 1.15rem);
+    line-height: 1.55;
+  }
+
+  &__perks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__perk {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: $text-secondary;
+    font-size: 0.88rem;
+    font-weight: 600;
+
+    .material-icons {
+      color: $primary-color;
+      font-size: 1.1rem;
+    }
+  }
+}
+
+.estimation-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.estimation-aside {
+  position: sticky;
+  top: calc(#{$navbar-height} + 1rem);
+}
+
+.estimation-main {
+  padding: 1.5rem;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-xl;
+  background: $card-background;
+  box-shadow: $shadow-light;
+}
+
+//#endregion
+
+//#region Step card & form
+
+.step-card {
+  border: none;
+  padding: 0;
+  margin: 0;
+  animation: fadeInUp var(--motion-duration-slow) var(--motion-ease-soft) both;
+
+  &__legend {
+    margin-bottom: 1.5rem;
+  }
+
+  &__title {
+    margin: 0 0 0.35rem;
+    color: $text-primary;
+    font-size: 1.35rem;
+    font-weight: 800;
+  }
+
+  &__hint {
+    margin: 0;
+    color: $text-secondary;
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+}
+
+.form-grid {
+  display: grid;
+  gap: 1.15rem;
+  margin-bottom: 1.5rem;
+
+  &--single {
+    grid-template-columns: 1fr;
+  }
+
+  &--two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.native-select-wrapper {
+  position: relative;
+}
+
+.native-select {
+  width: 100%;
+  padding: 0.7rem 2.5rem 0.7rem 0.9rem;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  background: $card-background;
+  color: $text-primary;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.4;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color $transition-fast, box-shadow $transition-fast;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.12);
+  }
+}
+
+.checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.checkbox-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-xl;
+  background: $card-background;
+  color: $text-secondary;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color $transition-fast, background $transition-fast;
+
+  input[type='checkbox'] {
+    accent-color: $primary-color;
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+  }
+
+  &:has(input:checked) {
+    border-color: rgba($primary-color, 0.4);
+    background: rgba($primary-color, 0.06);
+  }
+}
+
+.radio-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+//#endregion
+
+//#region Actions
+
+.subliminal-msg {
+  margin: 1.25rem 0 0;
+  text-align: center;
+  color: $primary-color;
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-style: italic;
+  opacity: 0.75;
+  letter-spacing: 0.3px;
+  white-space: pre-line;
+  animation: fadeIn 0.6s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 0.75; transform: translateY(0); }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+
+  &--end {
+    justify-content: flex-end;
+  }
+}
+
+.actions-split {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+//#endregion
+
+//#region Aside blocks
+
+.aside-block {
+  margin-bottom: 1.5rem;
+  padding: 1.15rem;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  background: $surface-subtle;
+
+  &--steps {
+    border-color: rgba($primary-color, 0.12);
+    background: rgba($primary-color, 0.03);
+  }
+
+  &__title {
+    margin: 0 0 0.75rem;
+    color: $text-primary;
+    font-size: 0.95rem;
+    font-weight: 750;
+  }
+}
+
+.aside-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    margin-bottom: 0.7rem;
+    color: $text-secondary;
+    font-size: 0.84rem;
+    line-height: 1.45;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    color: $primary-color;
+    font-size: 1.1rem;
+  }
+}
+
+.aside-steps {
+  margin: 0;
+  padding: 0;
+  counter-reset: aside-step;
+  list-style: none;
+
+  &__item {
+    position: relative;
+    padding-left: 1.75rem;
+    margin-bottom: 0.65rem;
+    color: $text-secondary;
+    font-size: 0.86rem;
+    line-height: 1.45;
+    counter-increment: aside-step;
+
+    &::before {
+      position: absolute;
+      left: 0;
+      width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 50%;
+      background: rgba($primary-color, 0.12);
+      color: $primary-dark;
+      font-size: 0.7rem;
+      font-weight: 700;
+      line-height: 1.25rem;
+      text-align: center;
+      content: counter(aside-step);
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+//#endregion
+
+//#region Result screen
+
+.result-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: fadeInUp var(--motion-duration-slow) var(--motion-ease-soft) both;
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+
+  &__title {
+    margin: 0;
+    color: $text-primary;
+    font-size: 1.2rem;
+    font-weight: 800;
+  }
+}
+
+.price-range {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.15rem 1rem;
+  border: 1px solid rgba($primary-color, 0.14);
+  border-radius: $border-radius-lg;
+  background: linear-gradient(135deg, rgba($primary-color, 0.07), rgba(var(--sm-card-background-rgb), 0.97));
+
+  &__min,
+  &__max {
+    color: $primary-dark;
+    font-size: clamp(1.35rem, 2.2vw, 2rem);
+    font-weight: 850;
+    line-height: 1.1;
+    overflow-wrap: anywhere;
+  }
+
+  &__sep {
+    color: rgba($primary-color, 0.4);
+    font-size: 1.1rem;
+    font-weight: 400;
+  }
+}
+
+.result-stats {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.45rem 0.7rem;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-md;
+    background: $card-background;
+    color: $text-secondary;
+    font-size: 0.82rem;
+    line-height: 1.3;
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    color: $primary-color;
+    font-size: 1rem;
+  }
+
+  &__label {
+    color: $text-secondary;
+    font-weight: 500;
+  }
+
+  &__value {
+    color: $text-primary;
+    font-weight: 750;
+  }
+}
+
+.disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin: 0;
+  color: $text-secondary;
+  font-size: 0.78rem;
+  line-height: 1.4;
+
+  .material-icons {
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: $text-secondary;
+    font-size: 0.95rem;
+  }
+}
+
+.technical-details {
+  margin: 0;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  background: $surface-muted;
+
+  &__summary {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.65rem 0.85rem;
+    color: $text-secondary;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+    transition: background $transition-fast;
+
+    &::-webkit-details-marker,
+    &::marker {
+      display: none;
+      content: '';
+    }
+
+    &:hover {
+      background: rgba($primary-color, 0.04);
+    }
+
+    .material-icons {
+      flex-shrink: 0;
+      font-size: 1rem;
+      color: $primary-color;
+    }
+  }
+
+  &__chevron {
+    margin-left: auto;
+    font-size: 1.1rem;
+    color: $text-secondary;
+    transition: transform var(--motion-duration-fast) var(--motion-ease-out);
+  }
+
+  &[open] &__chevron {
+    transform: rotate(180deg);
+  }
+
+  &__list {
+    margin: 0;
+    padding: 0 0.85rem 0.75rem 2.35rem;
+    color: $text-secondary;
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+}
+
+.result-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  padding-top: 0.25rem;
+}
+
+.sellmatch-pitch {
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba($success-color, 0.18);
+  border-radius: $border-radius-md;
+  background: rgba($success-color, 0.03);
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-bottom: 0.6rem;
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    color: $success-color;
+    font-size: 1.25rem;
+  }
+
+  &__title {
+    display: block;
+    margin: 0 0 0.15rem;
+    color: $text-primary;
+    font-size: 0.92rem;
+    font-weight: 750;
+  }
+
+  &__text {
+    margin: 0;
+    color: $text-secondary;
+    font-size: 0.8rem;
+    line-height: 1.35;
+  }
+
+  &__list {
+    margin: 0 0 0.75rem;
+    padding: 0;
+    list-style: none;
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.35rem;
+      margin-bottom: 0.4rem;
+      color: $text-secondary;
+      font-size: 0.8rem;
+      line-height: 1.35;
+
+      .material-icons {
+        flex-shrink: 0;
+        color: $success-color;
+        font-size: 0.95rem;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &__free {
+    margin: 0 0 0.85rem;
+    color: $text-secondary;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .pitch-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+}
+
+.confidence-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-xl;
+  background: $card-background;
+  color: $text-secondary;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.3;
+
+  .material-icons {
+    font-size: 0.95rem;
+  }
+
+  &.faible {
+    border-color: rgba($warning-color, 0.24);
+    background: $warning-light;
+    color: color-mix(in srgb, $warning-color, black 22%);
+  }
+
+  &.moyen {
+    border-color: rgba($info-color, 0.24);
+    background: $info-light;
+    color: color-mix(in srgb, $info-color, black 22%);
+  }
+
+  &.eleve {
+    border-color: rgba($success-color, 0.24);
+    background: $success-light;
+    color: color-mix(in srgb, $success-color, black 22%);
+  }
+}
+
+//#endregion
+
+//#region Chart Section
+.fs-chart-section {
+  grid-area: chart;
+  width: 100%;
+  min-width: 0;
+  margin-top: 0;
+  overflow: hidden;
+  padding: clamp(0.85rem, 1.6vw, 1.2rem);
+
+  app-evolution-mensuelle-prix-commune {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+:host ::ng-deep .estimation-main .actions .btn,
+:host ::ng-deep .estimation-main .result-actions .btn,
+:host ::ng-deep .estimation-main .pitch-actions .btn {
+  min-height: 46px;
+  max-width: 100%;
+  padding: 0.78rem 1rem;
+  border-radius: $border-radius-md;
+  box-shadow: none;
+  font-size: 0.92rem;
+  font-weight: 750;
+  line-height: 1.2;
+  white-space: normal;
+}
+
+:host ::ng-deep .estimation-main .actions .btn-primary,
+:host ::ng-deep .estimation-main .result-actions .btn-primary,
+:host ::ng-deep .estimation-main .pitch-actions .btn-primary,
+:host ::ng-deep .estimation-main .pitch-actions .btn-success {
+  border: 1px solid rgba($primary-dark, 0.12);
+  background: $primary-color;
+  color: $white;
+}
+
+:host ::ng-deep .estimation-main .pitch-actions .btn-success {
+  background: $success-color;
+}
+
+:host ::ng-deep .estimation-main .actions .btn-light,
+:host ::ng-deep .estimation-main .result-actions .btn-light,
+:host ::ng-deep .estimation-main .pitch-actions .btn-light {
+  border: 1px solid $border-color;
+  background: $card-background;
+  color: $text-secondary;
+}
+
+:host ::ng-deep .estimation-main .actions .btn:hover,
+:host ::ng-deep .estimation-main .result-actions .btn:hover,
+:host ::ng-deep .estimation-main .pitch-actions .btn:hover {
+  box-shadow: 0 10px 20px rgba($gray-800, 0.08);
+  transform: translateY(-1px);
+}
+
+:host ::ng-deep .estimation-main .actions .btn .btn-content,
+:host ::ng-deep .estimation-main .result-actions .btn .btn-content,
+:host ::ng-deep .estimation-main .pitch-actions .btn .btn-content,
+:host ::ng-deep .estimation-main .actions .btn .btn-text,
+:host ::ng-deep .estimation-main .result-actions .btn .btn-text,
+:host ::ng-deep .estimation-main .pitch-actions .btn .btn-text {
+  min-width: 0;
+}
+
+:host ::ng-deep .estimation-main .actions .btn .material-icons,
+:host ::ng-deep .estimation-main .result-actions .btn .material-icons,
+:host ::ng-deep .estimation-main .pitch-actions .btn .material-icons {
+  flex: 0 0 auto;
+  font-size: 1.1rem;
+}
+
+@include wide {
+  .result-screen {
+    gap: 0.85rem;
+  }
+}
+
+@include tablet {
+  .estimation-hero,
+  .estimation-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .estimation-aside {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .form-grid--two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@include mobile {
+  .estimation-page {
+    padding: 1rem 0.8rem 2.5rem;
+  }
+
+  .estimation-hero {
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+
+    &__title {
+      font-size: 1.75rem;
+    }
+
+    &__subtitle {
+      font-size: 1rem;
+    }
+  }
+
+  .estimation-aside {
+    display: none;
+  }
+
+  .estimation-main {
+    padding: 1rem;
+    border-radius: $border-radius-lg;
+  }
+
+  .step-card__legend {
+    margin-bottom: 1.25rem;
+  }
+
+  .form-grid--two,
+  .radio-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions,
+  .actions-split,
+  .result-actions,
+  .sellmatch-pitch .pitch-actions {
+    align-items: stretch;
+  }
+
+  .actions-split,
+  .result-actions {
+    flex-direction: column-reverse;
+  }
+
+  .actions app-button,
+  .result-actions app-button,
+  .sellmatch-pitch .pitch-actions app-button {
+    width: 100%;
+  }
+
+  .sellmatch-pitch,
+  .sellmatch-pitch .pitch-actions {
+    display: flex;
+    flex-direction: column;
+  }
+
+  :host ::ng-deep .estimation-main .actions .btn,
+  :host ::ng-deep .estimation-main .result-actions .btn,
+  :host ::ng-deep .estimation-main .pitch-actions .btn {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.72rem 0.85rem;
+    font-size: 0.88rem;
+  }
+}
+
+@include xs {
+  .estimation-page {
+    padding: 1rem 0.65rem 2rem;
+  }
+
+  .estimation-hero {
+    &__badge {
+      padding: 0.45rem 0.75rem;
+      font-size: 0.74rem;
+      line-height: 1.2;
+    }
+
+    &__title {
+      font-size: 1.45rem;
+    }
+
+    &__subtitle {
+      font-size: 0.92rem;
+    }
+
+    &__perks {
+      min-width: 0;
+    }
+
+    &__perk {
+      font-size: 0.82rem;
+    }
+  }
+
+  .estimation-main {
+    padding: 1rem 0.75rem;
+    border-radius: $border-radius-md;
+  }
+
+  .step-card__title,
+  .result-header__title {
+    font-size: 1.2rem;
+  }
+
+  .step-card__hint,
+  .form-group__label,
+  .native-select,
+  .checkbox-pill {
+    font-size: 0.86rem;
+  }
+
+  .form-grid {
+    gap: 0.95rem;
+    margin-bottom: 1rem;
+  }
+
+  .native-select {
+    padding: 0.75rem 2.25rem 0.75rem 0.85rem;
+  }
+
+  .checkboxes {
+    gap: 0.5rem;
+  }
+
+  .checkbox-pill {
+    padding: 0.55rem 0.8rem;
+  }
+
+  .actions {
+    margin-top: 1.35rem;
+  }
+
+  .estimation-result .price-range .price,
+  .price-range__min,
+  .price-range__max {
+    font-size: 1.25rem;
+  }
+}
+
+//#endregion
+
+//#region Animations
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+//#endregion
+
+//#region Reduced Motion
+// - cm - Respect de la pr�f�rence utilisateur pour la r�duction des animations
+@media (prefers-reduced-motion: reduce) {
+  .step-card,
+  .result-screen {
+    animation: none;
+  }
+
+  :host ::ng-deep .estimation-main .actions .btn,
+  :host ::ng-deep .estimation-main .result-actions .btn,
+  :host ::ng-deep .estimation-main .pitch-actions .btn {
+    transition: none;
+  }
+
+  .native-select,
+  .checkbox-pill {
+    transition: none;
+  }
+}
+
+//#endregion
+
+//#region SEO Content
+// - cm - Bloc contenu SEO �ditorial en bas de page
+.estimation-seo {
+  max-width: 820px;
+  margin: 3rem auto 2rem;
+  padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.seo-block {
+  &__title {
+    margin: 0 0 0.75rem;
+    color: $text-primary;
+    font-size: 1.35rem;
+    font-weight: 750;
+    line-height: 1.3;
+  }
+
+  &__text {
+    margin: 0;
+    color: $text-secondary;
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  &__list {
+    margin: 0.75rem 0 0;
+    padding-left: 1.5rem;
+    color: $text-secondary;
+    font-size: 0.92rem;
+    line-height: 1.8;
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+
+    strong {
+      color: $text-primary;
+    }
+  }
+}
+//#endregion
+
+//#region SEO Types
+// - cm - Cartes types de biens
+.seo-types {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+
+  &__card {
+    padding: 1.25rem;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-md;
+    background: $card-background;
+  }
+
+  &__icon {
+    color: $primary-color;
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  &__title {
+    margin: 0 0 0.5rem;
+    color: $text-primary;
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  &__text {
+    margin: 0;
+    color: $text-secondary;
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+}
+
+//#endregion
+
+//#region SEO FAQ
+// - cm - FAQ accord�on visible
+.seo-faq {
+  margin-bottom: 0.5rem;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  overflow: hidden;
+
+  &__question {
+    padding: 0.85rem 1rem;
+    color: $text-primary;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+    transition: background $transition-fast;
+
+    &::-webkit-details-marker,
+    &::marker {
+      display: none;
+      content: '';
+    }
+
+    &:hover {
+      background: rgba($primary-color, 0.04);
+    }
+  }
+
+  &__answer {
+    margin: 0;
+    padding: 0 1rem 0.85rem;
+    color: $text-secondary;
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+}
+
+//#endregion
+
+//#region SEO Responsive
+// - cm - Responsive bloc SEO
+@include mobile {
+  .estimation-seo {
+    padding: 0 1rem;
+    gap: 1.5rem;
+  }
+
+  .seo-block__title {
+    font-size: 1.2rem;
+  }
+
+  .seo-types {
+    grid-template-columns: 1fr;
+  }
+}
+//#endregion
+
+//#region Ville Links
+.ville-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border: 1px solid $border-color;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: $text-secondary;
+    text-decoration: none;
+    transition: all var(--motion-duration-base, 240ms) var(--motion-ease-out, ease);
+
+    &:hover {
+      border-color: $primary-color;
+      color: $primary-color;
+      background: rgba($primary-color, 0.05);
+    }
+  }
+}
+//#endregion

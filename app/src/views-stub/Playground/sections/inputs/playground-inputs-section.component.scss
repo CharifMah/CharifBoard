@@ -1,0 +1,334 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region Address preview
+// - cm - Bloc dépliable affichant l'objet AdressesDTO complet retourné par l'autocomplete playground.
+// - cm - Permet de voir en direct les coordonnées, code postal, ville, type Mapbox, score de pertinence.
+.playground__address-preview {
+  align-self: flex-start;
+  width: 100%;
+  margin: $spacing-md 0 $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  background: rgba(var(--sm-primary-rgb, 156, 39, 176), 0.04);
+  border: 1px solid rgba(var(--sm-primary-rgb, 156, 39, 176), 0.2);
+  border-radius: $border-radius-sm;
+
+  summary {
+    cursor: pointer;
+    font-weight: $font-weight-semibold;
+    color: $primary-color;
+    font-size: $font-size-sm;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &::before {
+      content: '▶';
+      font-size: 0.7rem;
+      transition: transform $transition-fast;
+    }
+  }
+
+  &[open] summary::before {
+    transform: rotate(90deg);
+  }
+
+  pre {
+    margin: $spacing-sm 0 0;
+    padding: $spacing-sm;
+    background: var(--sm-surface-muted, #f5f5f5);
+    border-radius: $border-radius-sm;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    overflow-x: auto;
+    color: $text-primary;
+    font-family: 'Courier New', monospace;
+  }
+}
+//#endregion
+
+//#region Table title
+// - cm - Titre sobre de la sous-section "Démos d'erreurs de validation".
+// - cm - Juste un h3 + une description courte, pas d'icône, pas de fond.
+.pg-errors-title {
+  margin: $spacing-lg 0 $spacing-xs;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
+  line-height: 1.3;
+  // - cm - Override le `align-items: center` du parent flex.
+  align-self: flex-start;
+  width: 100%;
+}
+
+.pg-errors-desc {
+  margin: 0 0 $spacing-sm;
+  font-size: $font-size-xs;
+  color: $text-secondary;
+  line-height: $line-height-normal;
+  align-self: flex-start;
+  width: 100%;
+}
+//#endregion
+
+//#region Errors table
+// - cm - Tableau compact listant les 11 démos d'erreurs de validation.
+// - cm - 5 colonnes : Validateur / Label / Valeur / État / Message.
+// - cm - Le tableau est enfant d'un flex parent (.playground__demo) :
+// - cm - on force align-self:flex-start + width:100% pour qu'il occupe
+// - cm - toute la largeur disponible et reste en haut, pas centré.
+.pg-errors-table {
+  width: 100%;
+  align-self: flex-start;
+  border-collapse: collapse;
+  background: $card-background;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-sm;
+  table-layout: fixed;
+
+  // - cm - En-tête : fond légèrement contrasté, texte secondaire.
+  thead {
+    background: $surface-muted;
+
+    th {
+      padding: $spacing-xs $spacing-sm;
+      text-align: left;
+      font-weight: $font-weight-semibold;
+      font-size: $font-size-xs;
+      color: $text-secondary;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid $border-color;
+    }
+  }
+
+  // - cm - Cellules du corps : padding minimal, alignement vertical au centre
+  // - cm - (les inputs en mode compact + message d'erreur rentrent en ~60px).
+  tbody {
+    tr {
+      border-bottom: 1px solid $border-color;
+      transition: background-color $transition-fast;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &:hover {
+        background: $surface-hover;
+      }
+    }
+
+    td {
+      padding: $spacing-xs $spacing-sm;
+      vertical-align: middle;
+      color: $text-primary;
+    }
+  }
+
+  // - cm - Largeurs de colonnes optimisées pour la densité :
+  // - cm -  Validateur : juste assez pour le badge.
+  // - cm -  Label : assez pour "Erreur custom (pas de chiffre) *".
+  // - cm -  Valeur : l'input doit être lisible (min 200px).
+  // - cm -  État : juste assez pour le badge "error".
+  // - cm -  Message : le reste de l'espace (assez long pour les phrases).
+  .pg-col-validator { width: 14%; }
+  .pg-col-label     { width: 16%; }
+  .pg-col-input     { width: 24%; }
+  .pg-col-state     { width: 8%;  }
+  .pg-col-message   { width: 38%; }
+
+  .pg-cell-input {
+    // - cm - L'app-input prend 100% de la largeur de la cellule.
+    display: block;
+    width: 100%;
+
+    // - cm - Dans le tableau, le message d'erreur est déjà affiché dans la
+    // - cm - 5e colonne (.pg-cell-error), donc on masque celui de l'app-input
+    // - cm - pour éviter la duplication et gagner de la hauteur. Idem pour
+    // - cm - le hint (l'input reste focalisé sur sa valeur saisie).
+    ::ng-deep .input-error,
+    ::ng-deep .input-hint {
+      display: none;
+    }
+    ::ng-deep .char-counter {
+      font-size: 0.6rem;
+      line-height: 1;
+      margin-top: 1px;
+    }
+  }
+
+  .pg-cell-label {
+    color: $text-primary;
+    font-weight: 500;
+    font-size: $font-size-xs;
+  }
+
+  .pg-cell-error {
+    color: $error-color;
+    font-size: $font-size-xs;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+//#endregion
+
+//#region Validator badge
+// - cm - Petit badge dans la 1re colonne, identifie la règle du validateur.
+// - cm - Style neutre par défaut ; les variantes ci-dessous colorent selon la sévérité.
+.pg-validator-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: $border-radius-sm;
+  font-family: 'Courier New', monospace;
+  font-size: 0.6875rem;
+  font-weight: $font-weight-semibold;
+  background: $surface-muted;
+  color: $text-secondary;
+  border: 1px solid $border-color;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+
+  &[data-validator='required'] {
+    background: rgba($error-color, 0.1);
+    color: $error-color;
+    border-color: rgba($error-color, 0.25);
+  }
+
+  &[data-validator='email'] {
+    background: rgba($info-color, 0.1);
+    color: $info-color;
+    border-color: rgba($info-color, 0.25);
+  }
+
+  &[data-validator='minLength'],
+  &[data-validator='maxLength'] {
+    background: rgba($warning-color, 0.1);
+    color: $warning-color;
+    border-color: rgba($warning-color, 0.25);
+  }
+
+  &[data-validator='min'],
+  &[data-validator='max'] {
+    background: rgba($purple-color, 0.1);
+    color: $purple-color;
+    border-color: rgba($purple-color, 0.25);
+  }
+
+  &[data-validator='pattern'] {
+    background: rgba($accent-color, 0.1);
+    color: $accent-color;
+    border-color: rgba($accent-color, 0.25);
+  }
+
+  &[data-validator='custom'] {
+    background: rgba($success-color, 0.1);
+    color: $success-color;
+    border-color: rgba($success-color, 0.25);
+  }
+
+  &[data-validator='combo'] {
+    background: rgba($primary-color, 0.1);
+    color: $primary-color;
+    border-color: rgba($primary-color, 0.25);
+  }
+
+  &[data-validator='hint'] {
+    background: rgba($text-secondary, 0.1);
+    color: $text-secondary;
+    border-color: rgba($text-secondary, 0.25);
+  }
+}
+//#endregion
+
+//#region State badge
+// - cm - Badge dans la 4e colonne "État" : juste "error" pour l'instant.
+// - cm - Préparé pour ajouter d'autres états (valid, warning, info) plus tard.
+.pg-state-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: $border-radius-sm;
+  font-size: 0.6875rem;
+  font-weight: $font-weight-semibold;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  &[data-state='error'] {
+    background: rgba($error-color, 0.1);
+    color: $error-color;
+    border: 1px solid rgba($error-color, 0.25);
+  }
+
+  &[data-state='valid'] {
+    background: rgba($success-color, 0.1);
+    color: $success-color;
+    border: 1px solid rgba($success-color, 0.25);
+  }
+
+  &[data-state='warning'] {
+    background: rgba($warning-color, 0.1);
+    color: $warning-color;
+    border: 1px solid rgba($warning-color, 0.25);
+  }
+}
+//#endregion
+
+//#region Responsive
+// - cm - Tablette : on garde le tableau mais on autorise le wrap sur petites largeurs.
+@include tablet {
+  .pg-errors-table {
+    font-size: $font-size-xs;
+
+    .pg-col-validator { width: 18%; }
+    .pg-col-label     { width: 20%; }
+    .pg-col-input     { width: 26%; }
+    .pg-col-state     { width: 10%; }
+    .pg-col-message   { width: 26%; }
+  }
+}
+
+// - cm - Mobile : impossible de garder un tableau lisible, on passe en cartes
+// - cm - empilées avec les mêmes 5 informations par carte.
+@include mobile {
+  .pg-errors-table,
+  .pg-errors-table thead,
+  .pg-errors-table tbody,
+  .pg-errors-table tr,
+  .pg-errors-table td,
+  .pg-errors-table th {
+    display: block;
+    width: 100%;
+  }
+
+  .pg-errors-table thead {
+    display: none;
+  }
+
+  .pg-errors-table tbody tr {
+    margin-bottom: $spacing-sm;
+    padding: $spacing-sm;
+    background: $card-background;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-sm;
+  }
+
+  .pg-errors-table td {
+    padding: 2px 0;
+    border: none;
+
+    &::before {
+      content: attr(data-label);
+      display: block;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      color: $text-secondary;
+      margin-bottom: 2px;
+    }
+  }
+}
+//#endregion

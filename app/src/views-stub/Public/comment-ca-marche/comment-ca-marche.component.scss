@@ -1,0 +1,721 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region Mixins
+// - cm - Mixins
+@mixin gradient-bg {
+  background: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
+}
+
+@mixin gradient-text {
+  background: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@mixin card-style {
+  background: $card-background;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow;
+  border: 1px solid $border-color;
+}
+
+//#endregion
+
+//#region Base
+// - cm - Base
+.comment-ca-marche-page {
+  color: $text-primary;
+  min-height: 100vh;
+}
+
+//#endregion
+
+//#region Hero Section
+// - cm - Hero Section - Amélioré
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 8rem 1.5rem 2rem;
+  position: relative;
+
+  @include from-tablet {
+    padding: 8rem 2rem 2rem;
+  }
+
+  app-scroll-indicator {
+    margin-top: auto;
+    padding-bottom: 3rem;
+  }
+}
+
+.hero h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: $text-primary;
+  margin-bottom: 1.25rem;
+  line-height: 1.25;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+
+  span {
+    @include gradient-text;
+    display: inline;
+  }
+
+  @include from-tablet {
+    font-size: 2.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 3rem;
+  }
+}
+
+.hero .subtitle {
+  font-size: 1.05rem;
+  color: $text-secondary;
+  max-width: 550px;
+  margin: 0 auto 2rem;
+  line-height: 1.7;
+
+  strong {
+    color: $text-primary;
+  }
+
+  @include from-tablet {
+    font-size: 1.15rem;
+  }
+}
+
+.hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  @include card-style;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+
+  @include from-tablet {
+    flex-wrap: nowrap;
+    gap: 1.5rem;
+  }
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+}
+
+.stat-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @include gradient-bg;
+  color: $white;
+  border-radius: $border-radius-md;
+  font-size: 22px;
+}
+
+.stat-text {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+
+  strong {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: $text-primary;
+  }
+
+  span {
+    font-size: 0.8rem;
+    color: $text-secondary;
+  }
+}
+
+.stat-divider {
+  display: none;
+  width: 1px;
+  height: 40px;
+  background: $border-color;
+
+  @include from-tablet {
+    display: block;
+  }
+}
+
+//#endregion
+
+//#region Section Header
+// - cm - Section Header
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $text-primary;
+    margin-bottom: 0.5rem;
+
+    span {
+      @include gradient-text;
+    }
+
+    @include from-tablet {
+      font-size: 2rem;
+    }
+  }
+
+  > p {
+    font-size: 1rem;
+    color: $text-secondary;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+//#endregion
+
+//#region Timeline Section
+// - cm - Timeline Section
+.timeline-section {
+  padding: 3rem 1.5rem 4rem;
+  max-width: 900px;
+  margin: 0 auto;
+
+  @include from-tablet {
+    padding: 4rem 2rem 5rem;
+  }
+}
+
+.timeline-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.timeline-phase {
+  position: relative;
+}
+
+// - cm - Phase Card
+.phase-card {
+  @include card-style;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    @include gradient-bg;
+  }
+
+  @include from-tablet {
+    padding: 2rem;
+  }
+}
+
+.phase-number {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba($primary-color, 0.08) 0%, rgba($accent-color, 0.08) 100%);
+  border-radius: $border-radius-md;
+
+  span {
+    font-size: 1.5rem;
+    font-weight: 800;
+    @include gradient-text;
+  }
+}
+
+.phase-header {
+  margin-bottom: 1.5rem;
+  padding-right: 60px;
+}
+
+.phase-label {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: $primary-color;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.25rem;
+}
+
+.phase-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: $text-primary;
+  margin: 0;
+
+  @include from-tablet {
+    font-size: 1.4rem;
+  }
+}
+
+// - cm - Steps
+.phase-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.step-card {
+  background: $surface-muted;
+  border-radius: $border-radius;
+  padding: 1.25rem;
+  border: 1px solid transparent;
+  transition: all $transition-normal;
+
+  &:hover {
+    background: $card-background;
+    border-color: $primary-light;
+    transform: translateX(4px);
+  }
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.step-number {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @include gradient-bg;
+  color: $white;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.step-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: $text-primary;
+  margin: 0;
+}
+
+.step-description {
+  font-size: 0.925rem;
+  color: $text-secondary;
+  line-height: 1.6;
+  margin: 0;
+}
+
+// - cm - Checklist
+.step-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: $text-secondary;
+    line-height: 1.5;
+
+    .check-icon {
+      font-size: 18px;
+      color: $success-color;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+  }
+}
+
+// - cm - Phase Connector
+.phase-connector {
+  display: flex;
+  justify-content: center;
+  padding: 0.75rem 0;
+
+  .material-icons {
+    font-size: 24px;
+    color: $primary-light;
+    animation: bounceDown 1.5s infinite;
+  }
+}
+
+//#endregion
+
+//#region Benefits Section
+// - cm - Benefits Section
+.benefits-section {
+  padding: 3rem 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+
+  @include from-tablet {
+    padding: 4rem 2rem;
+  }
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+
+  @include from-tablet {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+.benefit-card {
+  @include card-style;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem;
+  transition: all $transition-normal;
+  animation: fadeInUp 0.5s ease-out both;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-medium;
+
+    .benefit-icon {
+      @include gradient-bg;
+
+      .material-icons {
+        color: $white;
+      }
+    }
+  }
+}
+
+.benefit-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba($primary-color, 0.1) 0%, rgba($accent-color, 0.1) 100%);
+  border-radius: $border-radius-md;
+  flex-shrink: 0;
+  transition: all $transition-normal;
+
+  .material-icons {
+    font-size: 24px;
+    color: $primary-color;
+    transition: color $transition-fast;
+  }
+}
+
+.benefit-content {
+  flex: 1;
+
+  h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $text-primary;
+    margin: 0 0 0.25rem;
+  }
+
+  p {
+    font-size: 0.875rem;
+    color: $text-secondary;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+// - cm - Trust Badges
+.trust-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+//#endregion
+
+//#region FAQ Preview
+// - cm - FAQ Preview
+.faq-preview {
+  padding: 0 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.faq-card {
+  @include card-style;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  text-align: center;
+
+  @include from-tablet {
+    flex-direction: row;
+    text-align: left;
+    padding: 1.5rem 2rem;
+  }
+
+  > .material-icons {
+    font-size: 40px;
+    color: $primary-light;
+  }
+}
+
+.faq-content {
+  flex: 1;
+
+  h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: $text-primary;
+    margin: 0 0 0.25rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: $text-secondary;
+    margin: 0;
+  }
+}
+
+.faq-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: transparent;
+  color: $primary-color;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 2px solid $primary-light;
+  border-radius: $btn-border-radius;
+  cursor: pointer;
+  transition: all $transition-normal;
+  white-space: nowrap;
+
+  .material-icons {
+    font-size: 18px;
+    transition: transform $transition-fast;
+  }
+
+  &:hover {
+    background: $primary-light;
+    border-color: $primary-color;
+
+    .material-icons {
+      transform: translateX(4px);
+    }
+  }
+}
+
+//#endregion
+
+//#region CTA Section
+// - cm - CTA Section
+.cta-section {
+  padding: 3rem 1.5rem 4rem;
+  max-width: 900px;
+  margin: 0 auto;
+
+  @include from-tablet {
+    padding: 4rem 2rem 5rem;
+  }
+}
+
+.cta-card {
+  @include gradient-bg;
+  border-radius: $border-radius-xl;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  box-shadow: $shadow-medium, 0 0 60px rgba($primary-color, 0.2);
+
+  @include from-tablet {
+    padding: 3rem 2.5rem;
+  }
+}
+
+.cta-icon {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba($white, 0.2);
+  border-radius: 50%;
+  margin: 0 auto 1.25rem;
+
+  .material-icons {
+    font-size: 32px;
+    color: $white;
+  }
+}
+
+.cta-card h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: $white;
+  margin: 0 0 0.75rem;
+
+  @include from-tablet {
+    font-size: 1.75rem;
+  }
+}
+
+.cta-card > p {
+  font-size: 1rem;
+  color: rgba($white, 0.9);
+  margin: 0 0 1.75rem;
+  max-width: 450px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+// - cm - Badge reassurance dans le CTA
+.cta-reassurance-badge {
+  margin-top: 1.25rem;
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: $card-background;
+  color: $primary-color;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: $btn-border-radius;
+  cursor: pointer;
+  transition: all $transition-normal;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  text-decoration: none;
+
+  .material-icons {
+    font-size: 20px;
+    transition: transform $transition-fast;
+  }
+
+  &:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+
+    .material-icons {
+      transform: translateX(4px);
+    }
+  }
+
+  &:active {
+    transform: translateY(-1px);
+  }
+
+  @include mobile {
+    width: 100%;
+    padding: 1rem 1.5rem;
+  }
+}
+
+//#endregion
+
+//#region Responsive
+// - cm - Responsive
+@include mobile {
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero .subtitle {
+    font-size: 0.95rem;
+  }
+
+  .hero-stats {
+    padding: 1rem;
+  }
+
+  .stat-item {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .phase-card {
+    padding: 1.25rem;
+  }
+
+  .phase-number {
+    width: 40px;
+    height: 40px;
+
+    span {
+      font-size: 1.25rem;
+    }
+  }
+
+  .phase-title {
+    font-size: 1.1rem;
+  }
+
+  .step-card {
+    padding: 1rem;
+  }
+
+  .benefit-card {
+    padding: 1rem;
+  }
+
+  .benefit-icon {
+    width: 40px;
+    height: 40px;
+
+    .material-icons {
+      font-size: 20px;
+    }
+  }
+
+  .cta-card {
+    padding: 2rem 1.25rem;
+  }
+
+    .cta-card h3 {
+      font-size: 1.25rem;
+    }
+}
+//#endregion

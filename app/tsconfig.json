@@ -2,7 +2,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "strict": true,
-    "noImplicitOverride": true,
+    "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
@@ -11,7 +11,44 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
-    "module": "preserve"
+    "module": "preserve",
+    "paths": {
+      "@base/*": [
+        "./node_modules/@sellmatch/ui/src/core/base/*"
+      ],
+      "@shared/*": [
+        "./node_modules/@sellmatch/ui/src/shared/*"
+      ],
+      "@core/*": [
+        "./node_modules/@sellmatch/ui/src/core/*"
+      ],
+      "@routes/*": [
+        "./node_modules/@sellmatch/ui/src/routes/*"
+      ],
+      "src/*": [
+        "./node_modules/@sellmatch/ui/src/*"
+      ],
+      "@views/*": [
+        "./src/views-stub/*"
+      ],
+      "@components/*": [
+        "./src/views-stub/components/*"
+      ],
+      "@app/views/*": [
+        "./src/views-stub/*"
+      ],
+      "@app/*": [
+        "./src/views-stub/*"
+      ],
+      "@env/*": [
+        "./node_modules/@sellmatch/ui/src/environments/*"
+      ]
+    },
+    "baseUrl": "./",
+    "ignoreDeprecations": "6.0",
+    "types": [
+      "node"
+    ]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

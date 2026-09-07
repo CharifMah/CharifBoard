@@ -1,0 +1,59 @@
+<div class="mandat-item" [class.Premium]="Mandat.opportunity?.isPrio" (click)="OnVoirDetails()">
+
+    @if (Mandat.opportunity?.isPrio) {
+    <app-badge type="premium" position="top-right" size="md" [pulse]="true" [animated]="true">
+    </app-badge>
+    }
+
+    <div class="mandat-image">
+        <div class="image-placeholder">
+            <span class="material-icons">home</span>
+        </div>
+        <span class="statut-badge" [ngClass]="StatutClass">
+            {{ StatutLabel }}
+        </span>
+    </div>
+
+    <div class="mandat-content">
+        <div class="mandat-header">
+            <h4 class="mandat-adresse">{{ Mandat.opportunity?.address?.street || 'Adresse non renseignée' }}</h4>
+            <span class="mandat-zone">{{ Mandat.opportunity?.address?.postcode }} {{ Mandat.opportunity?.address?.city }}</span>
+        </div>
+
+        <div class="mandat-info">
+            <span class="info-item">
+                <span class="material-icons">home</span>
+                {{ Mandat.opportunity?.propertyType || 'Bien' }}
+            </span>
+            @if (Mandat.opportunity?.surface) {
+            <span class="info-item">
+                <span class="material-icons">square_foot</span>
+                {{ Mandat.opportunity?.surface }} m²
+            </span>
+            }
+        </div>
+
+        <div class="mandat-footer">
+            <div class="prix-commission">
+                <span class="prix">{{ PrixEstime }}</span>
+                <span class="commission">{{ Commission }}</span>
+            </div>
+
+            @if (Mandat.opportunity?.expiresAt && JoursRestants > 0) {
+            <div class="expiration" [class.urgent]="JoursRestants < 30">
+                <span class="material-icons">schedule</span>
+                {{ JoursRestants }} jours restants
+            </div>
+            }
+        </div>
+
+        <div class="date-acceptation">
+            <span class="material-icons">check_circle</span>
+            Accepté le {{ DateAcceptation }}
+        </div>
+    </div>
+
+    <div class="mandat-actions" (click)="$event.stopPropagation()">
+        <span class="material-icons">chevron_right</span>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+<app-section-card [Title]="'Mes mandats'" [ShowSeeAll]="ShowSeeAll" (SeeAllClick)="GoToMandats()">
+    <app-list [Items]="GetCurrentMandats()" [Loading]="MandatsLoading" [LoadingMessage]="'Chargement des mandats...'"
+        [EmptyMessage]="'Aucun mandat pour le moment'" [EmptyIcon]="'folder_open'" [Tabs]="GetMandatsTabs()"
+        [ActiveTab]="ActiveMandatTab" (TabChange)="SetActiveMandatTab($event)">
+
+        <ng-template #itemTemplate let-mandat>
+            <app-mandat-item [Mandat]="mandat" [StatutLabel]="this.State.GetStatutLabel($safeNavigationMigration(mandat.opportunity))"
+                [StatutClass]="this.State.GetStatutClass($safeNavigationMigration(mandat.opportunity))"
+                [PrixEstime]="this.State.GetMandatPrixEstime(mandat)"
+                [Commission]="this.State.GetMandatCommission(mandat)"
+                [JoursRestants]="this.State.GetJoursRestants($safeNavigationMigration(mandat.opportunity?.expiresAt))"
+                [DateAcceptation]="this.State.FormatDate(mandat.selectedAt)" (VoirDetails)="VoirDetailsMandat($event)">
+            </app-mandat-item>
+        </ng-template>
+
+    </app-list>
+</app-section-card>
+
+<app-lead-popup [(IsOpen)]="IsOpenPopup" [Application]="this.Lead"></app-lead-popup>

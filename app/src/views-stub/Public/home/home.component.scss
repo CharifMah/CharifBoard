@@ -1,0 +1,1282 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+//#region CSS Variables & Design Tokens
+.home-container {
+  // - cm - Shadows
+  --shadow-sm: #{$shadow-light};
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: #{$shadow-medium};
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: #{$shadow-heavy};
+  --shadow-glow: 0 0 40px rgba(var(--sm-primary-rgb), 0.3);
+  --shadow-glow-pink: 0 0 40px rgba(var(--sm-accent-rgb), 0.3);
+  // - cm - Spacing
+  --section-padding: 5rem;
+  // - cm - Border Radius
+  --radius-sm: #{$border-radius-sm};
+  --radius-md: #{$border-radius-md};
+  --radius-lg: #{$border-radius-lg};
+  --radius-xl: #{$border-radius-xl};
+  --radius-2xl: 2rem;
+  --radius-full: 9999px;
+  // - cm - Transitions
+  --transition-fast: #{$transition-fast};
+  --transition-base: #{$transition-normal};
+  --transition-slow: #{$transition-slow};
+
+  @include from-mobile {
+    --section-padding: 6rem;
+  }
+
+  @include from-tablet {
+    --section-padding: 8rem;
+  }
+}
+//#endregion
+
+//#region Keyframes
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes gradient-rotate {
+  0% {
+    transform: rotate(0deg) scale(1.5);
+  }
+
+  50% {
+    transform: rotate(180deg) scale(2);
+  }
+
+  100% {
+    transform: rotate(360deg) scale(1.5);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bg-glow-pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}
+//#endregion
+
+//#region Mixins
+@mixin container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  @media (min-width: 640px) {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  @include from-tablet {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@mixin gradient-primary {
+  background: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
+}
+
+@mixin gradient-text {
+  background: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@mixin glass-light {
+  background: $card-background;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(var(--sm-primary-rgb), 0.1);
+}
+//#endregion
+
+//#region Base Container
+.home-container {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+//#endregion
+
+//#region Hero Section
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8rem 0 10rem;
+  overflow: hidden;
+
+  @include mobile {
+    min-height: auto;
+    padding: 8rem 0 6rem;
+  }
+}
+
+.hero__content {
+  position: relative;
+  z-index: 1;
+  @include container;
+  max-width: 900px;
+  text-align: center;
+  color: $text-primary;
+}
+
+.hero__bg-image {
+  position: absolute;
+  top: -10%;
+  right: -10%;
+  width: 60%;
+  height: 120%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 1;
+  background: url('/assets/images/hero-illustration.png') no-repeat center center;
+  background-size: cover;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 10%, transparent 20%, black 100%);
+  mask-image: linear-gradient(to right, transparent 0%, transparent 10%, transparent 20%, black 100%);
+
+  @include mobile {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    right: 0;
+    opacity: 0.15;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
+.hero__tag {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 1.5rem;
+  padding: 0.35rem 1.25rem;
+  background: linear-gradient(135deg, rgba(var(--sm-primary-rgb), 0.08) 0%, rgba(var(--sm-accent-rgb), 0.08) 100%);
+  border-radius: var(--radius-full);
+  color: $primary-color;
+}
+
+.hero__title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 1.25rem;
+  color: $primary-dark;
+
+  @include from-mobile {
+    font-size: 3.5rem;
+  }
+
+  @include from-tablet {
+    font-size: 4rem;
+  }
+}
+
+.hero__subtitle {
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 1.25rem;
+  color: $primary-color;
+
+  @include from-mobile {
+    font-size: 1.6rem;
+  }
+}
+
+.hero__description {
+  font-size: 1rem;
+  color: $text-secondary;
+  max-width: 600px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.8;
+
+  @include from-mobile {
+    font-size: 1.125rem;
+  }
+}
+//#endregion
+
+//#region Hero Actions
+.hero__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 3rem;
+
+  @media (min-width: 640px) {
+    flex-direction: row;
+  }
+}
+
+.hero__stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem;
+  @include glass-light;
+  border-radius: var(--radius-xl);
+  box-shadow: $shadow;
+
+  @media (min-width: 640px) {
+    gap: 2.5rem;
+  }
+
+  @media (max-width: 639px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat__number {
+  display: block;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  @include gradient-text;
+
+  @media (min-width: 640px) {
+    font-size: 2rem;
+  }
+
+  .material-icons {
+    background: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+.stat__label {
+  font-size: 0.75rem;
+  color: $text-secondary;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat__divider {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, transparent, $border-color, transparent);
+
+  @media (max-width: 639px) {
+    width: 40px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, $border-color, transparent);
+  }
+}
+//#endregion
+
+//#region Transition entre sections
+.steps {
+  position: relative;
+  padding-top: 4rem;
+  background: linear-gradient(180deg, $background-color 0%, rgba(var(--sm-primary-rgb), 0.04) 100%); // - cm - Token thème au lieu de $white/$pink-50
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, rgba(var(--sm-primary-rgb), 0.02));
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @include from-mobile {
+    padding-top: 6rem;
+  }
+}
+
+// - cm - Halo décoratif flou en arrière-plan (touche créative, sans surcharger)
+.steps__halo {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 900px;
+  height: 60%;
+  background: radial-gradient(circle, rgba(var(--sm-primary-rgb), 0.12) 0%, rgba(var(--sm-accent-rgb), 0.06) 40%, transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.8;
+}
+
+.steps > .container {
+  position: relative;
+  z-index: 1;
+}
+
+.benefits {
+  position: relative;
+  padding: var(--section-padding) 0;
+  background: rgba(var(--sm-primary-rgb), 0.06); // - cm - Token thème au lieu de $purple-light
+
+  .container {
+    @include container;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: linear-gradient(to bottom, rgba(var(--sm-primary-rgb), 0.02), transparent);
+    pointer-events: none;
+  }
+}
+
+.cta {
+  position: relative;
+  padding: var(--section-padding) 0;
+  background: linear-gradient(180deg, $background-color 0%, rgba(var(--sm-primary-rgb), 0.03) 100%); // - cm - Token thème au lieu de $white/$pink-50
+
+  .container {
+    @include container;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(to bottom, transparent, rgba(var(--sm-primary-rgb), 0.03));
+    pointer-events: none;
+  }
+}
+//#endregion
+
+//#region Buttons
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all $transition-normal;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform $transition-normal;
+}
+
+.btn:hover .btn__icon {
+  transform: translateX(4px);
+}
+
+.btn--primary {
+  @include gradient-primary;
+  color: $white;
+  box-shadow: $btn-shadow;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, $primary-dark 0%, $accent-color 100%);
+    opacity: 0;
+    transition: opacity $transition-normal;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $btn-hover-shadow;
+  }
+
+    &:hover::before {
+      opacity: 1;
+    }
+
+  .btn__text,
+  .btn__icon {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.btn--ghost {
+  background: $card-background;
+  color: $primary-color;
+  border: 2px solid rgba(var(--sm-primary-rgb), 0.3); // - cm - Token thème au lieu de $primary-light
+  box-shadow: $shadow-light;
+
+  &:hover {
+    background: rgba(var(--sm-primary-rgb), 0.1); // - cm - Token thème au lieu de $primary-light
+    border-color: $primary-color;
+    transform: translateY(-2px);
+  }
+}
+
+.btn--secondary {
+  background: $card-background;
+  color: $text-primary;
+  border: 2px solid $border-color;
+  box-shadow: $shadow-light;
+
+  &:hover {
+    border-color: $primary-color;
+    color: $primary-color;
+    transform: translateY(-2px);
+    box-shadow: $shadow-medium;
+  }
+}
+
+.btn--lg {
+  padding: 1rem 2rem;
+  font-size: 1.0625rem;
+}
+
+.btn--xl {
+  padding: 1.125rem 2.5rem;
+  font-size: 1.125rem;
+}
+//#endregion
+
+//#region Section Header
+.section-header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 4rem;
+}
+
+.section-header--left {
+  text-align: left;
+  margin: 0 0 3rem;
+}
+
+.section-header__eyebrow {
+  display: inline-block;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: $primary-color;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+
+.section-header__title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: $text-primary;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+
+  @include from-mobile {
+    font-size: 2.25rem;
+  }
+
+  @include from-tablet {
+    font-size: 2.75rem;
+  }
+}
+
+.section-header__description {
+  font-size: 1.125rem;
+  color: $text-secondary;
+  line-height: 1.7;
+}
+//#endregion
+
+//#region Steps Section
+.steps {
+  padding: var(--section-padding) 0;
+  position: relative;
+
+  .container {
+    @include container;
+  }
+}
+
+// - cm - Timeline horizontale 3 étapes : rail en pointillés dégradé + cartes uniformes.
+.steps__timeline {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+
+  @include from-mobile {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    align-items: stretch;
+  }
+}
+
+// - cm - Rail pointillé connectant les 3 cartes (visible uniquement sur tablette+).
+.steps__rail {
+  display: none;
+  position: absolute;
+  top: 3.5rem;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background-image: linear-gradient(to right, rgba(var(--sm-primary-rgb), 0.5) 50%, transparent 50%);
+  background-size: 12px 2px;
+  background-repeat: repeat-x;
+  z-index: 0;
+  pointer-events: none;
+
+  @include from-mobile {
+    display: block;
+  }
+}
+
+.steps__footer {
+  margin-top: 3rem;
+  display: flex;
+  justify-content: center;
+
+  // - cm - Le badge long ne déborde pas sur mobile (nowrap global du composant badge)
+  app-badge {
+    max-width: 100%;
+  }
+
+  ::ng-deep .badge {
+    white-space: normal;
+    max-width: 100%;
+    text-align: center;
+  }
+}
+
+.step-card {
+  position: relative;
+  padding: 2rem 1.75rem 2.25rem;
+  background: $card-background;
+  border: 1px solid $border-color;
+  border-radius: var(--radius-xl);
+  transition: transform $transition-normal, box-shadow $transition-normal, border-color $transition-normal;
+  box-shadow: $shadow-light;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 1;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: $shadow, 0 0 0 1px rgba(var(--sm-primary-rgb), 0.15);
+    border-color: rgba(var(--sm-primary-rgb), 0.3);
+
+    .step-card__icon {
+      @include gradient-primary;
+      transform: scale(1.08);
+
+      svg {
+        color: $white;
+      }
+    }
+
+    .step-card__badge-inner {
+      @include gradient-text;
+    }
+  }
+}
+
+// - cm - Pastille numérotée au-dessus de la carte (chevauche le rail de la timeline).
+.step-card__badge {
+  position: relative;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: $card-background;
+  border: 2px solid rgba(var(--sm-primary-rgb), 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 12px rgba(var(--sm-primary-rgb), 0.15);
+  transition: border-color $transition-normal, box-shadow $transition-normal;
+  z-index: 2;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(var(--sm-primary-rgb), 0.12) 0%, rgba(var(--sm-accent-rgb), 0.12) 100%);
+    z-index: -1;
+  }
+}
+
+.step-card__badge-inner {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: $primary-color;
+  letter-spacing: 0.02em;
+  transition: all $transition-normal;
+}
+
+.step-card__icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(var(--sm-primary-rgb), 0.1) 0%, rgba(var(--sm-accent-rgb), 0.1) 100%);
+  border-radius: var(--radius-md);
+  margin-bottom: 1.25rem;
+  transition: all $transition-normal;
+
+  svg {
+    width: 1.875rem;
+    height: 1.875rem;
+    color: $primary-color;
+    transition: color $transition-normal;
+  }
+}
+
+.step-card__title {
+  font-size: 1.1875rem;
+  font-weight: 700;
+  color: $text-primary;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+.step-card__text {
+  font-size: 0.9375rem;
+  color: $text-secondary;
+  line-height: 1.7;
+  max-width: 32ch;
+}
+
+.highlight-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, rgba(var(--sm-primary-rgb), 0.08) 0%, rgba(var(--sm-accent-rgb), 0.08) 100%);
+  border: 1px solid rgba(var(--sm-primary-rgb), 0.2);
+  border-radius: var(--radius-full);
+  color: $text-primary;
+  font-weight: 600;
+}
+
+.highlight-box__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: $primary-color;
+}
+//#endregion
+
+//#region Benefits Section
+.benefits__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr); // - cm - minmax(0,1fr) évite le débordement (track sinon max-content)
+  gap: 4rem;
+  align-items: start;
+
+  @include from-tablet {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 5rem;
+  }
+}
+
+// - cm - Pricing summary rendu sous le layout 2 colonnes : pleine largeur,
+// espacement supérieur pour aérer visuellement après la liste des benefits.
+.benefits app-pricing-summary {
+  display: block;
+  grid-column: 1 / -1;
+  margin-top: $spacing-lg;
+}
+
+.benefits__content {
+  min-width: 0; // - cm - Autorise le rétrécissement de la grille sous min-content
+}
+
+.benefits__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.benefits__cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0; // - cm - Autorise le rétrécissement de la grille sous min-content
+
+  @include from-tablet {
+    position: sticky;
+    top: 2rem;
+  }
+}
+
+.benefit {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: $card-background;
+  border-radius: var(--radius-lg);
+  border: 1px solid $border-color;
+  transition: all $transition-normal;
+  box-shadow: $shadow-light;
+
+  &:hover {
+    transform: translateX(8px);
+    box-shadow: $shadow;
+    border-color: transparent;
+
+    .benefit__icon {
+      @include gradient-primary;
+
+      svg {
+        color: $white;
+      }
+    }
+  }
+}
+
+.benefit__icon {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(var(--sm-primary-rgb), 0.1) 0%, rgba(var(--sm-accent-rgb), 0.1) 100%);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  transition: all $transition-normal;
+
+  svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: $primary-color;
+    transition: color $transition-normal;
+  }
+}
+
+.benefit__content {
+  flex: 1;
+  min-width: 0; // - cm - Empêche le débordement des longs textes en flex
+}
+
+.benefit__title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: $text-primary;
+  margin-bottom: 0.25rem;
+}
+
+.benefit__text {
+  font-size: 0.875rem;
+  color: $text-secondary;
+  line-height: 1.6;
+}
+//#endregion
+
+//#region Pricing Cards
+.pricing-card {
+  position: relative;
+  padding: 2rem;
+  background: $card-background;
+  border-radius: var(--radius-xl);
+  border: 1px solid $border-color;
+  transition: all $transition-normal;
+  box-shadow: $shadow-light;
+  max-width: 100%; // - cm - Empêche le débordement à droite sur mobile
+  min-width: 0; // - cm - Autorise le rétrécissement en flex/grid
+  overflow-wrap: break-word; // - cm - Coupe les mots longs
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow;
+  }
+}
+
+.pricing-card--free:hover {
+  border-color: $info-color;
+}
+
+.pricing-card--premium {
+  background: linear-gradient(135deg, rgba(var(--sm-primary-rgb), 0.08) 0%, rgba(var(--sm-accent-rgb), 0.08) 100%); // - cm - Token thème au lieu de $pink-50/$purple-light
+  border-color: rgba(var(--sm-primary-rgb), 0.2);
+
+  &:hover {
+    box-shadow: $shadow, var(--shadow-glow);
+  }
+}
+
+.pricing-card__ribbon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  @include gradient-primary;
+  color: $white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  border-radius: 0 var(--radius-xl) 0 var(--radius-md);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pricing-card__header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid $border-color;
+}
+
+.pricing-card__badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: $surface-muted;
+  color: $text-secondary;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: var(--radius-full);
+  margin-bottom: 0.75rem;
+}
+
+.pricing-card--premium .pricing-card__badge {
+  background: linear-gradient(135deg, rgba(var(--sm-primary-rgb), 0.15) 0%, rgba(var(--sm-accent-rgb), 0.15) 100%);
+  color: $primary-color;
+}
+
+.pricing-card__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: $text-primary;
+  margin-bottom: 0.75rem;
+}
+
+.pricing-card__price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.pricing-card__amount {
+  font-size: 3rem;
+  font-weight: 800;
+  color: $text-primary;
+}
+
+.pricing-card--premium .pricing-card__amount {
+  @include gradient-text;
+}
+
+.pricing-card__period {
+  font-size: 1rem;
+  color: $text-secondary;
+}
+
+.pricing-card__features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.9375rem;
+    color: $text-primary;
+
+    svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: $success-color;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+  }
+}
+
+.feature-item {
+  display: flex;
+  flex-direction: column;
+  min-width: 0; // - cm - Empêche le débordement des descriptions en flex
+}
+
+.feature-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+
+  span {
+    font-weight: 600;
+    color: $text-primary;
+  }
+}
+
+.feature-check {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: $success-color;
+  flex-shrink: 0;
+}
+
+.feature-description {
+  margin: 0;
+  padding-left: 1.75rem;
+  font-size: 0.875rem;
+  color: $text-secondary;
+  line-height: 1.5;
+}
+
+.pricing-card__note {
+  font-size: 0.8125rem;
+  color: $text-secondary;
+  font-style: italic;
+  padding-top: 1rem;
+  border-top: 1px dashed $border-color;
+}
+
+.pricing-card__savings {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: $success-light;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $success-color;
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+  }
+}
+
+// - cm - Badge de savings dans la carte premium : ne déborde pas sur mobile
+.pricing-card app-badge {
+  max-width: 100%;
+  display: block;
+}
+
+.pricing-card ::ng-deep .badge {
+  white-space: normal;
+  max-width: 100%;
+}
+//#endregion
+
+//#region CTA Section
+.cta__background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.cta__pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(at 40% 20%, rgba(var(--sm-primary-rgb), 0.15) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(var(--sm-accent-rgb), 0.1) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba($info-color, 0.08) 0px, transparent 50%), radial-gradient(at 80% 50%, rgba(var(--sm-primary-rgb), 0.1) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(var(--sm-accent-rgb), 0.08) 0px, transparent 50%);
+  opacity: 0.5;
+}
+
+.cta__content {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+  color: $text-primary;
+}
+
+.cta__title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  color: $text-primary;
+
+  @include from-mobile {
+    font-size: 2.25rem;
+  }
+
+  @include from-tablet {
+    font-size: 2.75rem;
+  }
+}
+
+.cta__description {
+  font-size: 1.125rem;
+  color: $text-secondary;
+  margin-bottom: 2.5rem;
+  line-height: 1.7;
+}
+
+.cta__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+
+  @media (min-width: 640px) {
+    flex-direction: row;
+  }
+}
+
+.cta__trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: $text-secondary;
+  background: $card-background;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  box-shadow: $shadow-light;
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: $primary-color;
+  }
+}
+//#endregion
+
+//#region Responsive Adjustments
+@include mobile {
+  .hero {
+    padding: 6rem 1rem 4rem;
+    min-height: auto;
+  }
+
+  .hero__title {
+    font-size: 1.75rem;
+  }
+
+  .hero__subtitle {
+    font-size: 1.1rem;
+  }
+
+  .hero__description {
+    font-size: 0.95rem;
+  }
+
+  .steps {
+    padding-top: 3rem;
+  }
+
+  .steps__grid {
+    gap: 1.5rem;
+  }
+
+  .benefits {
+    padding: 3rem 0;
+  }
+
+  .benefits__layout {
+    gap: 2rem;
+  }
+
+  .cta {
+    padding: 3rem 0;
+  }
+
+  .section-header {
+    margin-bottom: 2rem;
+  }
+
+  .section-header__title {
+    font-size: 1.5rem;
+  }
+
+  .pricing-card {
+    padding: 1.5rem;
+  }
+
+  .pricing-card__amount {
+    font-size: 2.5rem;
+  }
+}
+//#endregion
+
+//#region XS / Small — iPhone SE (<=375px) & petits mobiles (<=480px)
+// - cm - Cible les débordements horizontaux sur très petits viewports
+@include small {
+  // - cm - Réduit le padding du container pour gagner de la largeur utile
+  .home-container .container,
+  .steps .container,
+  .benefits .container,
+  .cta .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  // - cm - Cartes : padding réduit + bornage largeur
+  .step-card,
+  .pricing-card {
+    padding: 1.25rem;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  // - cm - Numéro de step trop grand à 375px
+  .step-card__number span {
+    font-size: 2.25rem;
+  }
+
+  // - cm - Montant prix réduit pour rester dans la carte
+  .pricing-card__amount {
+    font-size: 2.25rem;
+  }
+
+  .pricing-card__title {
+    font-size: 1.25rem;
+  }
+
+  // - cm - Badge long en pied de steps : autorise le retour à la ligne
+  .steps__footer .badge {
+    white-space: normal;
+    text-align: center;
+  }
+
+  // - cm - Badge économie (carte premium) : autorise le retour à la ligne
+  .pricing-card--premium .badge {
+    white-space: normal;
+    text-align: center;
+  }
+
+  // - cm - Avantages : icône légèrement plus petite pour libérer le texte
+  .benefit {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .benefit__icon {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  // - cm - Descriptions de features : bornage pour le retour à la ligne
+  .feature-description {
+    padding-left: 1.5rem;
+  }
+}
+
+@include xs {
+  // - cm - Très petit viewport (iPhone SE 375px) : serre encore le padding
+  .home-container .container,
+  .steps .container,
+  .benefits .container,
+  .cta .container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .step-card,
+  .pricing-card {
+    padding: 1rem;
+  }
+
+  .step-card__number span {
+    font-size: 2rem;
+  }
+
+  .hero__title {
+    font-size: 1.5rem;
+  }
+
+  .hero__subtitle {
+    font-size: 1rem;
+  }
+
+  .section-header__title {
+    font-size: 1.35rem;
+  }
+
+  .cta__title {
+    font-size: 1.5rem;
+  }
+
+  // - cm - Ruban RECOMMANDÉ réduit pour ne pas déborder
+  .pricing-card__ribbon {
+    font-size: 0.65rem;
+    padding: 0.35rem 0.75rem;
+  }
+}
+//#endregion

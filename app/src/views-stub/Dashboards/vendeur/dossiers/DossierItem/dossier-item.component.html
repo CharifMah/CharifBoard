@@ -1,0 +1,65 @@
+@if (Dossier) {
+<div class="dossier-card" [class.selected]="IsSelected" [class.Premium]="Dossier.isPrio" (click)="OnCardClick()">
+
+    @if (Dossier.isPrio) {
+    <app-badge type="premium" position="top-right" size="md" [pulse]="true" [animated]="true">
+    </app-badge>
+    }
+
+    <div class="dossier-image">
+        <div class="image-placeholder property">
+            <span class="material-icons">home</span>
+        </div>
+        @if (Dossier.idStatusNavigation?.status) {
+        <app-badge
+            [type]="GetStatutBadgeType($safeNavigationMigration(Dossier.idStatusNavigation?.status))"
+            [label]="GetStatutLabel(Dossier.idStatusNavigation?.status)"
+            variant="soft"
+            size="sm"
+            position="top-left"
+            [showIcon]="false">
+        </app-badge>
+        }
+    </div>
+
+    <div class="dossier-info">
+        <h3>{{ Dossier.address?.street }}</h3>
+
+        <p class="dossier-location">
+            <span class="material-icons">location_on</span>
+            {{ Dossier.address?.city }}, {{ Dossier.address?.postcode }}
+        </p>
+
+        <div class="dossier-details">
+            <span class="detail">
+                <span class="material-icons">home</span>
+                {{ Dossier.propertyType }}
+            </span>
+            <span class="detail">
+                <span class="material-icons">square_foot</span>
+                {{ Dossier.surface }} m²
+            </span>
+        </div>
+
+        <div class="dossier-footer">
+            <div class="prix-range">
+                <span class="prix-min">{{ FormatPrice(Dossier.priceRangeMin) }}</span>
+                <span class="prix-separator">→</span>
+                <span class="prix-max">{{ FormatPrice(Dossier.priceRangeMax) }}</span>
+            </div>
+            <span class="candidats">
+                <span class="material-icons">people</span>
+                {{ Dossier.applications?.length ?? 0 }} candidats
+            </span>
+        </div>
+
+        <p class="dossier-date">Créé le {{ this.FormatDate(Dossier.createdAt) }}</p>
+    </div>
+
+    @if (ShowDeleteButton) {
+    <app-button class="btn-delete" variant="ghost" [circle]="true" size="sm"
+      icon="delete" ariaLabel="Supprimer le dossier" animTrigger="none"
+      (ButtonClick)="OnDeleteClick($event)" />
+    }
+</div>
+}

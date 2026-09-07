@@ -1,0 +1,336 @@
+﻿<!-- - cm - Directive appTranslate : déclare le namespace i18n 'crm-dashboard' pour toute la page.
+                Les pipes `tkey` enfants lisent ce namespace automatiquement (sans argument).
+                Permet d'utiliser 'title' | tkey, 'sections.*' | tkey, etc. sans computed<string> TS.
+                - cm - La classe .crm-dashboard (SCSS : display:flex + gap:$spacing-xl) assure
+                - cm - l'espacement vertical entre header / KPI cards / sections / footer. -->
+<section class="crm-dashboard" appTranslate [ns]="'crm-dashboard'">
+
+  <app-dashboard-header
+    [title]="'title' | tkey"
+    [subtitle]="'subtitle' | tkey"
+    [icon]="'dashboard'"
+    [variant]="'hero'">
+  </app-dashboard-header>
+
+    @if (StatCardsLoading()) {
+    <app-card-skeleton [Count]="6" />
+    } @else {
+    <div class="crm-dashboard__grid">
+        @for (lCard of StatCards(); track lCard.Label) {
+        <app-stat-card
+            [label]="'statCards.' + lCard.LabelKey + '.label' | tkey"
+            [value]="lCard.Value"
+            [icon]="lCard.Icon"
+            [hint]="'statCards.' + lCard.LabelKey + '.hint' | tkey"
+            [formula]="'statCards.' + lCard.LabelKey + '.formula' | tkey"
+            [accent]="lCard.Accent"
+            [variant]="'glass-morphism'"
+            [clickable]="true"
+            (cardClick)="OnCardClick(lCard.Label, lCard.View)" />
+        }
+    </div>
+    }
+
+    @if (MapAnnivLoading()) {
+    <div class="crm-dashboard__sections crm-dashboard__sections--with-divider">
+        <app-section-card [Title]="'sections.carteBiensMapTitle' | tkey" Icon="map">
+            <div class="crm-dashboard__block-skeleton"></div>
+        </app-section-card>
+        <div class="crm-dashboard__divider" aria-hidden="true"></div>
+        <app-section-card [Title]="'sections.anniversairesJour' | tkey" Icon="cake">
+            <div class="crm-dashboard__block-skeleton"></div>
+        </app-section-card>
+    </div>
+    } @else {
+    <div class="crm-dashboard__sections crm-dashboard__sections--with-divider">
+        <app-section-card [Title]="'sections.carteBiens' | tkey" Icon="map">
+            <app-map-card [Markers]="MapMarkers()" [ShowStyleSelector]="true" [Height]="360"
+                [FitBounds]="true"
+                [Title]="'sections.carteBiensPropertiesTitle' | tkey"
+                Icon="map"
+                (MarkerClick)="OnMarkerClick($event)" />
+            @if (MapMarkers().length === 0) {
+                <p class="crm-dashboard__empty">{{ 'empty.aucunBienGps' | tkey }}</p>
+            }
+        </app-section-card>
+
+        <div class="crm-dashboard__divider" aria-hidden="true"></div>
+
+        <app-section-card [Title]="'sections.anniversairesJour' | tkey" Icon="cake">
+            @if (AnniversairesDuJour().length === 0) {
+                <p class="crm-dashboard__empty">{{ 'empty.aucunAnniversaire' | tkey }}</p>
+            } @else {
+                <ul class="crm-dashboard__list">
+                    @for (lContact of AnniversairesDuJour(); track lContact.id) {
+                    <li class="crm-dashboard__list-item">
+                        <span class="material-icons crm-dashboard__list-icon">person</span>
+                        <span class="crm-dashboard__list-label">{{ lContact.prenom }} {{ lContact.nom }}</span>
+                        <app-badge type="hot" icon="cake" [showIcon]="true" />
+                    </li>
+                    }
+                </ul>
+            }
+        </app-section-card>
+    </div>
+    }
+
+    @if (ObjectifCaLoading()) {
+    <div class="crm-dashboard__sections crm-dashboard__sections--full">
+        <app-section-card [Title]="'sections.objectifAnnuel' | tkey" Icon="flag">
+            <div class="crm-dashboard__block-skeleton"></div>
+        </app-section-card>
+        <app-section-card [Title]="'sections.caEncaisse' | tkey" Icon="payments">
+            <div class="crm-dashboard__block-skeleton"></div>
+        </app-section-card>
+    </div>
+    } @else {
+    <div class="crm-dashboard__sections crm-dashboard__sections--full">
+        <app-section-card [Title]="'sections.objectifAnnuel' | tkey" Icon="flag">
+            <div class="crm-dashboard__gauge">
+                <div class="crm-dashboard__gauge-bar">
+                    <div class="crm-dashboard__gauge-fill" [style.width.%]="CaProgression()"></div>
+                </div>
+                <div class="crm-dashboard__gauge-stats">
+                    <div class="crm-dashboard__gauge-stat">
+                        <span class="crm-dashboard__gauge-label">{{ 'gauge.atteint' | tkey }}</span>
+                        <span class="crm-dashboard__gauge-value">{{ FormatPrice(CaEncaisseAnnee()) }}</span>
+                    </div>
+                    <div class="crm-dashboard__gauge-stat">
+                        <span class="crm-dashboard__gauge-label">{{ 'gauge.restant' | tkey }}</span>
+                        <span class="crm-dashboard__gauge-value">{{ FormatPrice(CaRestant()) }}</span>
+                    </div>
+                    <div class="crm-dashboard__gauge-stat">
+                        <span class="crm-dashboard__gauge-label">{{ 'gauge.progression' | tkey }}</span>
+                        <span class="crm-dashboard__gauge-value">{{ CaProgression() | number:'1.0-0' }} %</span>
+                    </div>
+                </div>
+                @if (HasAffairesSansDate()) {
+                <button type="button" class="crm-dashboard__warning" (click)="OnAffaireSansDateClick()"
+                    [attr.aria-label]="'warnings.affaireSansDateAria' | tkey">
+                    <app-badge type="warning" icon="warning" [showIcon]="true" />
+                    <span class="crm-dashboard__warning-text">
+                        <strong>{{ AffairesSansDateCount() }} {{ 'warnings.affaireSansDateCount' | tkey }}</strong>
+                        <span class="crm-dashboard__warning-detail">
+                            {{ AffairesSansDateLabel() }} — {{ 'warnings.affaireSansDateExplication' | tkey }}
+                        </span>
+                    </span>
+                </button>
+                }
+            </div>
+        </app-section-card>
+
+        <app-section-card [Title]="'sections.caEncaisse' | tkey" Icon="payments">
+            @if (HasAffairesSansDate()) {
+            <div class="crm-dashboard__ca-warning">
+                <app-badge type="warning" icon="warning" [showIcon]="true" />
+                <span class="crm-dashboard__ca-warning-text">
+                    {{ 'warnings.affaireSansDateCaIntro' | tkey }} <strong>{{ AffairesSansDateCount() }}</strong>
+                    {{ 'warnings.affaireSansDateCaDetail' | tkey }}
+                    <button type="button" class="crm-dashboard__ca-warning-link" (click)="OnAffaireSansDateClick()">
+                        {{ 'warnings.affaireSansDateCaAction' | tkey }}
+                    </button>
+                </span>
+            </div>
+            }
+            <div class="crm-dashboard__ca-filters">
+                <app-button variant="primary" size="sm" [outline]="CaFilterMode() !== 'annee'"
+                    (ButtonClick)="OnCaFilterChange('annee')">{{ 'filterCa.annee' | tkey }}</app-button>
+                <app-button variant="primary" size="sm" [outline]="CaFilterMode() !== 'mois'"
+                    (ButtonClick)="OnCaFilterChange('mois')">{{ 'filterCa.mois' | tkey }}</app-button>
+                <app-button variant="primary" size="sm" [outline]="CaFilterMode() !== 'periode'"
+                    (ButtonClick)="OnCaFilterChange('periode')">{{ 'filterCa.periode' | tkey }}</app-button>
+            </div>
+            @if (CaFilterMode() === 'periode') {
+            <div class="crm-dashboard__ca-periode">
+                <app-input type="date" [label]="'filterCa.dateDebut' | tkey" [value]="CaPeriodeDebut()"
+                    (valueChange)="OnPeriodeDebutChange($event)" />
+                <app-input type="date" [label]="'filterCa.dateFin' | tkey" [value]="CaPeriodeFin()"
+                    (valueChange)="OnPeriodeFinChange($event)" />
+            </div>
+            }
+            <div class="crm-dashboard__ca-amount">
+                <span class="crm-dashboard__ca-amount-label">{{ 'filterCa.montantEncaisse' | tkey }}</span>
+                <span class="crm-dashboard__ca-amount-value">{{ FormatPrice(CaEncaisseFiltered()) }}</span>
+            </div>
+            @if (CaEncaisseChartOption()) {
+            <div class="crm-dashboard__chart">
+                <app-chart [Option]="CaEncaisseChartOption()" [Height]="320"
+                    (BarClick)="OnChartBarClick($event)" />
+            </div>
+            }
+        </app-section-card>
+    </div>
+    }
+
+    @if (TachesRelancesLoading()) {
+    <div class="crm-dashboard__sections crm-dashboard__sections--full">
+        <app-section-card [Title]="'sections.tachesAEffectuer' | tkey" Icon="task_alt">
+            <div class="crm-dashboard__block-skeleton"></div>
+        </app-section-card>
+        <app-section-card [Title]="'sections.contactsRelancer' | tkey" Icon="campaign">
+            <div class="crm-dashboard__block-skeleton"></div>
+        </app-section-card>
+    </div>
+    } @else {
+    <div class="crm-dashboard__sections crm-dashboard__sections--full">
+        <app-section-card [Title]="'sections.tachesAEffectuer' | tkey" Icon="task_alt">
+            <div class="crm-dashboard__taches">
+                <div class="crm-dashboard__taches-group crm-dashboard__taches-group--danger">
+                    <div class="crm-dashboard__taches-head">
+                        <span class="crm-dashboard__taches-title">{{ 'taches.enRetard' | tkey }}</span>
+                        <app-badge type="error" [count]="TachesRetard().length" />
+                    </div>
+                    @if (TachesRetard().length === 0) {
+                    <p class="crm-dashboard__empty">{{ 'empty.aucuneTacheRetard' | tkey }}</p>
+                    } @else {
+                    <ul class="crm-dashboard__list">
+                        @for (lTache of TachesRetard(); track lTache.id) {
+                        <li class="crm-dashboard__list-item">
+                            <span class="material-icons crm-dashboard__list-icon">priority_high</span>
+                            <span class="crm-dashboard__list-label">{{ lTache.nom }}</span>
+                        </li>
+                        }
+                    </ul>
+                    }
+                </div>
+
+                <div class="crm-dashboard__taches-group crm-dashboard__taches-group--warning">
+                    <div class="crm-dashboard__taches-head">
+                        <span class="crm-dashboard__taches-title">{{ 'taches.aujourdhui' | tkey }}</span>
+                        <app-badge type="warning" [count]="TachesAujourdhui().length" />
+                    </div>
+                    @if (TachesAujourdhui().length === 0) {
+                    <p class="crm-dashboard__empty">{{ 'empty.aucuneTacheAujourdhui' | tkey }}</p>
+                    } @else {
+                    <ul class="crm-dashboard__list">
+                        @for (lTache of TachesAujourdhui(); track lTache.id) {
+                        <li class="crm-dashboard__list-item">
+                            <span class="material-icons crm-dashboard__list-icon">today</span>
+                            <span class="crm-dashboard__list-label">{{ lTache.nom }}</span>
+                        </li>
+                        }
+                    </ul>
+                    }
+                </div>
+
+                <div class="crm-dashboard__taches-group crm-dashboard__taches-group--info">
+                    <div class="crm-dashboard__taches-head">
+                        <span class="crm-dashboard__taches-title">{{ 'taches.demain' | tkey }}</span>
+                        <app-badge type="info" [count]="TachesDemain().length" />
+                    </div>
+                    @if (TachesDemain().length === 0) {
+                    <p class="crm-dashboard__empty">{{ 'empty.aucuneTacheDemain' | tkey }}</p>
+                    } @else {
+                    <ul class="crm-dashboard__list">
+                        @for (lTache of TachesDemain(); track lTache.id) {
+                        <li class="crm-dashboard__list-item">
+                            <span class="material-icons crm-dashboard__list-icon">event</span>
+                            <span class="crm-dashboard__list-label">{{ lTache.nom }}</span>
+                        </li>
+                        }
+                    </ul>
+                    }
+                </div>
+            </div>
+        </app-section-card>
+
+        <app-section-card [Title]="'sections.contactsRelancer' | tkey" Icon="campaign">
+            @if (ContactsARelancer().length === 0) {
+            <p class="crm-dashboard__empty">{{ 'empty.aucunContactRelance' | tkey }}</p>
+            } @else {
+            <ul class="crm-dashboard__list">
+                @for (lContact of ContactsARelancer(); track lContact.id) {
+                <li class="crm-dashboard__list-item">
+                    <span class="material-icons crm-dashboard__list-icon">person</span>
+                    <span class="crm-dashboard__list-label">{{ lContact.prenom }} {{ lContact.nom }}</span>
+                    <app-button variant="ghost" size="sm" icon="visibility_off"
+                        (ButtonClick)="HideRelance(lContact.id!)">{{ 'masquer' | tkey }}</app-button>
+                </li>
+                }
+            </ul>
+            }
+        </app-section-card>
+    </div>
+    }
+
+    <!-- Popup grille éditable après clic sur un marker de la carte. -->
+    <!-- Switch case sur EMarkerType : aiguille vers la bonne grille selon le type de marker cliqué. -->
+    <app-popup [isOpen]="ShowMarkerPopup()"
+               (isOpenChange)="OnMarkerPopupClosed()"
+               (closed)="OnMarkerPopupClosed()"
+               [title]="SelectedMarker()?.Title || 'Détail du bien'"
+               [icon]="SelectedMarkerType() === EMarkerType.Location ? 'key' : SelectedMarkerType() === EMarkerType.Transaction ? 'sell' : 'home_work'"
+               type="info" size="large" [showFooter]="false" [showCloseButton]="true">
+
+        @switch (SelectedMarkerType()) {
+
+        @case (EMarkerType.Transaction) {
+        @if (SelectedTransaction(); as lSelectedTransaction) {
+        <app-transaction-grid
+            [Data]="[lSelectedTransaction]"
+            [Loading]="false"
+            [Filterable]="false"
+            [RefOptions]="RefOptions()"
+            (ActionClicked)="SurTransactionActionClic($event)"
+            (RowCreated)="SurTransactionCreee($event)" />
+        }
+        }
+
+        @case (EMarkerType.Location) {
+        @if (SelectedLocation(); as lSelectedLocation) {
+        <app-location-grid
+            [Data]="[lSelectedLocation]"
+            [Loading]="false"
+            [Filterable]="false"
+            [RefOptions]="RefOptions()"
+            (ActionClicked)="SurLocationActionClic($event)"
+            (RowCreated)="SurLocationCreee($event)" />
+        }
+        }
+
+        @case (EMarkerType.Property) {
+        @if (SelectedProperty(); as lSelectedProperty) {
+        <app-property-grid
+            [Data]="[lSelectedProperty]"
+            [Loading]="false"
+            [Filterable]="false"
+            [RefOptions]="RefOptions()"
+            (ActionClicked)="SurProprieteActionClic($event)"
+            (RowCreated)="SurProprieteCreee($event)" />
+        }
+        }
+
+        }
+    </app-popup>
+
+    <!-- Popups de confirmation de suppression (transaction / location / property). -->
+    <app-popup [(isOpen)]="ShowDeleteTransactionPopup" title="Confirmer la suppression"
+        subtitle="Cette action est irréversible." icon="delete" type="error" size="small"
+        [showFooter]="true" confirmText="Supprimer" cancelText="Annuler"
+        [confirmLoading]="Deleting()" (confirmed)="OnConfirmDeleteTransaction()"
+        (cancelled)="OnCancelDeleteTransaction()" (closed)="OnCancelDeleteTransaction()">
+        @if (RowToDeleteTransaction()) {
+        <p>Voulez-vous vraiment supprimer cette transaction ?</p>
+        }
+    </app-popup>
+
+    <app-popup [(isOpen)]="ShowDeleteLocationPopup" title="Confirmer la suppression"
+        subtitle="Cette action est irréversible." icon="delete" type="error" size="small"
+        [showFooter]="true" confirmText="Supprimer" cancelText="Annuler"
+        [confirmLoading]="Deleting()" (confirmed)="OnConfirmDeleteLocation()"
+        (cancelled)="OnCancelDeleteLocation()" (closed)="OnCancelDeleteLocation()">
+        @if (RowToDeleteLocation()) {
+        <p>Voulez-vous vraiment supprimer cette location ?</p>
+        }
+    </app-popup>
+
+    <app-popup [(isOpen)]="ShowDeletePropertyPopup" title="Confirmer la suppression"
+        subtitle="Cette action est irréversible." icon="delete" type="error" size="small"
+        [showFooter]="true" confirmText="Supprimer" cancelText="Annuler"
+        [confirmLoading]="Deleting()" (confirmed)="OnConfirmDeleteProperty()"
+        (cancelled)="OnCancelDeleteProperty()" (closed)="OnCancelDeleteProperty()">
+        @if (RowToDeleteProperty()) {
+        <p>Voulez-vous vraiment supprimer ce bien ?</p>
+        }
+    </app-popup>
+</section>
