@@ -1,0 +1,23 @@
+@for (slider of Sliders; track slider.Title; let i = $index) {
+  <div class="slider">
+    <h2>{{ slider.Title }}</h2>
+
+    <div class="buttons">
+      @for (n of [].constructor(slider.Count); track n; let idx = $index) {
+        <a [href]="'#' + SlideId(i, idx + 1)">{{ idx + 1 }}</a>
+      }
+    </div>
+
+    <div class="slides">
+      @for (n of [].constructor(slider.Count); track n; let idx = $index) {
+        <div [id]="SlideId(i, idx + 1)">
+          @if (slider.IsVideo) {
+            <video [src]="ItemSrc(slider, idx + 1)" controls preload="metadata"></video>
+          } @else {
+            <img [src]="ItemSrc(slider, idx + 1)" [alt]="slider.Title + ' ' + (idx + 1)" loading="lazy" />
+          }
+        </div>
+      }
+    </div>
+  </div>
+}

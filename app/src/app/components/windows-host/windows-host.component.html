@@ -1,0 +1,23 @@
+@if (IsOpen('cvWindows')) {
+  <div class="window" id="cvWindows">
+    <button (click)="Windows.Close('cvWindows')">Fermer ❌</button>
+    <iframe src="images/CV.pdf" title="CV Mahmoud Charif"></iframe>
+  </div>
+}
+
+@if (IsOpen('Comp')) {
+  <div class="window" id="Comp">
+    <button (click)="Windows.Close('Comp')">Fermer ❌</button>
+    <ul class="grid-container">
+      @for (icon of TechIcons; track icon.Alt) {
+        <li>
+          @if (icon.DeviconClass) {
+            <i [class]="icon.DeviconClass"></i>
+          } @else {
+            <i><img [alt]="icon.Alt" [src]="icon.ImageUrl" /></i>
+          }
+        </li>
+      }
+    </ul>
+  </div>
+}

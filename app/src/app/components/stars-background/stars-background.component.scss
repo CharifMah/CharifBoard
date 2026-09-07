@@ -1,0 +1,16 @@
+:host {
+  display: contents;
+}
+
+canvas {
+  position: fixed;
+  width: 100%;
+  left: 0%;
+  height: 100%;
+}
+
+@media only screen and (max-width: 1000px) {
+  canvas {
+    z-index: -1;
+  }
+}

@@ -1,0 +1,18 @@
+.left-text {
+  font-size: 1.1rem;
+  display: flex;
+  width: 65%;
+  text-align: center;
+  justify-content: center;
+  margin: 0 auto;
+  animation: slide-in 4s forwards;
+}
+
+@keyframes slide-in {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

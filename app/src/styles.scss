@@ -1,0 +1,133 @@
+/* ============================================
+   Styles globaux CharifBoard (portage Style.css)
+   ============================================ */
+
+* {
+  box-sizing: border-box;
+  transition: all 700ms;
+}
+
+body {
+  height: 110vh;
+  margin: 0;
+  background-color: #6994c3;
+  background-image: radial-gradient(circle at top right, rgba(255, 255, 255, 0.239), transparent),
+    radial-gradient(circle at 20% 80%, rgba(0, 0, 0, 0.13), transparent);
+  font-family: 'Segoe UI', 'DejaVu Sans', Arial, sans-serif;
+}
+
+canvas {
+  position: fixed;
+  width: 100%;
+  left: 0%;
+  height: 100%;
+}
+
+button {
+  background-color: #333333;
+  box-shadow: rgba(176, 213, 255, 0.25) 0 -25px 18px -14px inset,
+  rgba(187, 216, 255, 0.16) 0 1px 2px, rgba(255, 255, 255, 0.12) 0 2px 4px,
+  rgba(0, 130, 255, 0.61) 0 4px 8px, rgba(89, 156, 255, 0.25) 0 8px 16px,
+  rgba(229, 236, 255, 0.25) 0 16px 32px;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 7px 20px;
+  border: 0;
+  text-align: center;
+}
+
+button:hover {
+  background-color: white;
+  color: black;
+  box-shadow: rgba(44, 101, 187, 0.35) 0 -25px 18px -14px inset,
+  rgba(59, 139, 255, 0.25) 0 1px 2px, rgba(44, 123, 187, 0.25) 0 2px 4px,
+  rgba(44, 116, 187, 0.25) 0 4px 8px, rgba(89, 156, 255, 0.25) 0 8px 16px,
+  rgba(141, 175, 255, 0.25) 0 16px 32px;
+  border-radius: 30px;
+  transform: scale(1.05) rotate(-1deg);
+}
+
+/* Fenêtres modales (CV, compétences) */
+.window {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding-top: 20px;
+}
+
+.window.show {
+  display: block;
+}
+
+.window button {
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+
+.window iframe {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  margin: 0 auto;
+  height: 90%;
+}
+
+/* Grille des compétences */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-gap: 2vw;
+  text-align: center;
+  margin-bottom: 7vw;
+}
+
+.grid-container li i {
+  font-size: 7vw;
+}
+
+.grid-container li i img {
+  width: 6vw;
+  height: 6vw;
+}
+
+.grid-container li i img:hover {
+  width: 7vw;
+  height: 7vw;
+}
+
+.grid-container li::marker {
+  color: transparent;
+}
+
+.grid-container li i:hover {
+  font-size: 8vw;
+}
+
+@media only screen and (max-width: 1000px) {
+  canvas {
+    z-index: -1;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-gap: 10px;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .grid-container {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-gap: 5px;
+  }
+}

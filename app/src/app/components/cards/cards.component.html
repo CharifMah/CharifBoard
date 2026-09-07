@@ -1,0 +1,21 @@
+<div class="cards">
+  @for (card of Cards; track card.Title) {
+    @if (card.Href) {
+      <a class="card" [class]="card.CssClass" [href]="card.Href" target="_blank">
+        <div class="colour"></div>
+        <div class="card-text">
+          <h3>{{ card.Title }}</h3>
+        </div>
+        <div class="colour-bottom"></div>
+      </a>
+    } @else {
+      <div class="card" [class]="card.CssClass" (click)="OnCardClick(card)">
+        <div class="colour"></div>
+        <div class="card-text">
+          <h3>{{ card.Title }}</h3>
+        </div>
+        <div class="colour-bottom"></div>
+      </div>
+    }
+  }
+</div>

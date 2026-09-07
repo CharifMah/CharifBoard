@@ -1,5 +1,13 @@
-.vs
-package-lock.json
-Web.config
-.idea
+# Angular
+app/node_modules/
+app/dist/
+app/.angular/
+app/out-tsc/
 
+# NPM
+npm-debug.log*
+.npm/
+
+# Divers
+.DS_Store
+Thumbs.db

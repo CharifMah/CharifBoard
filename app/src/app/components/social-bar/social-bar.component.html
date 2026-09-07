@@ -1,0 +1,7 @@
+<div class="social-bar">
+  @for (link of Links; track link.name) {
+    <a [href]="link.url" target="_blank" [attr.aria-label]="link.name">
+      <i><img [alt]="link.name" class="social-icon" [src]="link.iconUrl" /></i>
+    </a>
+  }
+</div>
