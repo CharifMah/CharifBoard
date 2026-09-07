@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>CV - Mahmoud Charif</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 210mm; height: 297mm; }
+  body {
+    font-family: 'Segoe UI', 'DejaVu Sans', Arial, sans-serif;
+    background: #f7f7f7;
+    color: #2b2b2b;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .page { width: 210mm; height: 297mm; position: relative; overflow: hidden; }
+
+  /* ===== En-tête ===== */
+  .header {
+    background: linear-gradient(105deg, #28dc9f 0%, #49df8b 50%, #6be377 100%);
+    color: #fff;
+    padding: 14mm 12mm 22mm 12mm;
+    position: relative;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 14mm;
+    background: #f7f7f7;
+    clip-path: polygon(0 55%, 55% 0, 100% 60%, 100% 100%, 0 100%);
+  }
+  .header h1 { font-size: 30pt; font-weight: 700; letter-spacing: 0.5px; }
+  .header .subtitle { font-size: 14pt; font-weight: 300; margin-top: 2mm; }
+  .header .rule { width: 42mm; height: 1.2mm; background: rgba(255,255,255,0.85); margin-top: 4mm; border-radius: 1mm; }
+  .header .rule2 { width: 30mm; height: 0.8mm; background: rgba(255,255,255,0.55); margin-top: 2mm; border-radius: 1mm; }
+  .contacts { position: absolute; top: 12mm; right: 12mm; text-align: right; font-size: 9.5pt; line-height: 2.1; }
+  .contacts .ico { margin-left: 2.5mm; }
+
+  /* ===== Corps ===== */
+  .body { display: flex; padding: 6mm 12mm 10mm 12mm; gap: 8mm; }
+  .col-left { width: 62%; }
+  .col-right { width: 38%; }
+
+  h2 {
+    font-size: 15pt;
+    color: #1f9d6d;
+    margin: 5mm 0 2.5mm 0;
+    padding-bottom: 1.2mm;
+    border-bottom: 0.6mm solid #49df8b;
+  }
+  h2:first-child { margin-top: 0; }
+
+  .entry { margin-bottom: 3.5mm; }
+  .entry .title { font-size: 10.5pt; font-weight: 700; color: #17936a; }
+  .entry .dates { font-size: 8.5pt; color: #7c8b84; font-weight: 600; }
+  .entry p, .entry li { font-size: 9pt; line-height: 1.45; }
+  .entry ul { margin: 1mm 0 0 4mm; }
+  .entry li { margin-bottom: 0.6mm; }
+
+  .side-title { font-size: 13pt; color: #1f9d6d; text-align: center; margin: 5mm 0 2mm 0; }
+  .side-title:first-child { margin-top: 0; }
+  .col-right p, .col-right li { font-size: 9pt; line-height: 1.5; text-align: center; }
+  .col-right ul { list-style: none; text-align: center; }
+  .col-right li { margin-bottom: 1mm; }
+
+  .divider { height: 0.7mm; background: linear-gradient(90deg, #28dc9f, #6be377); border-radius: 1mm; margin: 5mm 8mm; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 1.6mm; justify-content: center; margin-top: 2mm; }
+  .tag {
+    font-size: 8pt;
+    background: #e8faf1;
+    color: #17936a;
+    border: 0.3mm solid #49df8b;
+    border-radius: 3mm;
+    padding: 1mm 2.6mm;
+    font-weight: 600;
+  }
+  .tag.dark { background: #17936a; color: #fff; border-color: #17936a; }
+
+  .fa { font-family: 'FontAwesome'; font-weight: normal; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <h1>Mahmoud Charif</h1>
+    <div class="subtitle">Étudiant en ingénierie informatique — CESI FISA</div>
+    <div class="rule"></div>
+    <div class="rule2"></div>
+    <div class="contacts">
+      <div>Charif25430@hotmail.fr <span class="fa">&#xf0e0;</span></div>
+      <div>+33 7 82 51 58 21 <span class="fa">&#xf095;</span></div>
+      <div>github.com/CharifMah <span class="fa">&#xf09b;</span></div>
+      <div>charifmah.github.io/CharifBoard <span class="fa">&#xf0ac;</span></div>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <div class="col-left">
+      <h2>À propos</h2>
+      <div class="entry">
+        <p>Passionné d'informatique depuis l'enfance, fasciné par la façon dont la technologie résout des problèmes complexes et améliore le quotidien. Motivé, curieux et prêt à relever de nouveaux défis.</p>
+      </div>
+
+      <h2>Projets &amp; Expériences</h2>
+
+      <div class="entry">
+        <span class="title">SellMatch</span> — <span class="dates">projet entrepreneurial, 2026</span>
+        <p>Plateforme web de vente immobilière entre particuliers. Conception C#/.NET + Angular, roadmap produit, business plan, analytics PostHog.</p>
+      </div>
+
+      <div class="entry">
+        <span class="title">Stage, centre INRAE Bourgogne-Franche-Comté</span> — <span class="dates">mai 2023 – juin 2023</span>
+        <p>Développement d'une application web. Audit, refonte intégrale, rédaction d'un rapport d'optimisation suivi d'une soutenance.</p>
+      </div>
+
+      <div class="entry">
+        <span class="title">TaskStep2.0</span> — <span class="dates">janv. 2023 – mai 2023</span>
+        <p>Audit du site github.com/eromba/taskstep : points d'amélioration puis refonte intégrale de l'application web, rapport d'optimisation détaillé et soutenance.</p>
+      </div>
+
+      <div class="entry">
+        <span class="title">JurrasicRisk</span> — <span class="dates">oct. 2022 – janv. 2023</span>
+        <p>Jeu multijoueur tour par tour inspiré du RISK, en équipe de 4. Patrons de conception, principes SOLID, bases de données, architecture client-serveur et sécurité.</p>
+      </div>
+
+      <div class="entry">
+        <span class="title">MultiMonitorGammaControl</span> — <span class="dates">févr. 2022 – août 2022</span>
+        <p>Application WPF de réglage gamma/contraste/luminosité multi-écrans, avec raccourcis clavier globaux.</p>
+      </div>
+
+      <div class="entry">
+        <span class="title">Okonda.fr</span> — <span class="dates">nov. 2021 – déc. 2021</span>
+        <p>Site complet d'une association (cahier des charges fourni) pour le développement des techniques agricoles en République Démocratique du Congo.</p>
+      </div>
+    </div>
+
+    <div class="col-right">
+
+      <div class="side-title">Formation</div>
+      <p><b>CESI — cycle ingénieur FISA INFO</b><br>2025 – 2026 (en cours)</p>
+      <p style="margin-top:2mm"><b>BUT Informatique</b>, IUT de Dijon-Auxerre<br>2021 – 2023</p>
+      <p style="margin-top:2mm"><b>Bac STI2D</b>, Lycée Jules Haag, Besançon<br>2019 – 2021</p>
+
+      <div class="divider"></div>
+
+      <div class="side-title">Compétences techniques</div>
+      <div class="tags">
+        <span class="tag dark">C#/.NET</span>
+        <span class="tag">ASP.NET</span>
+        <span class="tag">WPF/XAML</span>
+        <span class="tag">ADO.NET</span>
+        <span class="tag">SignalR</span>
+        <span class="tag">Angular/TS</span>
+        <span class="tag">JavaScript</span>
+        <span class="tag">VueJS</span>
+        <span class="tag">HTML/CSS</span>
+        <span class="tag">Tailwind</span>
+        <span class="tag">Java</span>
+        <span class="tag">Spring/Hibernate</span>
+        <span class="tag">PHP</span>
+        <span class="tag">SQL (MySQL, Oracle)</span>
+        <span class="tag">Redis</span>
+        <span class="tag">Docker</span>
+        <span class="tag">Git/GitHub</span>
+        <span class="tag">Linux</span>
+        <span class="tag">WordPress</span>
+        <span class="tag">Selenium</span>
+        <span class="tag">Python</span>
+        <span class="tag">Android Studio</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="side-title">Compétences</div>
+      <ul>
+        <li>Résolution de problèmes</li>
+        <li>Adaptabilité</li>
+        <li>Collaboration</li>
+        <li>Gestion de projet (PERT, Gantt)</li>
+        <li>Réflexion conceptuelle</li>
+        <li>Anglais technique</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <div class="side-title">Centres d'intérêt</div>
+      <ul>
+        <li>Blockchain, Finance</li>
+        <li>3D (Cinema 4D), montage vidéo, retouche</li>
+        <li>Pêche, Bricolage</li>
+      </ul>
+
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
